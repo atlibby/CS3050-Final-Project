@@ -86,37 +86,11 @@ class clueGame(arcade.Window):
 
         # Batch draw all the sprites
         self.grid_sprite_list.draw()
-    
-    def on_mouse_press(self, x, y, button, modifiers):
-        """
-        Called when the user presses a mouse button.
-        """
-
-        # Convert the clicked mouse position into grid coordinates
-        column = int(x // (WIDTH + MARGIN))
-        row = int(y // (HEIGHT + MARGIN))
-
-        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
-
-        # Make sure we are on-grid. It is possible to click in the upper right
-        # corner in the margin and go to a grid location that doesn't exist
-        if row >= ROW_COUNT or column >= COLUMN_COUNT:
-            # Simply return from this method since nothing needs updating
-            return
-
-        # Flip the location between 1 and 0.
-        if self.grid[row][column] == 0:
-            self.grid[row][column] = 1
-        else:
-            self.grid[row][column] = 0
-
-        # Update the sprite colors to match the new grid
-        self.resync_grid_with_sprites()
 
 
 def main():
     screen = clueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    #screen.setup()
+    screen.setup()
     arcade.run()
 
 
