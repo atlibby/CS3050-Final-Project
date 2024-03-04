@@ -1,4 +1,6 @@
 import arcade
+import random
+from room import Room
 
 
 SCREEN_WIDTH = 800
@@ -49,7 +51,6 @@ def generate_rooms():
     library = Room("library", "", [1, 1])
     study = Room("study", "kitchen", [1, 1])
     return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
-
 
 
 def main():
