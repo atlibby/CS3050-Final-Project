@@ -1,17 +1,3 @@
-"""
-Array Backed Grid Shown By Sprites
-
-Show how to use a two-dimensional list/array to back the display of a
-grid on-screen.
-
-This version syncs the grid to the sprite list in one go using resync_grid_with_sprites.
-This is faster than rebuilding a shape list every time the grid changes,
-but we are still inspecting every single cell of the grid when it updates.
-There are faster ways, but this works for smaller grid sizes.
-
-If Python and Arcade are installed, this example can be run from the command line with:
-python -m arcade.examples.array_backed_grid_sprites_1
-"""
 import arcade
 
 # Set how many rows and columns we will have
