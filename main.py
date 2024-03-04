@@ -1,6 +1,6 @@
 import arcade
-from room import Room
 import random
+from room import Room
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
@@ -117,6 +117,8 @@ class ClueGame(arcade.Window):
         # Set the window's background color
         self.background_color = arcade.color.BLACK
 
+         # Create a dictionary to store room locations
+        self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library, 'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom, 'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
 
         self.startingSquares = {'scarlet': (23, 16), 'plumb':(18, 0), 'peacock':(6, 0), 'mustard':(0, 9), 'green':(0, 14), 'white':(16, 23)}
 
@@ -238,8 +240,6 @@ def generate_rooms():
     return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
 
 
-    # Create a dictionary to store room locations
-    self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library, 'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom, 'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
 
 #simulates a roll of the dice using Clue die faces
 def dice_roll():
