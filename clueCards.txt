@@ -1,0 +1,30 @@
+name,description,task
+Scarlett said what?,She knows a little something about everyone and she's ogt secrets to spill,All player secretly show one card to the left.
+What do we have here?,Mustard is an expert in weapons...perhaps he can shed some light on this.,Name one weapon you want revealed.
+Atten-SHUN!,Mustard knows the importance of constant vigilance and won't tolerate any lazing about.,Anyone holding the Lounge card must reveal it.
+What could this be?,Plum's antique expertise may help this puzzle out.,Anyone holding the Candlestick card must reveal it.
+The mayor's endorsement,Green is a man of the people and ready to vouch for any of his beloved citizens.,Name one character you want revealed.
+RIIIING!,Why would Peacock take a work call now of all times?,Anyone holding the Study card must reveal it.
+A bookworm's breakthrough!,As Plum pulls on an aging tome...he hears a mysterious creaking noise from behind.,Put this card in any other room.It now connects to the other secret passages.
+Tell me more...,There's something about Scarlett that makes people want to reveal their deepest secrets.,Choose the guiltiest-looking player to reveal one card from their hand.
+Another cook in the kitchen?,White discovers a strange object hidden among her kitchen knives.,Anyone holding the Dagger card must reveal it.
+Pilfered plumbing,Peacock touches up her lipstick in the Conservatory windows and finds the sprinklers running awry.,Anyone holding the Lead Pipe card must reveal it.
+Suspicious scribblings,What could Scarlett be writing in that strange notebook of hers?,Anyone holding the Miss Scarlett card must reveal it.
+Fanciful forgeries,Why is Plum rifling through Black's property papers so frantically?,Anyone holding the Prof. Plum card must reveal it.
+A colonel in crisis,For a man with a medal of valor, Mustard seems awfully anxious.,Anyone holding the Col. Mustard card must reveal it.
+An accusatory attorney,Witnesses may find Peacock intimidating...but her intensity only makes her look more suspicious.,Anyone holding the Sol. Peacock card must reveal it.
+Political pitfalls,Who keeps calling Green and why do his hands shake every time he picks up?,Anyone holding the Mayor Green card must reveal it.
+Two telltale tools,Someone has raided Black's safe...leaving behind only their lockpicks: a fork and a knife.,Anyone holding the Chef White card must reveal it.
+What strange decor!,An ornate weapon like this looks eerily fitting in Mustard's hands.,Anyone holding the Revolver card must reveal it.
+Dinner is served!,White spent far too long on this meal for it to go to waste.,Anyone holding the Dining Room card must reveal it.
+On the stand,An interrogation from Peacock is enough to make anyone crack.,All players reveal one card from their hand.
+Public servant,Green is always friendly and obliging and he's happy to help wherever he's needed.,Name one room you want revealed.
+Behind the curtain,The luxurious drapery blends perfectly with Scarlett's dress and provides a subtle place for eavesdropping.,Anyone holding the Ballroom card must reveal it.
+A heavenly aroma,Whatever White has cooking in there...the smell is to die for.,Anyone holding the Kitchen card must reveal it.
+A fantastical indulgence,Plum claims he's "researching" but the dragons on his book cover don't seem particularly academic...,Anyone holding the Library card must reveal it.
+A rousing speech,Green gathers the guests and attempts some well-intentioned words of inspiration.,Anyone holding the Hall card must reveal it.
+A loathesome leak,Scarlett slinks into the Kitchen-and promptly soaks her hem in a puddle.,Anyone holding the Wrench card must reveal it.
+Fraying at the edges,Mustard isn't paranoid-he knows even the most unassuming objects can be deadly.,Anyone holding the Rope card must reveal it.
+Bragging rights,Peacock always plays to win...no matter the game.,Anyone holding the Billiard Room card must reveal it.
+Poisonous plants,Plum knows a thing or two about botany and gives Black's plants a wide berth.,Anyone holding the Conservatory card must reveal it.
+Scatter!,A scream echoes from somewhere in the mansion.,All players rush to the room of their choice.
