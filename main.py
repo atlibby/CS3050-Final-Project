@@ -1,4 +1,5 @@
 import arcade
+import random
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
@@ -138,22 +139,8 @@ class ClueGame(arcade.Window):
         self.resync_grid_with_sprites()
 
     def resync_grid_with_sprites(self):
-        """
-        Update the color of all the sprites to match
-        the color/stats in the grid.
-
-        We look at the values in each cell.
-        If the cell contains 0 we assign a white color.
-        If the cell contains 1 we assign a green color.
-        """
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
-                # We need to convert our two dimensional grid to our
-                # one-dimensional sprite list. For example a 10x10 grid might have
-                # row 2, column 8 mapped to location 28. (Zero-basing throws things
-                # off, but you get the idea.)
-                # ALTERNATIVELY you could set self.grid_sprite_list[pos].texture
-                # to different textures to change the image instead of the color.
                 pos = row * COLUMN_COUNT + column
                 for room, locations in self.rooms.items():
                     if (row, column) in locations:
@@ -174,13 +161,10 @@ class ClueGame(arcade.Window):
                             self.grid_sprite_list[pos].color = arcade.color.GREEN
                     
     def get_color_for_room(self, room):
-        """
-        Get the color associated with a room.
-        """
         room_colors = {
         'lounge': arcade.color.BLUE,
         'library': arcade.color.PURPLE,
-        # Add other rooms and their colors as needed
+        
     }
         return room_colors.get(room, arcade.color.BURNT_ORANGE)
     
@@ -192,7 +176,7 @@ class ClueGame(arcade.Window):
         'mustard': arcade.color.YELLOW,
         'white': arcade.color.WHITE,
         'plumb': arcade.color.PURPLE,
-        # Add other rooms and their colors as needed
+        
     }
         return char_colors.get(character)
     
@@ -235,10 +219,54 @@ class ClueGame(arcade.Window):
         self.resync_grid_with_sprites()
 
 
+#simulates a roll of the dice using Clue die faces
+def dice_roll():
+    roll_options = ['c', 2, 3, 4, 5, 6]
+    return random.choice(roll_options)
+
+#returns a list of the classic rooms from Clue
+def generate_rooms():
+    #Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
+    hall = Room("hall", "", [1, 1])
+    lounge = Room("lounge", "conservatory", [1, 1])
+    dining_room = Room("dining_room", "", [1, 1])
+    kitchen = Room("kitchen", "study", [1, 1])
+    ballroom = Room("ballroom", "", [1, 1])
+    conservatory = Room("conservatory", "lounge", [1, 1])
+    billiard_room = Room("billiard_room", "", [1, 1])
+    library = Room("library", "", [1, 1])
+    study = Room("study", "kitchen", [1, 1])
+    return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
+
+
+
+#simulates a roll of the dice using Clue die faces
+def dice_roll():
+    roll_options = ['c', 2, 3, 4, 5, 6]
+    return random.choice(roll_options)
+
+#returns a list of the classic rooms from Clue
+def generate_rooms():
+    #Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
+    hall = Room("hall", "", [1, 1])
+    lounge = Room("lounge", "conservatory", [1, 1])
+    dining_room = Room("dining_room", "", [1, 1])
+    kitchen = Room("kitchen", "study", [1, 1])
+    ballroom = Room("ballroom", "", [1, 1])
+    conservatory = Room("conservatory", "lounge", [1, 1])
+    billiard_room = Room("billiard_room", "", [1, 1])
+    library = Room("library", "", [1, 1])
+    study = Room("study", "kitchen", [1, 1])
+    return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
+
+
+
 def main():
     ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     arcade.run()
 
 
 if __name__ == "__main__":
+    print(dice_roll())
+    rooms = generate_rooms()
     main()
