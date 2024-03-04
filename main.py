@@ -17,7 +17,7 @@ class clueGame(arcade.Window):
 
     # Restart game
     def setup(self):
-        self.background = arcade.load_texture("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/clue_board2.jpg")
+        self.background = arcade.load_texture("clue_board2.jpg")
 
     # Draw screen
     def on_draw(self):
