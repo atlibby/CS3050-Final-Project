@@ -1,5 +1,6 @@
 import arcade
 import random
+from room import Room
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
