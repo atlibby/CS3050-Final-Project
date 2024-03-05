@@ -1,6 +1,5 @@
 """
 Player class for the game
-The Player class will have a 'has a' relationship with the Card/Deck/Clue Card classes
 Initializing a Player object in main will mean providing information
 on the player's color, name, initial position, and player status (whether
 the player is a user or an NPC, which will determine whether said player is
@@ -18,7 +17,8 @@ with the Card class, since NPC behavior will be much simpler to integrate this w
 
 import arcade
 import random as r
-
+from Card import *
+from room import Room
 
 
 class Player:

@@ -3,6 +3,7 @@ import random
 from room import Room
 from Card import Deck
 import Card
+import Player
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
