@@ -1,5 +1,24 @@
+"""
+Player class for the game
+The Player class will have a 'has a' relationship with the Card/Deck/Clue Card classes
+Initializing a Player object in main will mean providing information
+on the player's color, name, initial position, and player status (whether
+the player is a user or an NPC, which will determine whether said player is
+controlled by keyboard/mouse events or by RNG)
+
+The mark_sheet method will probably need to be dependent on a Clue Sheet class,
+which I can create, and it would appear as a popup window that a player/NPC can interact
+with
+
+Conversely, we may not need a Clue Sheet class altogether and just have one generate
+in main for each player, but personally I think it would be easier to have the Player
+class interact with a Clue Sheet class similarly to how the Player class will interact
+with the Card class, since NPC behavior will be much simpler to integrate this way
+"""
+
 import arcade
 import random as r
+
 
 
 class Player:
