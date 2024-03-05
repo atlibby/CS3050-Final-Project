@@ -20,6 +20,88 @@ import random as r
 from Card import *
 from room import Room
 
+# test function for dividing cards evenly between six players
+# will integrate with get_case_file method in main later
+# for now, takes deck of cards from Card class, shuffles them,
+# then removes three cards from the deck (one character card,
+# one weapon card, one room card), and divides the cards evenly
+# depending on how many people are playing
+# For testing purposes, doing 6 players (three random cards per player), but later we could maybe add
+# an option for an amount of NPCs the user wants to play against from 1-5
+# even if the player decides to not play with all 5 other characters,
+# the remaining character tokens will remain on the board to be moved into rooms
+# if a player accuses them, but they will not do anything on their own and will not
+# be granted turns
+def divide_cards():
+    plums_deck = []
+    whites_deck = []
+    greens_deck = []
+    scarlets_deck = []
+    peacocks_deck = []
+    mustards_deck = []
+    shuffled_cards = Deck.initialize_cards()
+    card_type = ["character", "room", "weapon"]
+    case_file = []
+    for card in shuffled_cards:
+        if card.cardType in card_type:
+            case_file.append(card)
+            card_type.remove(card.cardType)
+            shuffled_cards.remove(card)
+    deck_size = len(shuffled_cards)
+    players = ["plum", "white", "green", "scarlet", "peacock", "mustard"]
+    remainder = deck_size % len(players)
+    cards_to_deal = deck_size - remainder
+    idx = 0
+    buffer = 0
+    for card in shuffled_cards:
+        card.owner = players[idx]
+        print(card)
+        # go to beginning of player list again, simulating loop
+        if idx == len(players) - 1:
+            idx = 0
+        else:
+            idx += 1
+
+    for card in shuffled_cards:
+        if card.owner == 'plum':
+            plums_deck.append(card)
+            buffer += 1
+        elif card.owner == 'white':
+            whites_deck.append(card)
+            buffer += 1
+        elif card.owner == 'green':
+            greens_deck.append(card)
+            buffer += 1
+        elif card.owner == 'scarlet':
+            scarlets_deck.append(card)
+            buffer += 1
+        elif card.owner == 'peacock':
+            peacocks_deck.append(card)
+            buffer += 1
+        elif card.owner == 'mustard':
+            mustards_deck.append(card)
+            buffer += 1
+        if buffer == cards_to_deal:
+            break
+
+    print("\n,Plum's Deck: ")
+    for card in plums_deck:
+        print(card, "\n")
+    print("White's Deck: ")
+    for card in whites_deck:
+        print(card, "\n")
+    print("Green's Deck: ")
+    for card in greens_deck:
+        print(card, "\n")
+    print("Scarlet's Deck: ")
+    for card in scarlets_deck:
+        print(card, "\n")
+    print("Peacock's Deck: ")
+    for card in peacocks_deck:
+        print(card, "\n")
+    print("Mustard's Deck: ")
+    for card in mustards_deck:
+        print(card, "\n")
 
 class Player:
     def __init__(self, x, y, radius, color, border_width, num_segments, player_name, player_status):
@@ -82,3 +164,5 @@ class Player:
 
     def reveal_card(self):
         pass
+
+divide_cards()
