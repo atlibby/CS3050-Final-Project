@@ -3,7 +3,7 @@ import random
 from room import Room
 from Card import Deck
 import Card
-import Player
+from Player import Player
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
@@ -123,7 +123,14 @@ class ClueGame(arcade.Window):
          # Create a dictionary to store room locations
         self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library, 'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom, 'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
 
-        self.startingSquares = {'scarlet': (23, 16), 'plumb':(18, 0), 'peacock':(6, 0), 'mustard':(0, 9), 'green':(0, 14), 'white':(16, 23)}
+        self.startingSquares = {'ms scarlet': (23, 16), 'professor plum': (18, 0), 'mrs peacock': (6, 0), 'colonel mustard': (0, 9), 'mayor green': (0, 14), 'chef white': (16, 23)}
+
+        self.playerColors = {'ms scarlet': (139, 0, 0), 'professor plum': (153, 50, 204), 'mrs peacock': ()}
+
+
+        self.char_names = list(self.startingSquares.keys())
+
+        token_radius = 0.5
 
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
@@ -157,6 +164,7 @@ class ClueGame(arcade.Window):
                         for character, location in self.startingSquares.items():
                             if location == (row, column):
                                 self.grid_sprite_list[pos].color = self.get_character_color(character)
+
                                 break
                     else:
                         if self.grid[row][column] == 0:
@@ -174,12 +182,12 @@ class ClueGame(arcade.Window):
     
     def get_character_color(self, character):
         char_colors = {
-        'scarlet': arcade.color.RED,
-        'peacock': arcade.color.BLUE,
-        'green': arcade.color.GREEN,
-        'mustard': arcade.color.YELLOW,
-        'white': arcade.color.WHITE,
-        'plumb': arcade.color.PURPLE,
+        'ms scarlet': arcade.color.RED,
+        'mrs peacock': arcade.color.BLUE,
+        'mayor green': arcade.color.GREEN,
+        'colonel mustard': arcade.color.YELLOW,
+        'chef white': arcade.color.WHITE,
+        'professor plum': arcade.color.PURPLE,
         
     }
         return char_colors.get(character)

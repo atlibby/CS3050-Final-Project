@@ -104,14 +104,10 @@ def divide_cards():
         print(card, "\n")
 
 class Player:
-    def __init__(self, x, y, radius, color, border_width, num_segments, player_name, player_status):
+    def __init__(self, x, y, color, player_name, player_status):
         self.x = x
         self.y = y
-        self.radius = radius
         self.color = color
-        self.border_width = border_width
-        self.num_segments = num_segments
-        self.shape = arcade.draw_circle_filled(x, y, radius, color, num_segments)
         self.player_name = player_name
         self.player_status = player_status
 
@@ -164,5 +160,8 @@ class Player:
 
     def reveal_card(self):
         pass
+
+    def draw_player(self):
+        arcade.draw_circle_filled(self.x, self.y, 0.5, (0, 0, 0), 0, -1)
 
 divide_cards()
