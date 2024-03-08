@@ -125,6 +125,8 @@ class ClueGame(arcade.Window):
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
 
+        self.room_sprite_list = arcade.SpriteList()
+
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
