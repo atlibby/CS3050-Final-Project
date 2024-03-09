@@ -103,13 +103,30 @@ def divide_cards():
     for card in mustards_deck:
         print(card, "\n")
 
-class Player:
-    def __init__(self, x, y, color, player_name, player_status):
+
+class Shape:
+    def __init__(self, x, y, color, width, height):
         self.x = x
         self.y = y
         self.color = color
-        self.player_name = player_name
-        self.player_status = player_status
+        self.width = width
+        self.height = height
+        self.shape_list = arcade.ShapeElementList()
+
+    def draw_player(self, x, y, width, height, color):
+        shape = arcade.create_ellipse_filled(self.x, self.y, self.width, self.height, self.color)
+        self.shape_list.append(shape)
+        return self.shape_list
+
+
+class Player(Shape):
+    def __init__(self, x, y, color, width, height):
+        super().__init__(x, y, color, width, height)
+        # self.player_name = player_name
+        # self.player_status = player_status
+        # shape = arcade.create_ellipse_filled(x, y, width, height, color)
+        # self.shape_list = arcade.ShapeElementList()
+        # self.shape_list.append(shape)
 
     # getters
     def get_x(self):
@@ -161,7 +178,5 @@ class Player:
     def reveal_card(self):
         pass
 
-    def draw_player(self):
-        arcade.draw_circle_filled(self.x, self.y, 0.5, (0, 0, 0), 0, -1)
 
 divide_cards()
