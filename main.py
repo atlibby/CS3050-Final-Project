@@ -168,7 +168,7 @@ class ClueGame(arcade.Window):
                                 break
                     else:
                         if self.grid[row][column] == 0:
-                            self.grid_sprite_list[pos].color = arcade.color.FLORAL_WHITE
+                            self.grid_sprite_list[pos].color = arcade.color.GRAY_BLUE
                         else:
                             self.grid_sprite_list[pos].color = arcade.color.GREEN
                     
