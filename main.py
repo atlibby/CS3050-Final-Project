@@ -3,7 +3,7 @@ import random
 from room import Room
 from Card import Deck
 import Card
-from Player import Player
+from Player import *
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
@@ -103,6 +103,14 @@ guessing_room = [
     (10, 10), (10, 11), (10, 12)
 ]
 
+
+# def spawn_player(x, y, width, height, color):
+#     shape_list = arcade.ShapeElementList()
+#     shape = arcade.create_ellipse_filled(x, y, width, height, color)
+#     shape_list.append(shape)
+#     return shape_list
+
+
 class ClueGame(arcade.Window):
     """
     Main application class.
@@ -123,8 +131,45 @@ class ClueGame(arcade.Window):
         # Create a dictionary to store room locations
         self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library, 'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom, 'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
 
+        player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
+
+        player_xs = [753, 15, 15, 497, 752, 558]
+
+        player_ys = [239, 627, 210, 754, 561, 17]
+
+        player_colors = [arcade.color.RED, arcade.color.PURPLE, arcade.color.BLUE, arcade.color.YELLOW,
+                        arcade.color.GREEN, arcade.color.WHITE]
+
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
+
+        player_width = 30
+
+        player_height = 30
+
+        scarlet = Player(player_xs[0], player_ys[0], player_colors[0], player_width, player_height)
+
+        plum = Player(player_xs[1], player_ys[1], player_colors[1], player_width, player_height)
+
+        peacock = Player(player_xs[2], player_ys[2], player_colors[2], player_width, player_height)
+
+        mustard = Player(player_xs[3], player_ys[3], player_colors[3], player_width, player_height)
+
+        green = Player(player_xs[4], player_ys[4], player_colors[4], player_width, player_height)
+
+        white = Player(player_xs[5], player_ys[5], player_colors[5], player_width, player_height)
+
+        self.ms_scarlet = scarlet.render_player()
+
+        self.prof_plum = plum.render_player()
+
+        self.mrs_peacock = peacock.render_player()
+
+        self.col_mustard = mustard.render_player()
+
+        self.mayor_green = green.render_player()
+
+        self.chef_white = white.render_player()
 
         # Create a spritelist for batch drawing player tokens
         # self.players = Player.draw_player()
@@ -153,7 +198,7 @@ class ClueGame(arcade.Window):
                         break
                 else:
                     if self.grid[row][column] == 0:
-                        self.grid_sprite_list[pos].color = arcade.color.FLORAL_WHITE
+                        self.grid_sprite_list[pos].color = arcade.color.GRAY
                     else:
                         self.grid_sprite_list[pos].color = arcade.color.GREEN
                     
@@ -224,6 +269,20 @@ class ClueGame(arcade.Window):
 
         # Draw grid sprites
         self.grid_sprite_list.draw()
+
+        self.ms_scarlet.draw()
+
+        self.prof_plum.draw()
+
+        self.mrs_peacock.draw()
+
+        self.col_mustard.draw()
+
+        self.mayor_green.draw()
+
+        self.chef_white.draw()
+
+        # self.shape_list.draw()
 
         # for player in self.players:
         #     player.draw_player()

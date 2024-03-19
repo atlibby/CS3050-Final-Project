@@ -113,7 +113,7 @@ class Shape:
         self.height = height
         self.shape_list = arcade.ShapeElementList()
 
-    def draw_player(self, x, y, width, height, color):
+    def render_player(self):
         shape = arcade.create_ellipse_filled(self.x, self.y, self.width, self.height, self.color)
         self.shape_list.append(shape)
         return self.shape_list
