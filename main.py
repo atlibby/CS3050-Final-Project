@@ -3,6 +3,7 @@ import random
 from room import Room
 from Card import Deck
 import Card
+import time
 from Player import *
 
 # Set how many rows and columns we will have
@@ -23,6 +24,8 @@ SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Array Backed Grid Example"
 
 PLAYER_MOVEMENT = 32
+
+SPRITE_SCALING = 0.06
 
 study = [(23, 0),(22, 0),(21, 0),(20, 0),(20, 1),(20, 2),(20, 3),(20, 4),(20, 5),(20, 6), (22, 6),(21, 6),(23, 5),(23, 4),(23, 3),(23, 2),(23, 1),(22, 1),(22, 2),(22, 3),(22, 4),(22, 5),(21, 5),(21, 4),(21, 3),(21, 2),(21, 1)]
 hall = [
@@ -145,33 +148,81 @@ class ClueGame(arcade.Window):
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
 
+        self.player_list = arcade.SpriteList()
+
         player_width = 30
 
         player_height = 30
 
-        scarlet = Player(player_xs[0], player_ys[0], player_colors[0], player_width, player_height)
+        self.ms_scarlet = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
 
-        plum = Player(player_xs[1], player_ys[1], player_colors[1], player_width, player_height)
+        self.ms_scarlet.center_x = player_xs[0]
 
-        peacock = Player(player_xs[2], player_ys[2], player_colors[2], player_width, player_height)
+        self.ms_scarlet.center_y = player_ys[0]
 
-        mustard = Player(player_xs[3], player_ys[3], player_colors[3], player_width, player_height)
+        self.player_list.append(self.ms_scarlet)
 
-        green = Player(player_xs[4], player_ys[4], player_colors[4], player_width, player_height)
+        self.prof_plum = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Purple_Circle.png", 0.065)
 
-        white = Player(player_xs[5], player_ys[5], player_colors[5], player_width, player_height)
+        self.prof_plum.center_x = player_xs[1]
 
-        self.ms_scarlet = scarlet.render_player()
+        self.prof_plum.center_y = player_ys[1]
 
-        self.prof_plum = plum.render_player()
+        self.player_list.append(self.prof_plum)
 
-        self.mrs_peacock = peacock.render_player()
+        self.mrs_peacock = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Pan_Blue_Circle.png", 0.045)
 
-        self.col_mustard = mustard.render_player()
+        self.mrs_peacock.center_x = player_xs[2]
 
-        self.mayor_green = green.render_player()
+        self.mrs_peacock.center_y = player_ys[2]
 
-        self.chef_white = white.render_player()
+        self.player_list.append(self.mrs_peacock)
+
+        self.col_mustard = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Yellow_Circle.png", 0.065)
+
+        self.col_mustard.center_x = player_xs[3]
+
+        self.col_mustard.center_y = player_ys[3]
+
+        self.player_list.append(self.col_mustard)
+
+        self.mayor_green = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/—Pngtree—circle clipart green circle_5553152.png", 0.028)
+
+        self.mayor_green.center_x = player_xs[4]
+
+        self.mayor_green.center_y = player_ys[4]
+
+        self.player_list.append(self.mayor_green)
+
+        self.chef_white = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
+
+        self.chef_white.center_x = player_xs[5]
+
+        self.chef_white.center_y = player_ys[5]
+
+        self.player_list.append(self.chef_white)
+        #
+        # plum = Player(player_xs[1], player_ys[1], player_colors[1], player_width, player_height)
+        #
+        # peacock = Player(player_xs[2], player_ys[2], player_colors[2], player_width, player_height)
+        #
+        # mustard = Player(player_xs[3], player_ys[3], player_colors[3], player_width, player_height)
+        #
+        # green = Player(player_xs[4], player_ys[4], player_colors[4], player_width, player_height)
+        #
+        # white = Player(player_xs[5], player_ys[5], player_colors[5], player_width, player_height)
+        #
+        # self.ms_scarlet = scarlet.render_player()
+        #
+        # self.prof_plum = plum.render_player()
+        #
+        # self.mrs_peacock = peacock.render_player()
+        #
+        # self.col_mustard = mustard.render_player()
+        #
+        # self.mayor_green = green.render_player()
+        #
+        # self.chef_white = white.render_player()
 
         # Create a spritelist for batch drawing player tokens
         # self.players = Player.draw_player()
@@ -281,30 +332,28 @@ class ClueGame(arcade.Window):
         self.grid_sprite_list.draw()
 
         # Draw players
-        self.ms_scarlet.draw()
+        self.player_list.draw()
 
-        self.prof_plum.draw()
-
-        self.mrs_peacock.draw()
-
-        self.col_mustard.draw()
-
-        self.mayor_green.draw()
-
-        self.chef_white.draw()
-
+    # Redraw sprite when sprite moves
     def on_update(self, delta_time):
-        self.ms_scarlet.draw()
+        self.player_list.update()
 
+    # Allow player movement with arrow keys
+    # time delay to allow for sprite to move
+    # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
-            self.ms_scarlet.move_up(PLAYER_MOVEMENT)
+            self.ms_scarlet.change_y = PLAYER_MOVEMENT
+            time.sleep(0.1)
         elif key == arcade.key.DOWN:
-            self.ms_scarlet.move_down(PLAYER_MOVEMENT)
+            self.ms_scarlet.change_y = -PLAYER_MOVEMENT
+            time.sleep(0.1)
         elif key == arcade.key.LEFT:
-            self.ms_scarlet.move_left(PLAYER_MOVEMENT)
+            self.ms_scarlet.change_x = -PLAYER_MOVEMENT
+            time.sleep(0.1)
         elif key == arcade.key.RIGHT:
-            self.ms_scarlet.move_right(PLAYER_MOVEMENT)
+            self.ms_scarlet.change_x = PLAYER_MOVEMENT
+            time.sleep(0.1)
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.DOWN:

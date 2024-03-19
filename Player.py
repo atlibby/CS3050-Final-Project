@@ -104,24 +104,22 @@ def divide_cards():
         print(card, "\n")
 
 
-class Shape:
-    def __init__(self, x, y, color, width, height):
-        self.x = x
-        self.y = y
-        self.color = color
-        self.width = width
-        self.height = height
-        self.shape_list = arcade.ShapeElementList()
+# class Shape:
+#     def __init__(self, x, y, color, width, height):
+#         self.x = x
+#         self.y = y
+#         self.color = color
+#         self.width = width
+#         self.height = height
+#         self.shape_list = arcade.ShapeElementList()
+#
+#     def render_player(self):
+#         shape = arcade.create_ellipse_filled(self.x, self.y, self.width, self.height, self.color)
+#         self.shape_list.append(shape)
+#         return self.shape_list
 
-    def render_player(self):
-        shape = arcade.create_ellipse_filled(self.x, self.y, self.width, self.height, self.color)
-        self.shape_list.append(shape)
-        return self.shape_list
 
-
-class Player(Shape):
-    def __init__(self, x, y, color, width, height):
-        super().__init__(x, y, color, width, height)
+class Player(arcade.Sprite):
 
     # getters
     def get_x(self):
@@ -160,24 +158,12 @@ class Player(Shape):
         roll = r.randrange(1, 6)
         return roll
 
-    def move_up(self, movement):
-        self.y += movement
-        return self.y
+    def move(self):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
 
-    def move_down(self, movement):
-        self.y -= movement
-        return self.y
-
-    def move_left(self, movement):
-        self.x -= movement
-        return self.x
-
-    def move_right(self, movement):
-        self.x += movement
-        return self.x
-
-    def teleport(self, accused, room_coords):
-        accused.move(room_coords)
+    # def teleport(self, accused, room_coords):
+    #     accused.move(room_coords)
 
     def make_accusation(self, accused_name, accused_room, accused_weapon, accuser):
         print(accuser + " thinks it was " + accused_name + " in the " + accused_room + " with the " + accused_weapon)
