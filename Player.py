@@ -122,11 +122,6 @@ class Shape:
 class Player(Shape):
     def __init__(self, x, y, color, width, height):
         super().__init__(x, y, color, width, height)
-        # self.player_name = player_name
-        # self.player_status = player_status
-        # shape = arcade.create_ellipse_filled(x, y, width, height, color)
-        # self.shape_list = arcade.ShapeElementList()
-        # self.shape_list.append(shape)
 
     # getters
     def get_x(self):
@@ -164,6 +159,22 @@ class Player(Shape):
     def roll_die(self):
         roll = r.randrange(1, 6)
         return roll
+
+    def move_up(self, movement):
+        self.y += movement
+        return self.y
+
+    def move_down(self, movement):
+        self.y -= movement
+        return self.y
+
+    def move_left(self, movement):
+        self.x -= movement
+        return self.x
+
+    def move_right(self, movement):
+        self.x += movement
+        return self.x
 
     def teleport(self, accused, room_coords):
         accused.move(room_coords)

@@ -22,6 +22,8 @@ SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 SCREEN_TITLE = "Array Backed Grid Example"
 
+PLAYER_MOVEMENT = 32
+
 study = [(23, 0),(22, 0),(21, 0),(20, 0),(20, 1),(20, 2),(20, 3),(20, 4),(20, 5),(20, 6), (22, 6),(21, 6),(23, 5),(23, 4),(23, 3),(23, 2),(23, 1),(22, 1),(22, 2),(22, 3),(22, 4),(22, 5),(21, 5),(21, 4),(21, 3),(21, 2),(21, 1)]
 hall = [
     (22, 9), (23, 9), (21, 9), (20, 9), (19, 9), (18, 9), (17, 9), (17, 10), (17, 11), (17, 12), 
@@ -133,9 +135,9 @@ class ClueGame(arcade.Window):
 
         player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
 
-        player_xs = [753, 15, 15, 497, 752, 558]
+        player_xs = [753, 17, 17, 497, 753, 561]
 
-        player_ys = [239, 627, 210, 754, 561, 17]
+        player_ys = [241, 625, 209, 753, 561, 17]
 
         player_colors = [arcade.color.RED, arcade.color.PURPLE, arcade.color.BLUE, arcade.color.YELLOW,
                         arcade.color.GREEN, arcade.color.WHITE]
@@ -204,8 +206,16 @@ class ClueGame(arcade.Window):
                     
     def get_color_for_room(self, room):
         room_colors = {
-        'lounge': arcade.color.BLUE,
-        'library': arcade.color.PURPLE,
+        'lounge': arcade.color.JET,
+        'library': arcade.color.ANTIQUE_BRASS,
+        'hall': arcade.color.AO,
+        'study': arcade.color.AQUA,
+        'billiard_room': arcade.color.BITTERSWEET_SHIMMER,
+        'conservatory': arcade.color.BRIGHT_UBE,
+        'ballroom': arcade.color.DARK_LIVER,
+        'kitchen': arcade.color.KHAKI,
+        'dining-room': arcade.color.FIELD_DRAB,
+        'guessing_room': arcade.color.BLACK
         
     }
         return room_colors.get(room, arcade.color.BURNT_ORANGE)
@@ -263,13 +273,14 @@ class ClueGame(arcade.Window):
         Render the screen.
         """
         # # We should always start by clearing the window pixels
-        # self.clear()
+        self.clear()
 
         arcade.start_render()
 
         # Draw grid sprites
         self.grid_sprite_list.draw()
 
+        # Draw players
         self.ms_scarlet.draw()
 
         self.prof_plum.draw()
@@ -282,14 +293,24 @@ class ClueGame(arcade.Window):
 
         self.chef_white.draw()
 
-        # self.shape_list.draw()
+    def on_update(self, delta_time):
+        self.ms_scarlet.draw()
 
-        # for player in self.players:
-        #     player.draw_player()
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.UP:
+            self.ms_scarlet.move_up(PLAYER_MOVEMENT)
+        elif key == arcade.key.DOWN:
+            self.ms_scarlet.move_down(PLAYER_MOVEMENT)
+        elif key == arcade.key.LEFT:
+            self.ms_scarlet.move_left(PLAYER_MOVEMENT)
+        elif key == arcade.key.RIGHT:
+            self.ms_scarlet.move_right(PLAYER_MOVEMENT)
 
-
-
-
+    def on_key_release(self, key, modifiers):
+        if key == arcade.key.UP or key == arcade.key.DOWN:
+            self.ms_scarlet.change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
+            self.ms_scarlet.change_x = 0
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
