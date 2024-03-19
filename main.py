@@ -142,17 +142,10 @@ class ClueGame(arcade.Window):
 
         player_ys = [241, 625, 209, 753, 561, 17]
 
-        player_colors = [arcade.color.RED, arcade.color.PURPLE, arcade.color.BLUE, arcade.color.YELLOW,
-                        arcade.color.GREEN, arcade.color.WHITE]
-
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
 
         self.player_list = arcade.SpriteList()
-
-        player_width = 30
-
-        player_height = 30
 
         self.ms_scarlet = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
 
@@ -201,31 +194,6 @@ class ClueGame(arcade.Window):
         self.chef_white.center_y = player_ys[5]
 
         self.player_list.append(self.chef_white)
-        #
-        # plum = Player(player_xs[1], player_ys[1], player_colors[1], player_width, player_height)
-        #
-        # peacock = Player(player_xs[2], player_ys[2], player_colors[2], player_width, player_height)
-        #
-        # mustard = Player(player_xs[3], player_ys[3], player_colors[3], player_width, player_height)
-        #
-        # green = Player(player_xs[4], player_ys[4], player_colors[4], player_width, player_height)
-        #
-        # white = Player(player_xs[5], player_ys[5], player_colors[5], player_width, player_height)
-        #
-        # self.ms_scarlet = scarlet.render_player()
-        #
-        # self.prof_plum = plum.render_player()
-        #
-        # self.mrs_peacock = peacock.render_player()
-        #
-        # self.col_mustard = mustard.render_player()
-        #
-        # self.mayor_green = green.render_player()
-        #
-        # self.chef_white = white.render_player()
-
-        # Create a spritelist for batch drawing player tokens
-        # self.players = Player.draw_player()
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
@@ -259,8 +227,8 @@ class ClueGame(arcade.Window):
         room_colors = {
         'lounge': arcade.color.JET,
         'library': arcade.color.ANTIQUE_BRASS,
-        'hall': arcade.color.AO,
-        'study': arcade.color.AQUA,
+        'hall': arcade.color.APRICOT,
+        'study': arcade.color.CORDOVAN,
         'billiard_room': arcade.color.BITTERSWEET_SHIMMER,
         'conservatory': arcade.color.BRIGHT_UBE,
         'ballroom': arcade.color.DARK_LIVER,
