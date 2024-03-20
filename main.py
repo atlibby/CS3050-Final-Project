@@ -145,6 +145,7 @@ class ClueGame(arcade.Window):
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
 
+        # Create a sprite list for characters and initialize characters
         self.player_list = arcade.SpriteList()
 
         self.ms_scarlet = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
@@ -252,29 +253,6 @@ class ClueGame(arcade.Window):
         library = Room("library", "", [[12, 3], [15, 7]])
         study = Room("study", "kitchen", [[19, 6]])
         return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
-
-    # def generate_characters(self):
-    #     self.players = []
-    #     i = 0
-    #     player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
-    #     player_x = [23, 18, 6, 0, 0, 16]
-    #     player_y = [16, 0, 0, 9, 14, 23]
-    #     player_radius = [1, 1, 1, 1, 1, 1]
-    #     player_color = [arcade.color.RED, arcade.color.PURPLE, arcade.color.BLUE, arcade.color.YELLOW, arcade.color.GREEN, arcade.color.WHITE]
-    #     player_status = [0, 0, 0, 0, 0, 0]
-    #
-    #     for i in range(6):
-    #         x = player_x[i]
-    #         y = player_y[i]
-    #         color = player_color[i]
-    #         radius = player_radius[i]
-    #         # status = player_status[i]
-    #         player = Player(x, y, color, radius)
-    #         self.players.append(player)
-    #         # i += 1
-    #     return self.players
-
-
 
     def get_case_file(self, deck):
         one_of_each_list = ["character", "room", "weapon"]

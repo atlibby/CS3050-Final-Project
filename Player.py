@@ -104,21 +104,6 @@ def divide_cards():
         print(card, "\n")
 
 
-# class Shape:
-#     def __init__(self, x, y, color, width, height):
-#         self.x = x
-#         self.y = y
-#         self.color = color
-#         self.width = width
-#         self.height = height
-#         self.shape_list = arcade.ShapeElementList()
-#
-#     def render_player(self):
-#         shape = arcade.create_ellipse_filled(self.x, self.y, self.width, self.height, self.color)
-#         self.shape_list.append(shape)
-#         return self.shape_list
-
-
 class Player(arcade.Sprite):
 
     # getters
