@@ -25,6 +25,8 @@ SCREEN_TITLE = "Array Backed Grid Example"
 
 PLAYER_MOVEMENT = 32
 
+SIDEBAR_WIDTH = 320
+
 SPRITE_SCALING = 0.06
 
 study = [(23, 0),(22, 0),(21, 0),(20, 0),(20, 1),(20, 2),(20, 3),(20, 4),(20, 5),(20, 6), (22, 6),(21, 6),(23, 5),(23, 4),(23, 3),(23, 2),(23, 1),(22, 1),(22, 2),(22, 3),(22, 4),(22, 5),(21, 5),(21, 4),(21, 3),(21, 2),(21, 1)]
@@ -147,7 +149,7 @@ class ClueGame(arcade.Window):
 
         self.player_list = arcade.SpriteList()
 
-        self.ms_scarlet = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
+        self.ms_scarlet = Player("../CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
 
         self.ms_scarlet.center_x = player_xs[0]
 
@@ -155,7 +157,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.ms_scarlet)
 
-        self.prof_plum = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Purple_Circle.png", 0.065)
+        self.prof_plum = Player("../CS3050-Final-Project/Purple_Circle.png", 0.065)
 
         self.prof_plum.center_x = player_xs[1]
 
@@ -163,7 +165,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.prof_plum)
 
-        self.mrs_peacock = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Pan_Blue_Circle.png", 0.045)
+        self.mrs_peacock = Player("../CS3050-Final-Project/Pan_Blue_Circle.png", 0.045)
 
         self.mrs_peacock.center_x = player_xs[2]
 
@@ -171,7 +173,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.mrs_peacock)
 
-        self.col_mustard = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/Yellow_Circle.png", 0.065)
+        self.col_mustard = Player("../CS3050-Final-Project/Yellow_Circle.png", 0.065)
 
         self.col_mustard.center_x = player_xs[3]
 
@@ -179,7 +181,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.col_mustard)
 
-        self.mayor_green = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/—Pngtree—circle clipart green circle_5553152.png", 0.028)
+        self.mayor_green = Player("../CS3050-Final-Project/—Pngtree—circle clipart green circle_5553152.png", 0.028)
 
         self.mayor_green.center_x = player_xs[4]
 
@@ -187,7 +189,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.mayor_green)
 
-        self.chef_white = Player("/Users/andrewlibby/PycharmProjects/CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
+        self.chef_white = Player("../CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
 
         self.chef_white.center_x = player_xs[5]
 
@@ -286,6 +288,35 @@ class ClueGame(arcade.Window):
                 deck.remove(card)
         return case_file
     
+    def draw_sidebar(self):
+        arcade.draw_rectangle_filled(
+            self.width - SIDEBAR_WIDTH / 2,
+            self.height / 2,
+            SIDEBAR_WIDTH,
+            self.height,
+            arcade.color.LIGHT_YELLOW
+        )
+        deck = Deck.initialize_cards()
+        characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
+                            'Professor Plum']
+        rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
+                        'Hall', 'Study']
+        weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
+        self.checkbox_states = {item: False for item in weapons + rooms + characters}
+        y_value = 780
+        for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
+            y_value -= 30
+            arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
+                            arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
+            y_value -= 12
+            for item in items:
+                y_value -= 16
+                arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
+                arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
+                            arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+            
+
+    
 
     def on_draw(self):
         """
@@ -301,6 +332,8 @@ class ClueGame(arcade.Window):
 
         # Draw players
         self.player_list.draw()
+
+        self.draw_sidebar()
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
