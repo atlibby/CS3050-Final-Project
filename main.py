@@ -120,14 +120,20 @@ class ClueGame(arcade.Window):
         # Set the window's background color
         self.background_color = arcade.color.BLACK
 
-        # Create a dictionary to store room locations
+         # Create a dictionary to store room locations
         self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library, 'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom, 'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
+
+        self.startingSquares = {'ms scarlet': (23, 16), 'professor plum': (18, 0), 'mrs peacock': (6, 0), 'colonel mustard': (0, 9), 'mayor green': (0, 14), 'chef white': (16, 23)}
+
+        self.playerColors = {'ms scarlet': (139, 0, 0), 'professor plum': (153, 50, 204), 'mrs peacock': ()}
+
+
+        self.char_names = list(self.startingSquares.keys())
+
+        token_radius = 0.5
 
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
-
-        # Create a spritelist for batch drawing player tokens
-        self.players = Player.draw_player()
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
@@ -140,7 +146,7 @@ class ClueGame(arcade.Window):
                 self.grid_sprite_list.append(sprite)
 
         #FOR ROOM SPRITES
-        # draw all the initial colors
+        # draw all the innitial colors
         self.resync_grid_with_sprites()
 
     def resync_grid_with_sprites(self):
@@ -152,10 +158,19 @@ class ClueGame(arcade.Window):
                         self.grid_sprite_list[pos].color = self.get_color_for_room(room)
                         break
                 else:
-                    if self.grid[row][column] == 0:
-                        self.grid_sprite_list[pos].color = arcade.color.FLORAL_WHITE
+                    # Check if the current cell is one of the starting squares for a character
+                    if (row, column) in self.startingSquares.values():
+                        # If so, find which character occupies this square and set its color
+                        for character, location in self.startingSquares.items():
+                            if location == (row, column):
+                                self.grid_sprite_list[pos].color = self.get_character_color(character)
+
+                                break
                     else:
-                        self.grid_sprite_list[pos].color = arcade.color.GREEN
+                        if self.grid[row][column] == 0:
+                            self.grid_sprite_list[pos].color = arcade.color.FLORAL_WHITE
+                        else:
+                            self.grid_sprite_list[pos].color = arcade.color.GREEN
                     
     def get_color_for_room(self, room):
         room_colors = {
@@ -164,73 +179,29 @@ class ClueGame(arcade.Window):
         
     }
         return room_colors.get(room, arcade.color.BURNT_ORANGE)
-
-    # returns a list of the classic rooms from Clue
-    def generate_rooms(self):
-        # Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
-        hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]])
-        lounge = Room("lounge", "conservatory", [[17, 17]])
-        dining_room = Room("dining_room", "", [[11, 15], [15, 17]])
-        kitchen = Room("kitchen", "study", [[6, 19]])
-        ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
-        conservatory = Room("conservatory", "lounge", [[4, 6]])
-        billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]])
-        library = Room("library", "", [[12, 3], [15, 7]])
-        study = Room("study", "kitchen", [[19, 6]])
-        return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
-
-    def generate_characters(self):
-        self.players = []
-        i = 0
-        player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
-        player_x = [23, 18, 6, 0, 0, 16]
-        player_y = [16, 0, 0, 9, 14, 23]
-        player_radius = [1, 1, 1, 1, 1, 1]
-        player_color = [arcade.color.RED, arcade.color.PURPLE, arcade.color.BLUE, arcade.color.YELLOW, arcade.color.GREEN, arcade.color.WHITE]
-        player_status = [0, 0, 0, 0, 0, 0]
-
-        for i in range(6):
-            x = player_x[i]
-            y = player_y[i]
-            color = player_color[i]
-            radius = player_radius[i]
-            # status = player_status[i]
-            player = Player(x, y, color, radius)
-            self.players.append(player)
-            # i += 1
-        return self.players
-
-
-
-    def get_case_file(self, deck):
-        one_of_each_list = ["character", "room", "weapon"]
-        case_file = []
-        for card in deck:
-            if (card.cardType in one_of_each_list):
-                case_file.append(card)
-                one_of_each_list.remove(card.cardType)
-                deck.remove(card)
-        return case_file
+    
+    def get_character_color(self, character):
+        char_colors = {
+        'ms scarlet': arcade.color.RED,
+        'mrs peacock': arcade.color.BLUE,
+        'mayor green': arcade.color.GREEN,
+        'colonel mustard': arcade.color.YELLOW,
+        'chef white': arcade.color.WHITE,
+        'professor plum': arcade.color.PURPLE,
+        
+    }
+        return char_colors.get(character)
     
 
     def on_draw(self):
         """
         Render the screen.
         """
-        # # We should always start by clearing the window pixels
-        # self.clear()
-
-        arcade.start_render()
+        # We should always start by clearing the window pixels
+        self.clear()
 
         # Draw grid sprites
         self.grid_sprite_list.draw()
-
-        # for player in self.players:
-        #     player.draw_player()
-
-
-
-
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -260,16 +231,40 @@ class ClueGame(arcade.Window):
         self.resync_grid_with_sprites()
 
 
-# #simulates a roll of the dice using Clue die faces
-# def dice_roll():
-#     roll_options = ['c', 2, 3, 4, 5, 6]
-#     return random.choice(roll_options)
+#simulates a roll of the dice using Clue die faces
+def dice_roll():
+    roll_options = ['c', 2, 3, 4, 5, 6]
+    return random.choice(roll_options)
+
+#returns a list of the classic rooms from Clue
+def generate_rooms():
+    #Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
+    hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]])
+    lounge = Room("lounge", "conservatory", [[17, 17]])
+    dining_room = Room("dining_room", "", [[11, 15], [15, 17]])
+    kitchen = Room("kitchen", "study", [[6, 19]])
+    ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
+    conservatory = Room("conservatory", "lounge", [[4, 6]])
+    billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]])
+    library = Room("library", "", [[12, 3], [15, 7]])
+    study = Room("study", "kitchen", [[19, 6]])
+    return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
+
+def get_case_file(deck):
+    one_of_each_list = ["character", "room", "weapon"]  
+    case_file = []  
+    for card in deck:
+        if(card.cardType in one_of_each_list):
+            case_file.append(card)
+            one_of_each_list.remove(card.cardType)
+            deck.remove(card)
+    return case_file
 
 
 def main():
     ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     deck = Deck.initialize_cards()
-    # case_file = get_case_file(deck)
+    case_file = get_case_file(deck)
     print(deck)
     arcade.run()
 
