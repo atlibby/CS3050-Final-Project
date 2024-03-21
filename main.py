@@ -2,6 +2,7 @@ import arcade
 import random
 from room import Room
 from Card import Deck
+from dieArcade import rollDie
 import Card
 import time
 from Player import *
@@ -314,6 +315,7 @@ class ClueGame(arcade.Window):
                 arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
                 arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
                             arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+        rollDie()
             
 
     
