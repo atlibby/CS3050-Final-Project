@@ -149,6 +149,7 @@ class ClueGame(arcade.Window):
 
         self.player_list = arcade.SpriteList()
 
+        self.ms_scarlet = Player("Red-Circle-Transparent.png", 0.06)
         self.ms_scarlet = Player("../CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
 
         self.ms_scarlet.center_x = player_xs[0]
@@ -209,6 +210,14 @@ class ClueGame(arcade.Window):
 
         #FOR ROOM SPRITES
         # draw all the initial colors
+        
+        self.room_sprite_list = arcade.SpriteList()
+        self.roomList = self.generate_rooms()
+        
+        for self.room in self.roomList:
+            self.room_sprite_list.append(self.room)
+        
+        
         self.resync_grid_with_sprites()
 
     def resync_grid_with_sprites(self):
@@ -244,16 +253,18 @@ class ClueGame(arcade.Window):
     # returns a list of the classic rooms from Clue
     def generate_rooms(self):
         # Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
-        hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]])
-        lounge = Room("lounge", "conservatory", [[17, 17]])
-        dining_room = Room("dining_room", "", [[11, 15], [15, 17]])
-        kitchen = Room("kitchen", "study", [[6, 19]])
-        ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
-        conservatory = Room("conservatory", "lounge", [[4, 6]])
-        billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]])
-        library = Room("library", "", [[12, 3], [15, 7]])
-        study = Room("study", "kitchen", [[19, 6]])
-        return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
+        hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]], "images/hall.jpeg", .99)
+        lounge = Room("lounge", "conservatory", [[17, 17]], "images/lounge.jpeg", 1)
+        clue_room = Room("clue-room", "", [], "images/clue-room.jpeg", 1 )
+        # dining_room = Room("dining_room", "", [[11, 15], [15, 17]])
+        # kitchen = Room("kitchen", "study", [[6, 19]])
+        # ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
+        # conservatory = Room("conservatory", "lounge", [[4, 6]])
+        # billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]])
+        # library = Room("library", "", [[12, 3], [15, 7]])
+        study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
+        #return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
+        return [hall, lounge, study, clue_room]
 
     # def generate_characters(self):
     #     self.players = []
@@ -329,7 +340,8 @@ class ClueGame(arcade.Window):
 
         # Draw grid sprites
         self.grid_sprite_list.draw()
-
+        self.room_sprite_list.draw()
+        
         # Draw players
         self.player_list.draw()
 
@@ -400,7 +412,7 @@ def main():
     ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     deck = Deck.initialize_cards()
     # case_file = get_case_file(deck)
-    print(deck)
+    #print(deck)
     arcade.run()
 
 
