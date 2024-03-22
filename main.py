@@ -282,16 +282,16 @@ class ClueGame(arcade.Window):
         # Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
         hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]], "images/hall.jpeg", .99)
         lounge = Room("lounge", "conservatory", [[17, 17]], "images/lounge.jpeg", 1)
-        clue_room = Room("clue-room", "", [], "images/clue-room.jpeg", 1 )
-        # dining_room = Room("dining_room", "", [[11, 15], [15, 17]])
-        # kitchen = Room("kitchen", "study", [[6, 19]])
+        clue_room = Room("clue_room", "", [], "images/clue-room.jpeg", 1 )
+        dining_room = Room("dining_room", "", [[11, 15], [15, 17]], "images/dining-room.png", .399)
+        kitchen = Room("kitchen", "study", [[6, 19]], "images/kitchen.jpeg", 1)
         # ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
         # conservatory = Room("conservatory", "lounge", [[4, 6]])
-        # billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]])
+        billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]], "images/billiard.jpeg", 1)
         # library = Room("library", "", [[12, 3], [15, 7]])
         study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
-        #return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
-        return [hall, lounge, study, clue_room]
+        
+        return [hall, lounge, study, clue_room, dining_room, billiard_room, kitchen]
 
     # def generate_characters(self):
     #     self.players = []
