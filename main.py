@@ -1,5 +1,7 @@
 import arcade
+import arcade.gui
 import random
+from typing import List
 from room import Room
 from Card import Deck
 import Card
@@ -10,6 +12,8 @@ from Player import *
 ROW_COUNT = 24
 COLUMN_COUNT = 34
 
+TIME = 0.5
+
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 30
 HEIGHT = 30
@@ -19,15 +23,13 @@ HEIGHT = 30
 MARGIN = 2
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN # 1090
+SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN # 770
 SCREEN_TITLE = "Array Backed Grid Example"
 
 PLAYER_MOVEMENT = 32
 
 SIDEBAR_WIDTH = 320
-
-SPRITE_SCALING = 0.06
 
 study = [(23, 0),(22, 0),(21, 0),(20, 0),(20, 1),(20, 2),(20, 3),(20, 4),(20, 5),(20, 6), (22, 6),(21, 6),(23, 5),(23, 4),(23, 3),(23, 2),(23, 1),(22, 1),(22, 2),(22, 3),(22, 4),(22, 5),(21, 5),(21, 4),(21, 3),(21, 2),(21, 1)]
 hall = [
@@ -111,13 +113,6 @@ guessing_room = [
 ]
 
 
-# def spawn_player(x, y, width, height, color):
-#     shape_list = arcade.ShapeElementList()
-#     shape = arcade.create_ellipse_filled(x, y, width, height, color)
-#     shape_list.append(shape)
-#     return shape_list
-
-
 class ClueGame(arcade.Window):
     """
     Main application class.
@@ -129,6 +124,9 @@ class ClueGame(arcade.Window):
         """
         super().__init__(width, height, title)
 
+    # initialize grid and player sprites
+    # initialize rooms
+    def setup(self):
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
 
@@ -136,66 +134,103 @@ class ClueGame(arcade.Window):
         self.background_color = arcade.color.BLACK
 
         # Create a dictionary to store room locations
-        self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library, 'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom, 'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
+        self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library,
+                      'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom,
+                      'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
 
-        player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
+        self.player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
 
-        player_xs = [753, 17, 17, 497, 753, 561]
+        self.player_xs = [753, 17, 17, 497, 753, 561]
 
-        player_ys = [241, 625, 209, 753, 561, 17]
+        self.player_ys = [241, 625, 209, 753, 561, 17]
+
+        self.player_npcs = []
+
+        self.players = []
 
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
 
+        # Create a spritelist for players and initialize them
         self.player_list = arcade.SpriteList()
 
         self.ms_scarlet = Player("../CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
 
-        self.ms_scarlet.center_x = player_xs[0]
+        self.ms_scarlet.center_x = self.player_xs[0]
 
-        self.ms_scarlet.center_y = player_ys[0]
+        self.ms_scarlet.center_y = self.player_ys[0]
 
         self.player_list.append(self.ms_scarlet)
 
         self.prof_plum = Player("../CS3050-Final-Project/Purple_Circle.png", 0.065)
 
-        self.prof_plum.center_x = player_xs[1]
+        self.prof_plum.center_x = self.player_xs[1]
 
-        self.prof_plum.center_y = player_ys[1]
+        self.prof_plum.center_y = self.player_ys[1]
 
         self.player_list.append(self.prof_plum)
 
         self.mrs_peacock = Player("../CS3050-Final-Project/Pan_Blue_Circle.png", 0.045)
 
-        self.mrs_peacock.center_x = player_xs[2]
+        self.mrs_peacock.center_x = self.player_xs[2]
 
-        self.mrs_peacock.center_y = player_ys[2]
+        self.mrs_peacock.center_y = self.player_ys[2]
 
         self.player_list.append(self.mrs_peacock)
 
         self.col_mustard = Player("../CS3050-Final-Project/Yellow_Circle.png", 0.065)
 
-        self.col_mustard.center_x = player_xs[3]
+        self.col_mustard.center_x = self.player_xs[3]
 
-        self.col_mustard.center_y = player_ys[3]
+        self.col_mustard.center_y = self.player_ys[3]
 
         self.player_list.append(self.col_mustard)
 
         self.mayor_green = Player("../CS3050-Final-Project/—Pngtree—circle clipart green circle_5553152.png", 0.028)
 
-        self.mayor_green.center_x = player_xs[4]
+        self.mayor_green.center_x = self.player_xs[4]
 
-        self.mayor_green.center_y = player_ys[4]
+        self.mayor_green.center_y = self.player_ys[4]
 
         self.player_list.append(self.mayor_green)
 
-        self.chef_white = Player("../CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
+        self.chef_white = Player(
+            "../CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
 
-        self.chef_white.center_x = player_xs[5]
+        self.chef_white.center_x = self.player_xs[5]
 
-        self.chef_white.center_y = player_ys[5]
+        self.chef_white.center_y = self.player_ys[5]
 
         self.player_list.append(self.chef_white)
+
+        self.turn = True
+
+        self.moves = 0
+
+        self.press = 0
+
+        self.idle = 50
+
+        self.limit = 7
+
+        self.left_pressed = False
+
+        self.right_pressed = False
+
+        self.up_pressed = False
+
+        self.down_pressed = False
+
+        self.current_player = 1
+
+        for player in self.player_list:
+            self.players.append(player)
+        print(len(self.players))
+
+        for player in self.players:
+            self.player_npcs.append(player)
+        self.player_npcs.remove(self.player_npcs[0])
+        print(len(self.player_npcs))
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
@@ -207,7 +242,7 @@ class ClueGame(arcade.Window):
                 sprite.center_y = y
                 self.grid_sprite_list.append(sprite)
 
-        #FOR ROOM SPRITES
+        # FOR ROOM SPRITES
         # draw all the initial colors
         self.resync_grid_with_sprites()
 
@@ -255,29 +290,6 @@ class ClueGame(arcade.Window):
         study = Room("study", "kitchen", [[19, 6]])
         return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
 
-    # def generate_characters(self):
-    #     self.players = []
-    #     i = 0
-    #     player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
-    #     player_x = [23, 18, 6, 0, 0, 16]
-    #     player_y = [16, 0, 0, 9, 14, 23]
-    #     player_radius = [1, 1, 1, 1, 1, 1]
-    #     player_color = [arcade.color.RED, arcade.color.PURPLE, arcade.color.BLUE, arcade.color.YELLOW, arcade.color.GREEN, arcade.color.WHITE]
-    #     player_status = [0, 0, 0, 0, 0, 0]
-    #
-    #     for i in range(6):
-    #         x = player_x[i]
-    #         y = player_y[i]
-    #         color = player_color[i]
-    #         radius = player_radius[i]
-    #         # status = player_status[i]
-    #         player = Player(x, y, color, radius)
-    #         self.players.append(player)
-    #         # i += 1
-    #     return self.players
-
-
-
     def get_case_file(self, deck):
         one_of_each_list = ["character", "room", "weapon"]
         case_file = []
@@ -314,9 +326,6 @@ class ClueGame(arcade.Window):
                 arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
                 arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
                             arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
-            
-
-    
 
     def on_draw(self):
         """
@@ -337,30 +346,108 @@ class ClueGame(arcade.Window):
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
-        self.player_list.update()
+        self.players[0].update()
+        self.run()
+        # for i in range(5):
+        #     rand = random.randrange(0, 4)
+        #     if rand == 0:
+        #         self.player_npcs[i].change_x = 23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 1:
+        #         self.player_npcs[i].change_y = 23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 2:
+        #         self.player_npcs[i].change_x = -23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 3:
+        #         self.player_npcs[i].change_y = -23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     # self.player_npcs[i].change_x = 23.94
+        #     # time.sleep(0.1)
+        #     # print(self.press)
+        #     # if self.press >= 40:
+        #     #     self.player_npcs[i].change_x = 0
+        #     #     self.player_npcs[i].change_y = 0
+        #     self.player_npcs[i].update()
 
     # Allow player movement with arrow keys
     # time delay to allow for sprite to move
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
-            self.ms_scarlet.change_y = PLAYER_MOVEMENT
+            self.players[0].change_y = PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
         elif key == arcade.key.DOWN:
-            self.ms_scarlet.change_y = -PLAYER_MOVEMENT
+            self.players[0].change_y = -PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
         elif key == arcade.key.LEFT:
-            self.ms_scarlet.change_x = -PLAYER_MOVEMENT
+            self.players[0].change_x = -PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
         elif key == arcade.key.RIGHT:
-            self.ms_scarlet.change_x = PLAYER_MOVEMENT
+            self.players[0].change_x = PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
+        # limit the number of times a player moves to the dice number rolled
+        if self.press >= self.limit:
+            self.players[0].change_y = 0
+            self.players[0].change_x = 0
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.DOWN:
-            self.ms_scarlet.change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
-            self.ms_scarlet.change_x = 0
+            self.players[0].change_y = 0
+        elif key == arcade.key.LEFT or key == arcade.key.RIGHT or self.press == self.moves:
+            self.players[0].change_x = 0
+
+    def update_player_movement(self):
+        self.players[0].change_x = 0
+        self.players[0].change_y = 0
+
+    # TODO: Make npcs wait until after user has moved before they start moving
+    # TODO: Make npcs move one grid block at a time instead of multiple at a time
+    # TODO: Prevent diagonal movement from npcs
+    def run(self):
+        rand = random.randrange(0, 4)
+        if self.current_player == 1:
+            # self.current_player += 1
+            pass
+        for count, npc in enumerate(self.player_npcs):
+            if self.current_player == 1 + count:
+                self.moves += 1
+                i = 0
+                if self.moves >= self.idle:
+                    for i in range(self.limit):
+                        if rand == 0:
+                            time.sleep(0.1)
+                            npc.change_x = 20
+                            rand = random.randrange(0, 4)
+                        elif rand == 1:
+                            time.sleep(0.1)
+                            npc.change_y = 20
+                            rand = random.randrange(0, 4)
+                        elif rand == 2:
+                            time.sleep(0.1)
+                            npc.change_x = -20
+                            rand = random.randrange(0, 4)
+                        elif rand == 3:
+                            time.sleep(0.1)
+                            npc.change_y = -20
+                            rand = random.randrange(0, 4)
+                        print(i)
+                        npc.update()
+                    if i >= self.limit:
+                        npc.change_x = 0
+                        npc.change_y = 0
+                    self.current_player += 1
+                    self.moves = 0
+        if self.current_player > len(self.player_npcs):
+            self.current_player = 1
 
     def on_mouse_press(self, x, y, button, modifiers):
         """
@@ -390,14 +477,10 @@ class ClueGame(arcade.Window):
         self.resync_grid_with_sprites()
 
 
-# #simulates a roll of the dice using Clue die faces
-# def dice_roll():
-#     roll_options = ['c', 2, 3, 4, 5, 6]
-#     return random.choice(roll_options)
-
-
 def main():
-    ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    clue = ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    clue.setup()
+    clue.generate_rooms()
     deck = Deck.initialize_cards()
     # case_file = get_case_file(deck)
     print(deck)
