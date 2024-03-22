@@ -17,8 +17,8 @@ SIDEBAR_X = SCREEN_WIDTH - SIDEBAR_WIDTH / 2
 SIDEBAR_Y = SCREEN_HEIGHT / 2
 
 DIE_X = SIDEBAR_X
-print(DIE_X)
 DIE_Y = SIDEBAR_Y - 200
+DIE_OFFSET = 25
 
 
 #arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH / 2, self.height / 2, SIDEBAR_WIDTH, self.height, arcade.color.LIGHT_YELLOW)
@@ -34,40 +34,40 @@ def generatePoints(die_value):
                       (DIE_X, DIE_Y),  # x5 & y5
                       (DIE_X, DIE_Y))  # x6 & y6
     elif die_value == 2:
-        point_list = ((DIE_X-25, DIE_Y-25),  # x1 & y1
-                      (DIE_X-25, DIE_Y-25),  # x2 & y2
-                      (DIE_X-25, DIE_Y-25),  # x3 & y3
-                      (DIE_X-25, DIE_Y-25),  # x4 & y4
-                      (DIE_X-25, DIE_Y-25),  # x5 & y5
-                      (DIE_X+25, DIE_Y+25))  # x6 & y6
+        point_list = ((DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x1 & y1
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x2 & y2
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x3 & y3
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x4 & y4
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x5 & y5
+                      (DIE_X+DIE_OFFSET, DIE_Y+DIE_OFFSET))  # x6 & y6
     elif die_value == 3:
-        point_list = ((DIE_X-25, DIE_Y-25),  # x1 & y1
-                      (DIE_X-25, DIE_Y-25),  # x2 & y2
-                      (DIE_X-25, DIE_Y-25),  # x3 & y3
-                      (DIE_X-25, DIE_Y-25),  # x4 & y4
-                      (DIE_X+25, DIE_Y+25),  # x5 & y5
+        point_list = ((DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x1 & y1
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x2 & y2
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x3 & y3
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x4 & y4
+                      (DIE_X+DIE_OFFSET, DIE_Y+DIE_OFFSET),  # x5 & y5
                       (DIE_X, DIE_Y))  # x6 & y6
     elif die_value == 4:
-        point_list = ((DIE_X-25, DIE_Y-25),  # x1 & y1
-                      (DIE_X+25, DIE_Y+25),  # x2 & y2
-                      (DIE_X+25, DIE_Y-25),  # x3 & y3
-                      (DIE_X-25, DIE_Y+25),  # x4 & y4
-                      (DIE_X-25, DIE_Y-25),  # x5 & y5
-                      (DIE_X-25, DIE_Y-25))  # x6 & y6
+        point_list = ((DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x1 & y1
+                      (DIE_X+DIE_OFFSET, DIE_Y+DIE_OFFSET),  # x2 & y2
+                      (DIE_X+DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x3 & y3
+                      (DIE_X-DIE_OFFSET, DIE_Y+DIE_OFFSET),  # x4 & y4
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x5 & y5
+                      (DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET))  # x6 & y6
     elif die_value == 5:
-        point_list = ((DIE_X-25, DIE_Y-25),  # x1 & y1
-                      (DIE_X+25, DIE_Y+25),  # x2 & y2
-                      (DIE_X+25, DIE_Y-25),  # x3 & y3
-                      (DIE_X-25, DIE_Y+25),  # x4 & y4
+        point_list = ((DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x1 & y1
+                      (DIE_X+DIE_OFFSET, DIE_Y+DIE_OFFSET),  # x2 & y2
+                      (DIE_X+DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x3 & y3
+                      (DIE_X-DIE_OFFSET, DIE_Y+DIE_OFFSET),  # x4 & y4
                       (DIE_X, DIE_Y),  # x5 & y5
                       (DIE_X, DIE_Y))  # x6 & y6
     elif die_value == 6:
-        point_list = ((DIE_X-25, DIE_Y-25),  # x1 & y1
-                      (DIE_X+25, DIE_Y+25),  # x2 & y2
-                      (DIE_X+25, DIE_Y-25),  # x3 & y3
-                      (DIE_X-25, DIE_Y+25),  # x4 & y4
-                      (DIE_X-25, DIE_Y),  # x5 & y5
-                      (DIE_X+25, DIE_Y))  # x6 & y6
+        point_list = ((DIE_X-DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x1 & y1
+                      (DIE_X+DIE_OFFSET, DIE_Y+DIE_OFFSET),  # x2 & y2
+                      (DIE_X+DIE_OFFSET, DIE_Y-DIE_OFFSET),  # x3 & y3
+                      (DIE_X-DIE_OFFSET, DIE_Y+DIE_OFFSET),  # x4 & y4
+                      (DIE_X-DIE_OFFSET, DIE_Y),  # x5 & y5
+                      (DIE_X+DIE_OFFSET, DIE_Y))  # x6 & y6
     text = "You rolled a " + str(die_value) + "!"
     arcade.draw_text(text, DIE_X-40, DIE_Y - 100, arcade.color.BLUSH, 10)
     return point_list

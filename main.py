@@ -1,8 +1,10 @@
 import arcade
+import arcade.gui
 import random
 from room import Room
 from Card import Deck
 from dieArcade import rollDie
+from dieArcade import DIE_X, DIE_Y
 import Card
 import time
 from Player import *
@@ -124,11 +126,35 @@ class ClueGame(arcade.Window):
     Main application class.
     """
 
+    def on_click_roll(self, event):
+        print("Roll:", event)
+
     def __init__(self, width, height, title):
         """
         Set up the application.
         """
         super().__init__(width, height, title)
+
+        # --- Required for all code that uses UI element,
+        # a UIManager to handle the UI.
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        # Set background color
+        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        # Create a vertical BoxGroup to align buttons
+        self.v_box = arcade.gui.UIBoxLayout(DIE_X, DIE_Y)
+        # Create the buttons
+        roll_button = arcade.gui.UIFlatButton(DIE_X, DIE_Y, text="Roll Die", width=200)
+        self.v_box.add(roll_button.with_space_around(bottom=20))
+        # --- Method 2 for handling click events,
+        # assign self.on_click_roll as callback
+        roll_button.on_click = self.on_click_roll
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                child=self.v_box
+            )
+        )
 
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
@@ -324,6 +350,7 @@ class ClueGame(arcade.Window):
         """
         Render the screen.
         """
+
         # # We should always start by clearing the window pixels
         self.clear()
 
@@ -336,6 +363,9 @@ class ClueGame(arcade.Window):
         self.player_list.draw()
 
         self.draw_sidebar()
+
+        # render button
+        self.manager.draw()
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
