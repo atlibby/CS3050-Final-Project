@@ -143,9 +143,19 @@ class Player(arcade.Sprite):
         roll = r.randrange(1, 6)
         return roll
 
-    def move(self):
+    def update(self):
         self.center_x += self.change_x
         self.center_y += self.change_y
+
+        if self.left < 0:
+            self.left = 0
+        elif self.right > 1090 - 321:
+            self.right = 1090 - 321
+
+        if self.bottom < 0:
+            self.bottom = 0
+        elif self.top > 770 - 1:
+            self.top = 770 - 1
 
     # def teleport(self, accused, room_coords):
     #     accused.move(room_coords)
