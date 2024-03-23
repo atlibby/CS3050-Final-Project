@@ -177,8 +177,8 @@ class ClueGame(arcade.Window):
         # Create a spritelist for players and initialize them
         self.player_list = arcade.SpriteList()
 
-        self.ms_scarlet = Player("Red-Circle-Transparent.png", 0.06)
-        self.ms_scarlet = Player("../CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
+        self.ms_scarlet = Player("images/Red-Circle-Transparent.png", 0.06)
+        self.ms_scarlet = Player("images/Red-Circle-Transparent.png", 0.06)
 
         self.ms_scarlet.center_x = self.player_xs[0]
 
@@ -186,7 +186,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.ms_scarlet)
 
-        self.prof_plum = Player("../CS3050-Final-Project/Purple_Circle.png", 0.065)
+        self.prof_plum = Player("images/Purple_Circle.png", 0.065)
 
         self.prof_plum.center_x = self.player_xs[1]
 
@@ -194,7 +194,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.prof_plum)
 
-        self.mrs_peacock = Player("../CS3050-Final-Project/Pan_Blue_Circle.png", 0.045)
+        self.mrs_peacock = Player("images/Pan_Blue_Circle.png", 0.045)
 
         self.mrs_peacock.center_x = self.player_xs[2]
 
@@ -202,7 +202,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.mrs_peacock)
 
-        self.col_mustard = Player("../CS3050-Final-Project/Yellow_Circle.png", 0.065)
+        self.col_mustard = Player("images/Yellow_Circle.png", 0.065)
 
         self.col_mustard.center_x = self.player_xs[3]
 
@@ -210,7 +210,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.col_mustard)
 
-        self.mayor_green = Player("../CS3050-Final-Project/—Pngtree—circle clipart green circle_5553152.png", 0.028)
+        self.mayor_green = Player("images/—Pngtree—circle clipart green circle_5553152.png", 0.028)
 
         self.mayor_green.center_x = self.player_xs[4]
 
@@ -219,7 +219,7 @@ class ClueGame(arcade.Window):
         self.player_list.append(self.mayor_green)
 
         self.chef_white = Player(
-            "../CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
+            "images/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
 
         self.chef_white.center_x = self.player_xs[5]
 
