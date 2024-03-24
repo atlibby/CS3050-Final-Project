@@ -1,9 +1,10 @@
 import arcade
 import arcade.gui
 import random
+from typing import List
 from room import Room
 from Card import Deck
-from dieArcade import Die
+from dieArcade import rollDie
 from dieArcade import DIE_X, DIE_Y
 import Card
 import time
@@ -12,6 +13,8 @@ from Player import *
 # Set how many rows and columns we will have
 ROW_COUNT = 24
 COLUMN_COUNT = 34
+
+TIME = 0.5
 
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 30
@@ -22,8 +25,8 @@ HEIGHT = 30
 MARGIN = 2
 
 # Do the math to figure out our screen dimensions
-SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
-SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
+SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN # 1090
+SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN # 770
 SCREEN_TITLE = "Array Backed Grid Example"
 
 PLAYER_MOVEMENT = 32
@@ -32,14 +35,12 @@ SIDEBAR_WIDTH = 320
 
 SPRITE_SCALING = 0.06
 
-study = [(23, 0), (22, 0), (21, 0), (20, 0), (20, 1), (20, 2), (20, 3), (20, 4), (20, 5), (20, 6), (22, 6), (21, 6),
-         (23, 5), (23, 4), (23, 3), (23, 2), (23, 1), (22, 1), (22, 2), (22, 3), (22, 4), (22, 5), (21, 5), (21, 4),
-         (21, 3), (21, 2), (21, 1)]
+study = [(23, 0),(22, 0),(21, 0),(20, 0),(20, 1),(20, 2),(20, 3),(20, 4),(20, 5),(20, 6), (22, 6),(21, 6),(23, 5),(23, 4),(23, 3),(23, 2),(23, 1),(22, 1),(22, 2),(22, 3),(22, 4),(22, 5),(21, 5),(21, 4),(21, 3),(21, 2),(21, 1)]
 hall = [
-    (22, 9), (23, 9), (21, 9), (20, 9), (19, 9), (18, 9), (17, 9), (17, 10), (17, 11), (17, 12),
-    (17, 13), (17, 14), (18, 14), (19, 14), (20, 14), (21, 14), (22, 14), (23, 14), (23, 13),
-    (23, 12), (23, 11), (23, 10), (22, 10), (22, 11), (22, 12), (22, 13), (21, 13), (21, 12),
-    (21, 11), (21, 10), (20, 10), (20, 11), (20, 12), (20, 13), (19, 13), (18, 13), (19, 12),
+    (22, 9), (23, 9), (21, 9), (20, 9), (19, 9), (18, 9), (17, 9), (17, 10), (17, 11), (17, 12), 
+    (17, 13), (17, 14), (18, 14), (19, 14), (20, 14), (21, 14), (22, 14), (23, 14), (23, 13), 
+    (23, 12), (23, 11), (23, 10), (22, 10), (22, 11), (22, 12), (22, 13), (21, 13), (21, 12), 
+    (21, 11), (21, 10), (20, 10), (20, 11), (20, 12), (20, 13), (19, 13), (18, 13), (19, 12), 
     (18, 12), (18, 11), (19, 11), (19, 10), (18, 10)
 ]
 lounge = [
@@ -99,31 +100,21 @@ kitchen = [
 ]
 dining_room = [
     (9, 18), (9, 17), (9, 16), (8, 19), (8, 20), (8, 21), (8, 22), (8, 23),
-    (10, 16), (11, 16), (12, 16), (13, 16), (14, 16), (14, 17), (14, 18), (14, 19), (14, 20), (14, 21), (14, 22),
-    (14, 23),
-    (13, 23), (12, 23), (11, 23), (10, 23), (9, 23), (9, 22), (10, 22), (11, 22), (12, 22), (13, 22), (13, 21),
-    (12, 21),
-    (11, 21), (10, 21), (9, 21), (9, 20), (10, 20), (11, 20), (12, 20), (13, 20), (13, 19), (12, 19), (11, 19),
-    (10, 19),
+    (10, 16), (11, 16), (12, 16), (13, 16), (14, 16), (14, 17), (14, 18), (14, 19), (14, 20), (14, 21), (14, 22), (14, 23),
+    (13, 23), (12, 23), (11, 23), (10, 23), (9, 23), (9, 22), (10, 22), (11, 22), (12, 22), (13, 22), (13, 21), (12, 21),
+    (11, 21), (10, 21), (9, 21), (9, 20), (10, 20), (11, 20), (12, 20), (13, 20), (13, 19), (12, 19), (11, 19), (10, 19),
     (9, 19), (10, 18), (11, 18), (12, 18), (13, 18), (13, 17), (12, 17), (11, 17), (10, 17)
 ]
 guessing_room = [
-    (15, 9), (15, 10), (15, 11), (15, 12), (15, 13),
-    (9, 13), (10, 13), (11, 13), (12, 13), (13, 13), (14, 13),
-    (9, 12), (9, 11), (9, 10),
-    (9, 9), (10, 9), (11, 9), (12, 9), (13, 9), (14, 9),
-    (14, 10), (14, 11), (14, 12),
-    (13, 12), (13, 11), (13, 10), (12, 10), (12, 11), (12, 12),
-    (11, 12), (11, 11), (11, 10),
+    (15, 9), (15, 10), (15, 11), (15, 12), (15, 13), 
+    (9, 13), (10, 13), (11, 13), (12, 13), (13, 13), (14, 13), 
+    (9, 12), (9, 11), (9, 10), 
+    (9, 9), (10, 9), (11, 9), (12, 9), (13, 9), (14, 9), 
+    (14, 10), (14, 11), (14, 12), 
+    (13, 12), (13, 11), (13, 10), (12, 10), (12, 11), (12, 12), 
+    (11, 12), (11, 11), (11, 10), 
     (10, 10), (10, 11), (10, 12)
 ]
-
-
-# def spawn_player(x, y, width, height, color):
-#     shape_list = arcade.ShapeElementList()
-#     shape = arcade.create_ellipse_filled(x, y, width, height, color)
-#     shape_list.append(shape)
-#     return shape_list
 
 
 class ClueGame(arcade.Window):
@@ -131,12 +122,35 @@ class ClueGame(arcade.Window):
     Main application class.
     """
 
-    # Creating function to check the mouse clicks
+    def on_click_roll(self, event):
+        print("Roll:", event)
+
     def __init__(self, width, height, title):
         """
         Set up the application.
         """
         super().__init__(width, height, title)
+
+        # --- Required for all code that uses UI element,
+        # a UIManager to handle the UI.
+        self.manager = arcade.gui.UIManager()
+        self.manager.enable()
+        # Set background color
+        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+        # Create a vertical BoxGroup to align buttons
+        self.v_box = arcade.gui.UIBoxLayout(DIE_X, DIE_Y)
+        # Create the buttons
+        roll_button = arcade.gui.UIFlatButton(DIE_X, DIE_Y, text="Roll Die", width=200)
+        self.v_box.add(roll_button.with_space_around(bottom=20))
+        # --- Method 2 for handling click events,
+        # assign self.on_click_roll as callback
+        roll_button.on_click = self.on_click_roll
+        # Create a widget to hold the v_box widget, that will center the buttons
+        self.manager.add(
+            arcade.gui.UIAnchorWidget(
+                child=self.v_box
+            )
+        )
 
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
@@ -145,70 +159,99 @@ class ClueGame(arcade.Window):
         self.background_color = arcade.color.BLACK
 
         # Create a dictionary to store room locations
-        self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library,
-                      'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom,
-                      'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
+        self.rooms = {'study': study, 'hall': hall, 'lounge': lounge, 'library': library, 'billiard_room': billiard_room, 'conservatory': conservatory, 'ballroom': ballroom, 'kitchen': kitchen, 'dining-room': dining_room, 'guessing_room': guessing_room}
 
-        player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
+        self.player_xs = [753, 17, 17, 497, 753, 561]
 
-        player_xs = [753, 17, 17, 497, 753, 561]
+        self.player_ys = [241, 625, 209, 753, 561, 17]
 
-        player_ys = [241, 625, 209, 753, 561, 17]
+        self.player_npcs = []
+
+        self.players = []
 
         # Create a spritelist for batch drawing all the grid sprites
         self.grid_sprite_list = arcade.SpriteList()
 
+        # Create a spritelist for players and initialize them
         self.player_list = arcade.SpriteList()
 
-        self.ms_scarlet = Player("Red-Circle-Transparent.png", 0.06)
-        self.ms_scarlet = Player("../CS3050-Final-Project/Red-Circle-Transparent.png", 0.06)
+        self.ms_scarlet = Player("images/Red-Circle-Transparent.png", 0.06)
+        self.ms_scarlet = Player("images/Red-Circle-Transparent.png", 0.06)
 
-        self.ms_scarlet.center_x = player_xs[0]
+        self.ms_scarlet.center_x = self.player_xs[0]
 
-        self.ms_scarlet.center_y = player_ys[0]
+        self.ms_scarlet.center_y = self.player_ys[0]
 
         self.player_list.append(self.ms_scarlet)
 
-        self.prof_plum = Player("../CS3050-Final-Project/Purple_Circle.png", 0.065)
+        self.prof_plum = Player("images/Purple_Circle.png", 0.065)
 
-        self.prof_plum.center_x = player_xs[1]
+        self.prof_plum.center_x = self.player_xs[1]
 
-        self.prof_plum.center_y = player_ys[1]
+        self.prof_plum.center_y = self.player_ys[1]
 
         self.player_list.append(self.prof_plum)
 
-        self.mrs_peacock = Player("../CS3050-Final-Project/Pan_Blue_Circle.png", 0.045)
+        self.mrs_peacock = Player("images/Pan_Blue_Circle.png", 0.045)
 
-        self.mrs_peacock.center_x = player_xs[2]
+        self.mrs_peacock.center_x = self.player_xs[2]
 
-        self.mrs_peacock.center_y = player_ys[2]
+        self.mrs_peacock.center_y = self.player_ys[2]
 
         self.player_list.append(self.mrs_peacock)
 
-        self.col_mustard = Player("../CS3050-Final-Project/Yellow_Circle.png", 0.065)
+        self.col_mustard = Player("images/Yellow_Circle.png", 0.065)
 
-        self.col_mustard.center_x = player_xs[3]
+        self.col_mustard.center_x = self.player_xs[3]
 
-        self.col_mustard.center_y = player_ys[3]
+        self.col_mustard.center_y = self.player_ys[3]
 
         self.player_list.append(self.col_mustard)
 
-        self.mayor_green = Player("../CS3050-Final-Project/—Pngtree—circle clipart green circle_5553152.png", 0.028)
+        self.mayor_green = Player("images/—Pngtree—circle clipart green circle_5553152.png", 0.028)
 
-        self.mayor_green.center_x = player_xs[4]
+        self.mayor_green.center_x = self.player_xs[4]
 
-        self.mayor_green.center_y = player_ys[4]
+        self.mayor_green.center_y = self.player_ys[4]
 
         self.player_list.append(self.mayor_green)
 
-        self.chef_white = Player(
-            "../CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
+        self.chef_white = Player("../CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
 
-        self.chef_white.center_x = player_xs[5]
+        self.chef_white.center_x = self.player_xs[5]
 
-        self.chef_white.center_y = player_ys[5]
+        self.chef_white.center_y = self.player_ys[5]
 
         self.player_list.append(self.chef_white)
+
+        self.turn = True
+
+        self.moves = 0
+
+        self.press = 0
+
+        self.idle = 50
+
+        self.limit = 7
+
+        self.left_pressed = False
+
+        self.right_pressed = False
+
+        self.up_pressed = False
+
+        self.down_pressed = False
+
+        self.current_player = 1
+
+        for player in self.player_list:
+            self.players.append(player)
+        print(len(self.players))
+
+        for player in self.players:
+            self.player_npcs.append(player)
+        self.player_npcs.remove(self.player_npcs[0])
+        print(len(self.player_npcs))
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
@@ -228,12 +271,9 @@ class ClueGame(arcade.Window):
 
         for self.room in self.roomList:
             self.room_sprite_list.append(self.room)
-
+        
+        
         self.resync_grid_with_sprites()
-
-        # initializing Die object
-        self.Die = Die(DIE_X, DIE_Y, 50, 50)
-        #self.die_rolled = False
 
     def resync_grid_with_sprites(self):
         for row in range(ROW_COUNT):
@@ -248,21 +288,21 @@ class ClueGame(arcade.Window):
                         self.grid_sprite_list[pos].color = arcade.color.GRAY
                     else:
                         self.grid_sprite_list[pos].color = arcade.color.GREEN
-
+                    
     def get_color_for_room(self, room):
         room_colors = {
-            'lounge': arcade.color.JET,
-            'library': arcade.color.ANTIQUE_BRASS,
-            'hall': arcade.color.APRICOT,
-            'study': arcade.color.CORDOVAN,
-            'billiard_room': arcade.color.BITTERSWEET_SHIMMER,
-            'conservatory': arcade.color.BRIGHT_UBE,
-            'ballroom': arcade.color.DARK_LIVER,
-            'kitchen': arcade.color.KHAKI,
-            'dining-room': arcade.color.FIELD_DRAB,
-            'guessing_room': arcade.color.BLACK
-
-        }
+        'lounge': arcade.color.JET,
+        'library': arcade.color.ANTIQUE_BRASS,
+        'hall': arcade.color.APRICOT,
+        'study': arcade.color.CORDOVAN,
+        'billiard_room': arcade.color.BITTERSWEET_SHIMMER,
+        'conservatory': arcade.color.BRIGHT_UBE,
+        'ballroom': arcade.color.DARK_LIVER,
+        'kitchen': arcade.color.KHAKI,
+        'dining-room': arcade.color.FIELD_DRAB,
+        'guessing_room': arcade.color.BLACK
+        
+    }
         return room_colors.get(room, arcade.color.BURNT_ORANGE)
 
     # returns a list of the classic rooms from Clue
@@ -270,15 +310,15 @@ class ClueGame(arcade.Window):
         # Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
         hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]], "images/hall.jpeg", .99)
         lounge = Room("lounge", "conservatory", [[17, 17]], "images/lounge.jpeg", 1)
-        clue_room = Room("clue-room", "", [], "images/clue-room.jpeg", 1)
+        clue_room = Room("clue-room", "", [], "images/clue-room.jpeg", 1 )
         # dining_room = Room("dining_room", "", [[11, 15], [15, 17]])
         # kitchen = Room("kitchen", "study", [[6, 19]])
         # ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
         # conservatory = Room("conservatory", "lounge", [[4, 6]])
-        # billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]])
+        billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]], "images/billiard.jpeg", 1)
         # library = Room("library", "", [[12, 3], [15, 7]])
         study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
-        # return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
+        #return [hall, lounge, dining_room, kitchen, ballroom, conservatory, billiard_room, library, study]
         return [hall, lounge, study, clue_room]
 
     # def generate_characters(self):
@@ -302,6 +342,8 @@ class ClueGame(arcade.Window):
     #         # i += 1
     #     return self.players
 
+
+
     def get_case_file(self, deck):
         one_of_each_list = ["character", "room", "weapon"]
         case_file = []
@@ -311,7 +353,7 @@ class ClueGame(arcade.Window):
                 one_of_each_list.remove(card.cardType)
                 deck.remove(card)
         return case_file
-
+    
     def draw_sidebar(self):
         arcade.draw_rectangle_filled(
             self.width - SIDEBAR_WIDTH / 2,
@@ -322,22 +364,26 @@ class ClueGame(arcade.Window):
         )
         deck = Deck.initialize_cards()
         characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
-                      'Professor Plum']
+                            'Professor Plum']
         rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
-                 'Hall', 'Study']
+                        'Hall', 'Study']
         weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
         self.checkbox_states = {item: False for item in weapons + rooms + characters}
         y_value = 780
         for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
             y_value -= 30
             arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
-                             arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
+                            arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
             y_value -= 12
             for item in items:
                 y_value -= 16
                 arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
                 arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
-                                 arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+                            arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+        rollDie()
+            
+
+    
 
     def on_draw(self):
         """
@@ -358,46 +404,71 @@ class ClueGame(arcade.Window):
 
         self.draw_sidebar()
 
-        self.Die.draw()
+        # render button
+        self.manager.draw()
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
-        self.player_list.update()
+        self.players[0].update()
+        self.run()
+        # for i in range(5):
+        #     rand = random.randrange(0, 4)
+        #     if rand == 0:
+        #         self.player_npcs[i].change_x = 23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 1:
+        #         self.player_npcs[i].change_y = 23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 2:
+        #         self.player_npcs[i].change_x = -23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 3:
+        #         self.player_npcs[i].change_y = -23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     # self.player_npcs[i].change_x = 23.94
+        #     # time.sleep(0.1)
+        #     # print(self.press)
+        #     # if self.press >= 40:
+        #     #     self.player_npcs[i].change_x = 0
+        #     #     self.player_npcs[i].change_y = 0
+        #     self.player_npcs[i].update()
 
     # Allow player movement with arrow keys
     # time delay to allow for sprite to move
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
-            self.ms_scarlet.change_y = PLAYER_MOVEMENT
+            self.players[0].change_y = PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
         elif key == arcade.key.DOWN:
-            self.ms_scarlet.change_y = -PLAYER_MOVEMENT
+            self.players[0].change_y = -PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
         elif key == arcade.key.LEFT:
-            self.ms_scarlet.change_x = -PLAYER_MOVEMENT
+            self.players[0].change_x = -PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
         elif key == arcade.key.RIGHT:
-            self.ms_scarlet.change_x = PLAYER_MOVEMENT
+            self.players[0].change_x = PLAYER_MOVEMENT
             time.sleep(0.1)
+            self.press += 1
+        # limit the number of times a player moves to the dice number rolled
+        if self.press >= self.limit:
+            self.players[0].change_y = 0
+            self.players[0].change_x = 0
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP or key == arcade.key.DOWN:
-            #self.die_event()
             self.ms_scarlet.change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT:
             self.ms_scarlet.change_x = 0
 
     def on_mouse_press(self, x, y, button, modifiers):
-        # adding functionality for Die so that when mouse is within the area of the Die, the Die is rolled.
-        # To be controlled later so that it can only be rolled once, when its the player's turn to roll only.
-        #if not self.die_rolled:
-        if (self.Die.x - self.Die.width / 2 < x < self.Die.x + self.Die.width / 2
-                and self.Die.y - self.Die.height / 2 < y < self.Die.y + self.Die.height / 2):
-            self.Die.roll_die()
-            print("Rolled Die")
-                #self.die_rolled = True
-
         """
         Called when the user presses a mouse button.
         """
@@ -413,6 +484,7 @@ class ClueGame(arcade.Window):
         if row >= ROW_COUNT or column >= COLUMN_COUNT:
             # Simply return from this method since nothing needs updating
             return
+        
 
         # Flip the location between 1 and 0.
         if self.grid[row][column] == 0:
@@ -422,23 +494,6 @@ class ClueGame(arcade.Window):
 
         # Update the sprite colors to match the new grid
         self.resync_grid_with_sprites()
-
-    # def die_on_mouse_press(self):
-
-    '''
-    def die_event(self):
-        """
-        function to handle all of die's functionality.
-        Goal is to:
-        - draw die
-        - make user roll die by clicking it, then it'll roll and stay there for 2 seconds
-        - clear the die and return whatever necessary values
-        """
-        # drawing Die
-        self.Die.draw()
-        self.die_on_mouse_press()
-        self.Die.clear()
-    '''
 
 
 # #simulates a roll of the dice using Clue die faces
@@ -451,7 +506,7 @@ def main():
     ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     deck = Deck.initialize_cards()
     # case_file = get_case_file(deck)
-    # print(deck)
+    #print(deck)
     arcade.run()
 
 
