@@ -131,27 +131,6 @@ class ClueGame(arcade.Window):
         """
         super().__init__(width, height, title)
 
-        # --- Required for all code that uses UI element,
-        # a UIManager to handle the UI.
-        self.manager = arcade.gui.UIManager()
-        self.manager.enable()
-        # Set background color
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
-        # Create a vertical BoxGroup to align buttons
-        self.v_box = arcade.gui.UIBoxLayout(DIE_X, DIE_Y)
-        # Create the buttons
-        roll_button = arcade.gui.UIFlatButton(DIE_X, DIE_Y, text="Roll Die", width=200)
-        self.v_box.add(roll_button.with_space_around(bottom=20))
-        # --- Method 2 for handling click events,
-        # assign self.on_click_roll as callback
-        roll_button.on_click = self.on_click_roll
-        # Create a widget to hold the v_box widget, that will center the buttons
-        self.manager.add(
-            arcade.gui.UIAnchorWidget(
-                child=self.v_box
-            )
-        )
-
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
 
@@ -274,6 +253,7 @@ class ClueGame(arcade.Window):
         
         
         self.resync_grid_with_sprites()
+        self.Die = Die(DIE_X, DIE_Y, 50, 50)
 
     def resync_grid_with_sprites(self):
         for row in range(ROW_COUNT):
@@ -380,7 +360,6 @@ class ClueGame(arcade.Window):
                 arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
                 arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
                             arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
-        #rollDie()
             
 
     
@@ -404,8 +383,7 @@ class ClueGame(arcade.Window):
 
         self.draw_sidebar()
 
-        # render button
-        self.manager.draw()
+        self.Die.draw()
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
@@ -494,6 +472,13 @@ class ClueGame(arcade.Window):
 
         # Update the sprite colors to match the new grid
         self.resync_grid_with_sprites()
+
+        # Creating function to check the mouse clicks
+
+        if (self.Die.x - self.Die.width / 2 < x < self.Die.x + self.Die.width / 2
+                and self.Die.y - self.Die.height / 2 < y < self.Die.y + self.Die.height / 2):
+            self.Die.roll_die()
+            print("Rolled Die")
 
 
 # #simulates a roll of the dice using Clue die faces
