@@ -126,6 +126,7 @@ class ClueGame(arcade.Window):
         self.player_list.append(self.mayor_green)
 
         self.chef_white = Player("images/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
+        self.chef_white = Player("images/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
 
         self.chef_white.center_x = self.player_xs[5]
 
@@ -222,20 +223,37 @@ class ClueGame(arcade.Window):
         clue_room = Room("clue_room", "", [], "images/clue-room.jpeg", 1 )
         dining_room = Room("dining_room", "", [[11, 15], [15, 17]], "images/dining-room.png", .399)
         kitchen = Room("kitchen", "study", [[6, 19]], "images/kitchen.jpeg", 1)
-        # ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
-        # conservatory = Room("conservatory", "lounge", [[4, 6]])
+        ballroom = Room("ballroom", "", [[4, 7], [4, 16]], "images/ballroom.png", .4)
+        conservatory = Room("conservatory", "lounge", [[4, 6]], "images/conservatory.jpeg", 1)
         billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]], "images/billiard.jpeg", 1)
-        # library = Room("library", "", [[12, 3], [15, 7]])
+        library = Room("library", "", [[12, 3], [15, 7]], "images/library.png", .4)
         study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
         
-        return [hall, lounge, study, clue_room, dining_room, billiard_room, kitchen]
+        return [hall, lounge, study, clue_room, dining_room, billiard_room, kitchen, conservatory, ballroom, library]
+
+    # def generate_characters(self):
+    #     self.players = []
+    #     i = 0
+    #     player_names = ["Ms. Scarlet", "Professor Plum", "Mrs. Peacock", "Colonel Mustard", "Mayor Green", "Chef White"]
+    #     player_x = [23, 18, 6, 0, 0, 16]
+    #     player_y = [16, 0, 0, 9, 14, 23]
+    #     player_radius = [1, 1, 1, 1, 1, 1]
+    #     player_color = [arcade.color.RED, arcade.color.PURPLE, arcade.color.BLUE, arcade.color.YELLOW, arcade.color.GREEN, arcade.color.WHITE]
+    #     player_status = [0, 0, 0, 0, 0, 0]
+    #
+    #     for i in range(6):
+    #         x = player_x[i]
+    #         y = player_y[i]
+    #         color = player_color[i]
+    #         radius = player_radius[i]
+    #         # status = player_status[i]
+    #         player = Player(x, y, color, radius)
+    #         self.players.append(player)
+    #         # i += 1
+    #     return self.players
 
 
-    # Dice Roll event caller
-    def on_click_roll(self, event):
-        print("Roll:", event)
 
-    # Method  that randomly selects three cards for the case file
     def get_case_file(self, deck):
         one_of_each_list = ["character", "room", "weapon"]
         case_file = []
