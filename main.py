@@ -70,7 +70,7 @@ class ClueGame(arcade.Window):
                       'guessing_room': room_dimensions.guessing_room}
 
         # Player Info
-        self. player_names = ["Scarlet", "Plum", "Peacock", "Mustard", "Green", "White"]
+        self.player_names = ["Scarlet", "Plum", "Peacock", "Mustard", "Green", "White"]
 
         self.player_xs = [753, 17, 17, 497, 753, 561]
 
@@ -175,7 +175,7 @@ class ClueGame(arcade.Window):
         # Room generation
         self.room_sprite_list = arcade.SpriteList()
         self.roomList = self.generate_rooms()
-        
+
         for self.room in self.roomList:
             self.room_sprite_list.append(self.room)
 
@@ -197,21 +197,20 @@ class ClueGame(arcade.Window):
                     else:
                         self.grid_sprite_list[pos].color = arcade.color.GREEN
 
-
     def get_color_for_room(self, room):
         room_colors = {
-        'lounge': arcade.color.JET,
-        'library': arcade.color.ANTIQUE_BRASS,
-        'hall': arcade.color.APRICOT,
-        'study': arcade.color.CORDOVAN,
-        'billiard_room': arcade.color.BITTERSWEET_SHIMMER,
-        'conservatory': arcade.color.BRIGHT_UBE,
-        'ballroom': arcade.color.DARK_LIVER,
-        'kitchen': arcade.color.KHAKI,
-        'dining-room': arcade.color.FIELD_DRAB,
-        'guessing_room': arcade.color.BLACK
+            'lounge': arcade.color.JET,
+            'library': arcade.color.ANTIQUE_BRASS,
+            'hall': arcade.color.APRICOT,
+            'study': arcade.color.CORDOVAN,
+            'billiard_room': arcade.color.BITTERSWEET_SHIMMER,
+            'conservatory': arcade.color.BRIGHT_UBE,
+            'ballroom': arcade.color.DARK_LIVER,
+            'kitchen': arcade.color.KHAKI,
+            'dining-room': arcade.color.FIELD_DRAB,
+            'guessing_room': arcade.color.BLACK
 
-    }
+        }
         return room_colors.get(room, arcade.color.BURNT_ORANGE)
 
     # Method for creating and returning a list of the classic rooms from Clue
@@ -219,7 +218,7 @@ class ClueGame(arcade.Window):
         # Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
         hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]], "images/hall.jpeg", .99)
         lounge = Room("lounge", "conservatory", [[17, 17]], "images/lounge.jpeg", 1)
-        clue_room = Room("clue_room", "", [], "images/clue-room.jpeg", 1 )
+        clue_room = Room("clue_room", "", [], "images/clue-room.jpeg", 1)
         dining_room = Room("dining_room", "", [[11, 15], [15, 17]], "images/dining-room.png", .399)
         kitchen = Room("kitchen", "study", [[6, 19]], "images/kitchen.jpeg", 1)
         # ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
@@ -227,9 +226,8 @@ class ClueGame(arcade.Window):
         billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]], "images/billiard.jpeg", 1)
         # library = Room("library", "", [[12, 3], [15, 7]])
         study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
-        
-        return [hall, lounge, study, clue_room, dining_room, billiard_room, kitchen]
 
+        return [hall, lounge, study, clue_room, dining_room, billiard_room, kitchen]
 
     # Dice Roll event caller
     def on_click_roll(self, event):
@@ -257,26 +255,23 @@ class ClueGame(arcade.Window):
         )
         deck = Deck.initialize_cards()
         characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
-                            'Professor Plum']
+                      'Professor Plum']
         rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
-                        'Hall', 'Study']
+                 'Hall', 'Study']
         weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
         self.checkbox_states = {item: False for item in weapons + rooms + characters}
         y_value = 780
         for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
             y_value -= 30
             arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
-                            arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
+                             arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
             y_value -= 12
             for item in items:
                 y_value -= 16
                 arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
                 arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
-                            arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
-        #rollDie()
-            
-
-    
+                                 arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+        # rollDie()
 
     def on_draw(self):
 
@@ -288,7 +283,7 @@ class ClueGame(arcade.Window):
         # Draw grid sprites
         self.grid_sprite_list.draw()
         self.room_sprite_list.draw()
-        
+
         # Draw players & sidebar
         self.player_list.draw()
         self.draw_sidebar()
@@ -329,6 +324,7 @@ class ClueGame(arcade.Window):
             self.players[0].change_y = 0
         elif key == arcade.key.LEFT or key == arcade.key.RIGHT or self.press == self.moves:
             self.players[0].change_x = 0
+
     def update_player_movement(self):
         self.players[0].change_x = 0
         self.players[0].change_y = 0
@@ -387,7 +383,7 @@ class ClueGame(arcade.Window):
             # Simply return from this method since nothing needs updating
             return
 
-        #915 - 925,  718 - 728 -16y
+        # 915 - 925,  718 - 728 -16y
 
         # Flip the location between 1 and 0.
         if self.grid[row][column] == 0:
@@ -404,6 +400,6 @@ def main():
     deck = Deck.initialize_cards()
     arcade.run()
 
-
+#kvdf
 if __name__ == "__main__":
     main()
