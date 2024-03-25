@@ -213,12 +213,12 @@ class ClueGame(arcade.Window):
         }
         return room_colors.get(room, arcade.color.BURNT_ORANGE)
 
-    # returns a list of the classic rooms from Clue
+    # Method for creating and returning a list of the classic rooms from Clue
     def generate_rooms(self):
         # Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
         hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]], "images/hall.jpeg", .99)
         lounge = Room("lounge", "conservatory", [[17, 17]], "images/lounge.jpeg", 1)
-        clue_room = Room("clue_room", "", [], "images/clue-room.jpeg", 1 )
+        clue_room = Room("clue_room", "", [], "images/clue-room.jpeg", 1)
         dining_room = Room("dining_room", "", [[11, 15], [15, 17]], "images/dining-room.png", .399)
         kitchen = Room("kitchen", "study", [[6, 19]], "images/kitchen.jpeg", 1)
         ballroom = Room("ballroom", "", [[4, 7], [4, 16]], "images/ballroom.png", .4)
