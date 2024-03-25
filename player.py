@@ -17,7 +17,7 @@ with the Card class, since NPC behavior will be much simpler to integrate this w
 
 import arcade
 import random as r
-from Card import *
+from card import *
 from room import Room
 
 # test function for dividing cards evenly between six players
