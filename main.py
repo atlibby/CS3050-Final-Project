@@ -4,7 +4,7 @@ import random
 from typing import List
 from room import Room
 from Card import Deck
-from dieArcade import rollDie
+from dieArcade import Die
 from dieArcade import DIE_X, DIE_Y
 import Card
 import time
@@ -216,7 +216,7 @@ class ClueGame(arcade.Window):
 
         self.player_list.append(self.mayor_green)
 
-        self.chef_white = Player("../CS3050-Final-Project/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
+        self.chef_white = Player("images/open-circle-ring-transparent-png-png-see-through-background.png", 0.027)
 
         self.chef_white.center_x = self.player_xs[5]
 
@@ -310,7 +310,7 @@ class ClueGame(arcade.Window):
         # Hall, Lounge, Dining Room, Kitchen, Ballroom, Conservatory, Billiard Room, Library, and Study
         hall = Room("hall", "", [[19, 8], [16, 11], [16, 12]], "images/hall.jpeg", .99)
         lounge = Room("lounge", "conservatory", [[17, 17]], "images/lounge.jpeg", 1)
-        clue_room = Room("clue-room", "", [], "images/clue-room.jpeg", 1 )
+        clue_room = Room("clue_room", "", [], "images/clue-room.jpeg", 1 )
         # dining_room = Room("dining_room", "", [[11, 15], [15, 17]])
         # kitchen = Room("kitchen", "study", [[6, 19]])
         # ballroom = Room("ballroom", "", [[4, 7], [4, 16]])
@@ -380,7 +380,7 @@ class ClueGame(arcade.Window):
                 arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
                 arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
                             arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
-        rollDie()
+        #rollDie()
             
 
     
