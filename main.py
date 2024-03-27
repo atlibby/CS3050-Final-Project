@@ -31,7 +31,6 @@ SIDEBAR_WIDTH = 320
 PLAYER_MOVEMENT = 32
 SPRITE_SCALING = 0.06
 
-# this works
 
 # starting view, class
 class StartView(arcade.View):
@@ -39,8 +38,8 @@ class StartView(arcade.View):
         super().__init__()
         self.width = width
         self.height = height
-        self.background_img = arcade.load_texture("../../clue_image.jpeg")
-        arcade.load_font("../../bulletin-gothic/BulletinGothic.otf")
+        self.background_img = arcade.load_texture("images/clue_image.jpeg")
+        arcade.load_font("bulletin-gothic/BulletinGothic.otf")
         self.text_effect = 0
         self.min_font_size_reached = True
         self.max_font_size_reached = False
