@@ -1,11 +1,11 @@
-"""import arcade
+import arcade
 import arcade.gui
 import random
 
 ''' functionality '''
 
-Side bar width is 320, therefore:
-250 / 500 === 160 / 320
+# Side bar width is 320, therefore:
+# 250 / 500 === 160 / 320
 
 
 # SIDEBAR CONSTANTS
@@ -84,7 +84,7 @@ def rollDie():
     # Drawing in die rectangle
     arcade.draw_rectangle_filled(SIDEBAR_X, (SIDEBAR_Y - 200), 100, 100, arcade.color.BLUSH)
     drawDiePoints(generatePoints(random.randint(1, 6)))
-    """
+    
 
 import arcade
 import random
