@@ -1,5 +1,6 @@
 import arcade.gui
 from die_arcade import DIE_X, DIE_Y, Die
+from checkboxes import Button
 import time
 from typing import List
 from player import *
@@ -168,6 +169,10 @@ class ClueGame(arcade.Window):
         # bool to control whether die appears or not
         self.die_visible = False
 
+        # adding class object, sidebar buttons
+        self.sidebar_buttons = []
+        self.draw_sidebar_buttons()
+
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
         for row in range(ROW_COUNT):
@@ -239,24 +244,62 @@ class ClueGame(arcade.Window):
             self.height,
             arcade.color.LIGHT_BROWN
         )
+        y_value = 780
+        for card_type in ["Weapons", "Rooms", "Players"]:
+            y_value -= 30
+            if card_type == "Players":
+                y_value -= 50
+            arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
+                             arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
+            y_value -= 105
+        """
         deck = Deck.initialize_cards()
         characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
                       'Professor Plum']
         rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
                  'Hall', 'Study']
         weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
-        self.checkbox_states = {item: False for item in weapons + rooms + characters}
+        #self.checkbox_states = {item: False for item in weapons + rooms + characters}
         y_value = 780
         for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
             y_value -= 30
+            # adding button objects so that checkboxes can be clickable
+            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 10, y_value, 10, 10, card_type))
+            #arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
+                             #arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
+            y_value -= 12
+            for item in items:
+                y_value -= 16
+                # adding button objects so that checkboxes can be clickable
+                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, item))
+                #arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
+                #arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
+                                 #arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+        """
+
+    def draw_sidebar_buttons(self):
+        #deck = Deck.initialize_cards()
+        characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
+                      'Professor Plum']
+        rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
+                 'Hall', 'Study']
+        weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
+        # self.checkbox_states = {item: False for item in weapons + rooms + characters}
+        y_value = 780
+        for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
+            y_value -= 30
+            # adding button objects so that checkboxes can be clickable
+            #self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 10, y_value, 10, 10, card_type))
             arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
                              arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
             y_value -= 12
             for item in items:
                 y_value -= 16
-                arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
-                arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
-                                 arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+                # adding button objects so that checkboxes can be clickable
+                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, item))
+                # arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
+                # arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
+                # arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
 
     def on_draw(self):
 
@@ -276,6 +319,10 @@ class ClueGame(arcade.Window):
         # draw clickable die
         if self.die_visible:
             self.die.draw()
+
+        # draw sidebar buttons:
+        for button in self.sidebar_buttons:
+            button.draw()
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
@@ -388,6 +435,10 @@ class ClueGame(arcade.Window):
                     and self.die.y - self.die.height / 2 < y < self.die.y + self.die.height / 2):
                 self.die.roll_die()
                 print("Rolled Die")
+
+        # making boxes clickable
+        for button in self.sidebar_buttons:
+            button.check_click(x, y)
 
 
 def main():
