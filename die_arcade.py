@@ -1,4 +1,4 @@
-import arcade
+"""import arcade
 import arcade.gui
 import random
 
@@ -84,7 +84,7 @@ def rollDie():
     # Drawing in die rectangle
     arcade.draw_rectangle_filled(SIDEBAR_X, (SIDEBAR_Y - 200), 100, 100, arcade.color.BLUSH)
     drawDiePoints(generatePoints(random.randint(1, 6)))
-    
+    """
 
 import arcade
 import random
@@ -129,7 +129,7 @@ def generate_points(die_value):
                       (DIE_X - DIE_OFFSET, DIE_Y), (DIE_X + DIE_OFFSET, DIE_Y),)
 
     text = f"You rolled a {die_value}!"
-    arcade.draw_text(text, DIE_X - 45, DIE_Y - 50, arcade.color.BLUSH, 10)
+    arcade.draw_text(text, DIE_X - 45, DIE_Y - 50, arcade.color.BLACK, 10)
     for point in point_list:
         arcade.draw_circle_filled(point[0], point[1], 5, arcade.color.WHITE)
 
@@ -149,7 +149,6 @@ class Die:
     def draw(self):
         arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.BLUSH)
         generate_points(self.die_value)
-
 
 
 class MyWindow(arcade.Window):
