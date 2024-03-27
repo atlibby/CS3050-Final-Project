@@ -32,11 +32,67 @@ PLAYER_MOVEMENT = 32
 SPRITE_SCALING = 0.06
 
 
-class ClueGame(arcade.Window):
+# starting view, class
+class StartView(arcade.View):
+    def __init__(self, width, height):
+        super().__init__()
+        self.width = width
+        self.height = height
+        self.background_img = arcade.load_texture("../../clue_image.jpeg")
+        arcade.load_font("../../bulletin-gothic/BulletinGothic.otf")
+        self.text_effect = 0
+        self.min_font_size_reached = True
+        self.max_font_size_reached = False
 
-    def __init__(self, width, height, title):
+    def on_mouse_press(self, _x, _y, _button, _modifiers):
+        """ If the user presses the mouse button, start the game. """
+        clueGameView = ClueGameView(self.width, self.height)
+        self.window.show_view(clueGameView)
 
-        super().__init__(width, height, title)
+    def on_draw(self):
+        """ Draw this view """
+        self.clear()
+        # example text
+        text = "Click"
+        # Draw the background texture
+        arcade.draw_lrwh_rectangle_textured(0, 0,
+                                            self.width, self.height,
+                                            self.background_img)
+        # sets text size to initial small size, and adds text_effect at each iteration, which increases and decreases,
+        # pulsating.
+        text_size = 25 + self.text_effect
+
+        arcade.draw_text(text, self.window.width / 2, self.window.height / 2 - 150,
+                         arcade.color.FLORAL_WHITE, font_name="Bulletin Gothic", font_size=text_size, anchor_x="center")
+
+        # flags min and max font size reached, tells font when to steadily decrease or increase until other flag is set
+        # this keeps font size within an interval, 25 & 100 (text size + text_effect which grows to 75).
+        # time sleep to slow pulsating
+        if self.text_effect <= 75 and self.min_font_size_reached:
+            self.text_effect += 1
+            time.sleep(0.03)
+            if self.text_effect == 75:
+                self.max_font_size_reached = True
+                self.min_font_size_reached = False
+        elif self.text_effect >= 25 and self.max_font_size_reached:
+            self.text_effect -= 1
+            time.sleep(0.05)
+            if self.text_effect == 25:
+                self.max_font_size_reached = False
+                self.min_font_size_reached = True
+        print(self.text_effect)
+
+    def on_show_view(self):
+        """ This is run once when we switch to this view """
+        arcade.set_background_color(arcade.csscolor.DARK_SLATE_BLUE)
+
+
+class ClueGameView(arcade.View):  # (arcade.Window)
+    def __init__(self, width, height):
+        super().__init__()
+        # super().__init__(width, height, title)
+        self.width = width
+        self.height = height
 
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
@@ -167,7 +223,7 @@ class ClueGame(arcade.Window):
         # adding die to sidebar as class object
         self.die = Die(DIE_X, DIE_Y, 50, 50)
         # bool to control whether die appears or not
-        self.die_visible = False
+        self.die_visible = True
 
         # adding class object, sidebar buttons
         self.sidebar_buttons = []
@@ -217,7 +273,7 @@ class ClueGame(arcade.Window):
         billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]], "images/billiard.jpeg", 1)
         library = Room("library", "", [[12, 3], [15, 7]], "images/library.png", .4)
         study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
-        
+
         return [hall, lounge, study, clue_room, dining_room, billiard_room, kitchen, conservatory, ballroom, library]
 
     # Dice Roll event caller
@@ -229,7 +285,7 @@ class ClueGame(arcade.Window):
         one_of_each_list = ["character", "room", "weapon"]
         case_file = []
         for card in deck:
-            if (card.cardType in one_of_each_list):
+            if card.cardType in one_of_each_list:
                 case_file.append(card)
                 one_of_each_list.remove(card.cardType)
                 deck.remove(card)
@@ -278,7 +334,7 @@ class ClueGame(arcade.Window):
         """
 
     def draw_sidebar_buttons(self):
-        #deck = Deck.initialize_cards()
+        # deck = Deck.initialize_cards()
         characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
                       'Professor Plum']
         rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
@@ -289,7 +345,7 @@ class ClueGame(arcade.Window):
         for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
             y_value -= 30
             # adding button objects so that checkboxes can be clickable
-            #self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 10, y_value, 10, 10, card_type))
+            # self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 10, y_value, 10, 10, card_type))
             arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
                              arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
             y_value -= 12
@@ -302,7 +358,6 @@ class ClueGame(arcade.Window):
                 # arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
 
     def on_draw(self):
-
         # Clear pixels
         self.clear()
 
@@ -328,7 +383,6 @@ class ClueGame(arcade.Window):
     def on_update(self, delta_time):
         self.players[0].update()
         self.run()
-
 
     # Allow player movement with arrow keys
     # time delay to allow for sprite to move
@@ -442,11 +496,16 @@ class ClueGame(arcade.Window):
 
 
 def main():
-    ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    deck = Deck.initialize_cards()
+    window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    startView = StartView(SCREEN_WIDTH, SCREEN_HEIGHT)
+
+    # clueGameView = ClueGameView(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    window.show_view(startView)
+    # ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
+    # deck = Deck.initialize_cards()
     arcade.run()
 
 
-#kvdf
+# kvdf
 if __name__ == "__main__":
     main()
