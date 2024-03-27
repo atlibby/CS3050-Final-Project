@@ -31,6 +31,7 @@ SIDEBAR_WIDTH = 320
 PLAYER_MOVEMENT = 32
 SPRITE_SCALING = 0.06
 
+# this works
 
 # starting view, class
 class StartView(arcade.View):
