@@ -187,15 +187,8 @@ class ClueGame(arcade.Window):
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 pos = row * COLUMN_COUNT + column
-                for room, locations in self.rooms.items():
-                    if (row, column) in locations:
-                        self.grid_sprite_list[pos].color = self.get_color_for_room(room)
-                        break
-                else:
-                    if self.grid[row][column] == 0:
-                        self.grid_sprite_list[pos].color = arcade.color.GRAY
-                    else:
-                        self.grid_sprite_list[pos].color = arcade.color.GREEN
+                if self.grid[row][column] == 0:
+                    self.grid_sprite_list[pos].color = arcade.color.GRAY
 
     def get_color_for_room(self, room):
         room_colors = {
