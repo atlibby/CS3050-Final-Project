@@ -179,7 +179,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.idle = 50
 
-        self.limit = 7
+        self.limit = 6
 
         self.left_pressed = False
 
@@ -189,16 +189,16 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.down_pressed = False
 
-        self.current_player = 1
+        self.current_player = 0
+
+        self.move_list = []
 
         for player in self.player_list:
             self.players.append(player)
-        print(len(self.players))
 
         for player in self.players:
             self.player_npcs.append(player)
         self.player_npcs.remove(self.player_npcs[0])
-        print(len(self.player_npcs))
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
@@ -234,15 +234,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 pos = row * COLUMN_COUNT + column
-                for room, locations in self.rooms.items():
-                    if (row, column) in locations:
-                        self.grid_sprite_list[pos].color = self.get_color_for_room(room)
-                        break
-                else:
-                    if self.grid[row][column] == 0:
-                        self.grid_sprite_list[pos].color = arcade.color.GRAY
-                    else:
-                        self.grid_sprite_list[pos].color = arcade.color.GREEN
+                if self.grid[row][column] == 0:
+                    self.grid_sprite_list[pos].color = arcade.color.GRAY
 
     def get_color_for_room(self, room):
         room_colors = {
@@ -269,7 +262,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         dining_room = Room("dining_room", "", [[11, 15], [15, 17]], "images/dining-room.png", .399)
         kitchen = Room("kitchen", "study", [[6, 19]], "images/kitchen.jpeg", 1)
         ballroom = Room("ballroom", "", [[4, 7], [4, 16]], "images/ballroom.png", .4)
-        conservatory = Room("conservatory", "lounge", [[4, 6]], "images/conservatory.jpeg", 1)
+        conservatory = Room("conservatory", "lounge", [[4, 6]], "images/conservatory.png", .4)
         billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]], "images/billiard.jpeg", 1)
         library = Room("library", "", [[12, 3], [15, 7]], "images/library.png", .4)
         study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
@@ -383,79 +376,147 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     def on_update(self, delta_time):
         self.players[0].update()
         self.run()
+        # for i in range(5):
+        #     rand = random.randrange(0, 4)
+        #     if rand == 0:
+        #         self.player_npcs[i].change_x = 23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 1:
+        #         self.player_npcs[i].change_y = 23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 2:
+        #         self.player_npcs[i].change_x = -23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     elif rand == 3:
+        #         self.player_npcs[i].change_y = -23.94
+        #         rand = random.randrange(0, 4)
+        #         #time.sleep(0.05)
+        #     # self.player_npcs[i].change_x = 23.94
+        #     # time.sleep(0.1)
+        #     # print(self.press)
+        #     # if self.press >= 40:
+        #     #     self.player_npcs[i].change_x = 0
+        #     #     self.player_npcs[i].change_y = 0
+        #     self.player_npcs[i].update()
 
     # Allow player movement with arrow keys
     # time delay to allow for sprite to move
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
         if key == arcade.key.UP:
-            self.players[0].change_y = PLAYER_MOVEMENT
-            time.sleep(0.1)
+            self.up_pressed = True
+            self.update_player_movement()
         elif key == arcade.key.DOWN:
-            self.players[0].change_y = -PLAYER_MOVEMENT
-            time.sleep(0.1)
+            self.down_pressed = True
+            self.update_player_movement()
         elif key == arcade.key.LEFT:
-            self.players[0].change_x = -PLAYER_MOVEMENT
-            time.sleep(0.1)
+            self.left_pressed = True
+            self.update_player_movement()
         elif key == arcade.key.RIGHT:
-            self.players[0].change_x = PLAYER_MOVEMENT
-            time.sleep(0.1)
-        self.press += 1
-        # limit the number of times a player moves to the dice number rolled
-        if self.press >= self.limit:
-            self.players[0].change_y = 0
-            self.players[0].change_x = 0
+            self.right_pressed = True
+            self.update_player_movement()
 
-    # Keyboard listener
     def on_key_release(self, key, modifiers):
-        if key == arcade.key.UP or key == arcade.key.DOWN:
-            self.players[0].change_y = 0
-        elif key == arcade.key.LEFT or key == arcade.key.RIGHT or self.press == self.moves:
-            self.players[0].change_x = 0
+        if key == arcade.key.UP:
+            self.up_pressed = False
+            self.update_player_movement()
+        elif key == arcade.key.DOWN:
+            self.down_pressed = False
+            self.update_player_movement()
+        elif key == arcade.key.LEFT:
+            self.left_pressed = False
+            self.update_player_movement()
+        elif key == arcade.key.RIGHT:
+            self.right_pressed = False
+            self.update_player_movement()
 
     def update_player_movement(self):
         self.players[0].change_x = 0
         self.players[0].change_y = 0
 
-    # TODO: Make npcs wait until after user has moved before they start moving
-    # TODO: Make npcs move one grid block at a time instead of multiple at a time
-    # TODO: Prevent diagonal movement from npcs
+        if self.up_pressed and not self.down_pressed:
+            self.players[0].change_y = PLAYER_MOVEMENT
+            time.sleep(0.1)
+            self.move_list.append(self.players[0].center_y)
+        elif self.down_pressed and not self.up_pressed:
+            self.players[0].change_y = -PLAYER_MOVEMENT
+            time.sleep(0.1)
+            self.move_list.append(self.players[0].center_y)
+        if self.left_pressed and not self.right_pressed:
+            self.players[0].change_x = -PLAYER_MOVEMENT
+            time.sleep(0.1)
+            self.move_list.append(self.players[0].center_x)
+        elif self.right_pressed and not self.left_pressed:
+            self.players[0].change_x = PLAYER_MOVEMENT
+            time.sleep(0.1)
+            self.move_list.append(self.players[0].center_x)
+        if self.press >= self.limit:
+            self.players[0].change_y = 0
+            self.players[0].change_x = 0
+        # for i in range(self.moves_list):
+        #     if self.players[0].center == self.moves_list[i-1]:
+
+    # event handler for player turn order and npc movement
     def run(self):
         rand = random.randrange(0, 4)
-        if self.current_player == 1:
-            # self.current_player += 1
-            pass
+        if self.current_player == 0:
+            if self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed:
+                self.press += 1
+                print(self.press)
+            if self.press >= self.limit:
+                self.current_player += 1
         for count, npc in enumerate(self.player_npcs):
             if self.current_player == 1 + count:
                 self.moves += 1
                 i = 0
                 if self.moves >= self.idle:
-                    for i in range(self.limit):
+                    for j in range(self.limit):
                         if rand == 0:
-                            time.sleep(0.1)
                             npc.change_x = PLAYER_MOVEMENT
                             rand = random.randrange(0, 4)
+                            # time.sleep(0.25)
+                            i += 1
+                            npc.update()
+                            time.sleep(0.25)
+                            # self.step = 0
                         elif rand == 1:
-                            time.sleep(0.1)
                             npc.change_y = PLAYER_MOVEMENT
                             rand = random.randrange(0, 4)
+                            # time.sleep(0.25)
+                            i += 1
+                            npc.update()
+                            time.sleep(0.25)
+                            # self.step = 0
                         elif rand == 2:
-                            time.sleep(0.1)
                             npc.change_x = -PLAYER_MOVEMENT
                             rand = random.randrange(0, 4)
+                            print(rand)
+                            # time.sleep(0.25)
+                            i += 1
+                            npc.update()
+                            time.sleep(0.25)
+                            # self.step = 0
                         elif rand == 3:
-                            time.sleep(0.1)
                             npc.change_y = -PLAYER_MOVEMENT
                             rand = random.randrange(0, 4)
-                        print(i)
-                        npc.update()
+                            print(rand)
+                            i += 1
+                            npc.update()
+                            time.sleep(0.25)
+                            # self.step = 0
+                        # npc.update()
+                    print('next player')
                     if i >= self.limit:
                         npc.change_x = 0
                         npc.change_y = 0
                     self.current_player += 1
                     self.moves = 0
         if self.current_player > len(self.player_npcs):
-            self.current_player = 1
+            self.press = 0
+            self.current_player = 0
 
     # Mouse listener
     def on_mouse_press(self, x, y, button, modifiers):
