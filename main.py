@@ -222,7 +222,7 @@ class ClueGame(arcade.Window):
         dining_room = Room("dining_room", "", [[11, 15], [15, 17]], "images/dining-room.png", .399)
         kitchen = Room("kitchen", "study", [[6, 19]], "images/kitchen.jpeg", 1)
         ballroom = Room("ballroom", "", [[4, 7], [4, 16]], "images/ballroom.png", .4)
-        conservatory = Room("conservatory", "lounge", [[4, 6]], "images/conservatory.jpeg", 1)
+        conservatory = Room("conservatory", "lounge", [[4, 6]], "images/conservatory.png", .4)
         billiard_room = Room("billiard_room", "", [[8, 6], [12, 1]], "images/billiard.jpeg", 1)
         library = Room("library", "", [[12, 3], [15, 7]], "images/library.png", .4)
         study = Room("study", "kitchen", [[19, 6]], "images/study.jpeg", 1)
