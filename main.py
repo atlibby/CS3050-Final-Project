@@ -473,13 +473,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             return
 
         # 915 - 925,  718 - 728 -16y
-
+        """
         # Flip the location between 1 and 0.
         if self.grid[row][column] == 0:
             self.grid[row][column] = 1
         else:
             self.grid[row][column] = 0
-
+        """
         # Update the sprite colors to match the new grid
         self.resync_grid_with_sprites()
 
