@@ -17,7 +17,7 @@ with the Card class, since NPC behavior will be much simpler to integrate this w
 
 import arcade
 import random as r
-from Card import *
+from card import *
 from room import Room
 
 # test function for dividing cards evenly between six players
@@ -103,13 +103,8 @@ def divide_cards():
     for card in mustards_deck:
         print(card, "\n")
 
-class Player:
-    def __init__(self, x, y, color, player_name, player_status):
-        self.x = x
-        self.y = y
-        self.color = color
-        self.player_name = player_name
-        self.player_status = player_status
+
+class Player(arcade.Sprite):
 
     # getters
     def get_x(self):
@@ -148,8 +143,22 @@ class Player:
         roll = r.randrange(1, 6)
         return roll
 
-    def teleport(self, accused, room_coords):
-        accused.move(room_coords)
+    def update(self):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+
+        if self.left < 0:
+            self.left = 0
+        elif self.right > 1090 - 321:
+            self.right = 1090 - 321
+
+        if self.bottom < 0:
+            self.bottom = 0
+        elif self.top > 770 - 1:
+            self.top = 770 - 1
+
+    # def teleport(self, accused, room_coords):
+    #     accused.move(room_coords)
 
     def make_accusation(self, accused_name, accused_room, accused_weapon, accuser):
         print(accuser + " thinks it was " + accused_name + " in the " + accused_room + " with the " + accused_weapon)
@@ -161,7 +170,5 @@ class Player:
     def reveal_card(self):
         pass
 
-    def draw_player(self):
-        arcade.draw_circle_filled(self.x, self.y, 0.5, (0, 0, 0), 0, -1)
 
 divide_cards()
