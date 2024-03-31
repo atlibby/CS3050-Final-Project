@@ -1,18 +1,13 @@
 import arcade
 
-# Constants
-SIDEBAR_WIDTH = 200
-
-
-class Button:
-    def __init__(self, x, y, width, height, text, guess):
+class Guess:
+    def __init__(self, x, y, width, height, text):
         self.x = x
         self.y = y
         self.width = width
         self.height = height
         self.text = text
         self.clicked = False
-        self.guess = guess
 
     def draw(self):
         if self.clicked:

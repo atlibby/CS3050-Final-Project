@@ -5,6 +5,7 @@ import time
 from typing import List
 from player import *
 import room_dimensions
+from guess_box import Guess
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
@@ -227,7 +228,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # adding class object, sidebar buttons
         self.sidebar_buttons = []
-        self.draw_sidebar_buttons()
+        self.draw_buttons()
 
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
@@ -293,62 +294,33 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.height,
             arcade.color.LIGHT_BROWN
         )
-        y_value = 780
-        for card_type in ["Weapons", "Rooms", "Players"]:
-            y_value -= 30
-            if card_type == "Players":
+        y_value = 750
+        for card_type in ['Weapons', 'Rooms', 'Players']:
+            if card_type == 'Players':
                 y_value -= 50
             arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
                              arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
-            y_value -= 105
-        """
-        deck = Deck.initialize_cards()
-        characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
-                      'Professor Plum']
-        rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
-                 'Hall', 'Study']
-        weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
-        #self.checkbox_states = {item: False for item in weapons + rooms + characters}
-        y_value = 780
-        for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
-            y_value -= 30
-            # adding button objects so that checkboxes can be clickable
-            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 10, y_value, 10, 10, card_type))
-            #arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
-                             #arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
-            y_value -= 12
-            for item in items:
-                y_value -= 16
-                # adding button objects so that checkboxes can be clickable
-                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, item))
-                #arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
-                #arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
-                                 #arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
-        """
+            y_value -= 135
 
-    def draw_sidebar_buttons(self):
-        # deck = Deck.initialize_cards()
+    def draw_buttons(self):
         characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
                       'Professor Plum']
         rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
                  'Hall', 'Study']
         weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
-        # self.checkbox_states = {item: False for item in weapons + rooms + characters}
         y_value = 780
-        for card_type, items in [("Weapons", weapons), ("Rooms", rooms), ("Players", characters)]:
-            y_value -= 30
-            # adding button objects so that checkboxes can be clickable
-            # self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 10, y_value, 10, 10, card_type))
-            arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
-                             arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
-            y_value -= 12
+        for items in [weapons, rooms, characters]:
+            y_value -= 42
             for item in items:
                 y_value -= 16
                 # adding button objects so that checkboxes can be clickable
-                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, item))
-                # arcade.draw_rectangle_filled(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, arcade.color.BLACK)
-                # arcade.draw_text(item, self.width - SIDEBAR_WIDTH + 10, y_value + 8,
-                # arcade.color.BLACK, 9, width=180, align="left", anchor_x="left", anchor_y="top")
+                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, item, False))
+                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, item, True))
+
+    def draw_guess_box(self):
+        text = 'Make Guess'
+
+
 
     def on_draw(self):
         # Clear pixels
@@ -376,32 +348,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     def on_update(self, delta_time):
         self.players[0].update()
         self.run()
-        # for i in range(5):
-        #     rand = random.randrange(0, 4)
-        #     if rand == 0:
-        #         self.player_npcs[i].change_x = 23.94
-        #         rand = random.randrange(0, 4)
-        #         #time.sleep(0.05)
-        #     elif rand == 1:
-        #         self.player_npcs[i].change_y = 23.94
-        #         rand = random.randrange(0, 4)
-        #         #time.sleep(0.05)
-        #     elif rand == 2:
-        #         self.player_npcs[i].change_x = -23.94
-        #         rand = random.randrange(0, 4)
-        #         #time.sleep(0.05)
-        #     elif rand == 3:
-        #         self.player_npcs[i].change_y = -23.94
-        #         rand = random.randrange(0, 4)
-        #         #time.sleep(0.05)
-        #     # self.player_npcs[i].change_x = 23.94
-        #     # time.sleep(0.1)
-        #     # print(self.press)
-        #     # if self.press >= 40:
-        #     #     self.player_npcs[i].change_x = 0
-        #     #     self.player_npcs[i].change_y = 0
-        #     self.player_npcs[i].update()
-
     # Allow player movement with arrow keys
     # time delay to allow for sprite to move
     # one grid square at a time per key press
@@ -567,6 +513,5 @@ def main():
     arcade.run()
 
 
-# kvdf
 if __name__ == "__main__":
     main()
