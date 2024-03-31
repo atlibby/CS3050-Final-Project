@@ -1,4 +1,5 @@
 import random
+import arcade
 
 """
 Card Class for all card objects in the game.
@@ -68,7 +69,7 @@ class Deck:
         return cards
 
 
-class ClueCard:
+class ClueCard(arcade.Sprite):
     def __init__(self, name, description, task):
         self.name = name
         self.description = description
@@ -138,6 +139,6 @@ if __name__ == "__main__":
 
     print("\n-------------------\n\tClue Cards:\n-------------------\n")
     # testing initializing clue cards
-    clue_cards = ClueCard.initialize_cards("clueCards.txt")
+    clue_cards = ClueCard.initialize_cards("clue_cards.txt")
     for card in clue_cards:
         print(card.name + "\n" + card.description, card.task + "\n")
