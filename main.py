@@ -6,6 +6,8 @@ from typing import List
 from player import *
 import room_dimensions
 from guess_box import Guess
+import card
+from game_screens import InventoryMenu
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24
@@ -31,8 +33,7 @@ SIDEBAR_WIDTH = 320
 # Sprite settings
 PLAYER_MOVEMENT = 32
 SPRITE_SCALING = 0.06
-
-
+            
 # starting view, class
 class StartView(arcade.View):
     def __init__(self, width, height):
@@ -94,7 +95,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # super().__init__(width, height, title)
         self.width = width
         self.height = height
-
+        
+        # initializing deck and cards
+        self.deck = Deck.initialize_cards()
+        self.player_cards = self.deck
+        
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
 
@@ -352,6 +357,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # time delay to allow for sprite to move
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.I:
+            inv = InventoryMenu(self, self.player_cards)
+            self.window.show_view(inv)
         if key == arcade.key.UP:
             self.up_pressed = True
             self.update_player_movement()
@@ -466,7 +474,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
     # Mouse listener
     def on_mouse_press(self, x, y, button, modifiers):
-
+        
         # Convert the clicked mouse position into grid coordinates
         column = int(x // (WIDTH + MARGIN))
         row = int(y // (HEIGHT + MARGIN))
@@ -496,7 +504,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     and self.die.y - self.die.height / 2 < y < self.die.y + self.die.height / 2):
                 self.die.roll_die()
                 print("Rolled Die")
-
         # making boxes clickable
         for button in self.sidebar_buttons:
             button.check_click(x, y)
@@ -505,11 +512,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     startView = StartView(SCREEN_WIDTH, SCREEN_HEIGHT)
-
-    # clueGameView = ClueGameView(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     window.show_view(startView)
-    # ClueGame(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
-    # deck = Deck.initialize_cards()
     arcade.run()
 
 

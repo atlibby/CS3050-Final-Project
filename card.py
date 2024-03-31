@@ -1,4 +1,5 @@
 import random
+import arcade
 
 """
 Card Class for all card objects in the game.
@@ -68,7 +69,7 @@ class Deck:
         return cards
 
 
-class ClueCard:
+class ClueCard(arcade.Sprite):
     def __init__(self, name, description, task):
         self.name = name
         self.description = description

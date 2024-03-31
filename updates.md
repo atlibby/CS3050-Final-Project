@@ -22,3 +22,16 @@ can be false again later to reset it. - Steven
 todo ( steven ):
 -see if you can make the die roll for 3 seconds then stop at a number.
 -make it so that die is drawn, die is rolled, then die is cleared.
+
+TASKS:
+
+Player movement:
+- Make players 
+
+What a turn looks like:
+- six circles colored for each player
+  - if it's your turn your circle is highlighted
+- di roll
+- movement
+- make accusations (if applicable)
+- 
