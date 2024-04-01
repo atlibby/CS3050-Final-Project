@@ -514,7 +514,6 @@ def main():
     startView = StartView(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.show_view(startView)
     arcade.run()
-
-
+    
 if __name__ == "__main__":
     main()
