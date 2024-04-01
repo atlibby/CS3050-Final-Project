@@ -230,6 +230,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.die = Die(DIE_X, DIE_Y, 50, 50)
         # bool to control whether die appears or not
         self.die_visible = True
+        # bool to control whether die can be rolled or not
+        self.die_rolled = False
 
         # adding class object, sidebar buttons
         self.sidebar_buttons = []
@@ -472,6 +474,25 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.press = 0
             self.current_player = 0
 
+    def handleTurns(self):
+        '''
+        how to handle:
+        - first, player 1, us, goes. The die would be clickable once, and then this sets our max moves.
+        - Next, player 2 goes. The die is rolled for them, and then they move a (die value) towards a room.
+        - This repeats until player 1.
+
+        - How to keep everything frozen until it's their turn?
+        '''
+
+        # while its the player's turn
+        while self.current_player == 0:
+
+            if self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed:
+                self.press += 1
+                print(self.press)
+            if self.press >= self.limit:
+                self.current_player += 1
+
     # Mouse listener
     def on_mouse_press(self, x, y, button, modifiers):
         
@@ -499,7 +520,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.resync_grid_with_sprites()
 
         # clicking within area of die to roll it, if die is visible
-        if self.die_visible:
+        if self.current_player == 0 and self.die_rolled and self.die_visible:
             if (self.die.x - self.die.width / 2 < x < self.die.x + self.die.width / 2
                     and self.die.y - self.die.height / 2 < y < self.die.y + self.die.height / 2):
                 self.die.roll_die()
