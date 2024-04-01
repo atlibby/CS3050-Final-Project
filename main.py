@@ -7,7 +7,7 @@ from player import *
 import room_dimensions
 from guess_box import Guess
 import card
-from game_screens import InventoryMenu
+from game_screens.inventory import InventoryMenu
 
 # Set how many rows and columns we will have
 ROW_COUNT = 24

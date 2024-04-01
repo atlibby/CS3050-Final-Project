@@ -33,7 +33,7 @@ class InventoryMenu(arcade.View):
         # create a sprite list to hold your sprite objects
         self.card_sprite_list = arcade.SpriteList()
         
-        num_columns = 6  # Number of columns in the grid
+        num_columns = 8  # number of columns in the grid
         for i, item in enumerate(hand):
             column = i % num_columns
             row = i // num_columns
