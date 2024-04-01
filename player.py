@@ -106,6 +106,12 @@ def divide_cards():
 
 class Player(arcade.Sprite):
 
+    def __init__(self, name, center_x, center_y, fileName, scale):
+        super().__init__(filename = fileName, scale = scale)
+        self.name = name
+        self.center_x = center_x
+        self.center_y = center_y
+
     # getters
     def get_x(self):
         return self.x
@@ -123,11 +129,11 @@ class Player(arcade.Sprite):
         return self.player_status
 
     # setters
-    def set_x(self, x_pos):
-        self.x = x_pos
+    def set_x(self, center_x):
+        self.x = center_x
 
-    def set_y(self, y_pos):
-        self.y = y_pos
+    def set_y(self, center_y):
+        self.y = center_y
 
     def set_color(self, player_color):
         self.color = player_color
@@ -137,6 +143,8 @@ class Player(arcade.Sprite):
 
     def set_player_status(self, player_status):
         self.player_status = player_status
+
+
 
     # class functions
     def roll_die(self):
