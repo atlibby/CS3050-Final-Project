@@ -106,6 +106,12 @@ def divide_cards():
 
 class Player(arcade.Sprite):
 
+    def __init__(self, name, center_x, center_y, fileName, scale):
+        super().__init__(filename = fileName, scale = scale)
+        self.name = name
+        self.center_x = center_x
+        self.center_y = center_y
+
     # getters
     def get_x(self):
         return self.x
@@ -123,11 +129,11 @@ class Player(arcade.Sprite):
         return self.player_status
 
     # setters
-    def set_x(self, x_pos):
-        self.x = x_pos
+    def set_x(self, center_x):
+        self.x = center_x
 
-    def set_y(self, y_pos):
-        self.y = y_pos
+    def set_y(self, center_y):
+        self.y = center_y
 
     def set_color(self, player_color):
         self.color = player_color
@@ -137,6 +143,62 @@ class Player(arcade.Sprite):
 
     def set_player_status(self, player_status):
         self.player_status = player_status
+
+    # this function returns the hands each player has including the case file
+    @staticmethod
+    def divide_cards():
+        plums_deck = []
+        whites_deck = []
+        greens_deck = []
+        scarlets_deck = []
+        peacocks_deck = []
+        mustards_deck = []
+        shuffled_cards = Deck.initialize_cards()
+        card_type = ["character", "room", "weapon"]
+        case_file = []
+        for card in shuffled_cards:
+            if card.cardType in card_type:
+                case_file.append(card)
+                card_type.remove(card.cardType)
+                shuffled_cards.remove(card)
+        deck_size = len(shuffled_cards)
+        players = ["Scarlet", "Plum", "Peacock", "Mustard", "Green", "White"]
+        remainder = deck_size % len(players)
+        cards_to_deal = deck_size - remainder
+        idx = 0
+        buffer = 0
+        for card in shuffled_cards:
+            card.owner = players[idx]
+            print(card)
+            # go to beginning of player list again, simulating loop
+            if idx == len(players) - 1:
+                idx = 0
+            else:
+                idx += 1
+
+        for card in shuffled_cards:
+            if card.owner == 'Scarlet':
+                scarlets_deck.append(card)
+                buffer += 1
+            elif card.owner == 'Plum':
+                plums_deck.append(card)
+                buffer += 1
+            elif card.owner == 'Peacock':
+                peacocks_deck.append(card)
+                buffer += 1
+            elif card.owner == 'Mustard':
+                mustards_deck.append(card)
+                buffer += 1
+            elif card.owner == 'Green':
+                greens_deck.append(card)
+                buffer += 1
+            elif card.owner == 'White':
+                whites_deck.append(card)
+                buffer += 1
+            if buffer == cards_to_deal:
+                break
+        return [plums_deck, whites_deck, greens_deck, scarlets_deck, peacocks_deck, mustards_deck, case_file]
+
 
     # class functions
     def roll_die(self):
@@ -171,4 +233,4 @@ class Player(arcade.Sprite):
         pass
 
 
-divide_cards()
+#divide_cards()
