@@ -36,10 +36,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.width = width
         self.height = height
 
-        # initializing deck and cards
-        self.deck = Deck.initialize_cards()
-        self.player_cards = self.deck
-
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
 
@@ -72,7 +68,19 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.players.append(Player(self.player_names[x], self.player_xs[x], self.player_ys[x], self.player_images[x],
                                        self.player_scales[x]))
 
-
+        
+        #split up the cards, player select screen
+        self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
+        
+        self.hands = Player.divide_cards()
+        print(self.hands)
+        self.player_cards = []
+        for i, hand in enumerate(self.hands):
+            if i == self.current_player:
+                for card in hand:
+                    self.player_cards.append(card)
+        print(len(self.player_cards))
+        print(self.player_cards)
         self.player_npcs = []
 
         # Sprite Info
@@ -95,8 +103,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.up_pressed = False
 
         self.down_pressed = False
-
-        self.current_player = 0
 
         self.move_list = []
 

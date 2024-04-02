@@ -32,20 +32,21 @@ class InventoryMenu(arcade.View):
             
         # create a sprite list to hold your sprite objects
         self.card_sprite_list = arcade.SpriteList()
-        
-        num_columns = 8  # number of columns in the grid
-        for i, item in enumerate(hand):
-            column = i % num_columns
-            row = i // num_columns
 
-            x = column * (CARD_WIDTH + CARD_MARGIN) + (CARD_WIDTH / 2 + CARD_MARGIN)
-            y = row * (CARD_HEIGHT + CARD_MARGIN) + (CARD_HEIGHT / 2 + CARD_MARGIN)
+        num_columns = len(self.hand)  # Set the number of columns based on the number of cards in the hand
+        print(num_columns)
+        for i, card in enumerate(self.hand):
+            # Calculate the x position to center the cards horizontally
+            x = (SCREEN_WIDTH - (CARD_WIDTH * num_columns) - (CARD_MARGIN * (num_columns - 1))) / 2 + (CARD_WIDTH + CARD_MARGIN) * i
+            
+            # Center the cards vertically
+            y = SCREEN_HEIGHT / 2
+            
             card_sprite = arcade.SpriteSolidColor(CARD_WIDTH, CARD_HEIGHT, arcade.color.FLORAL_WHITE)
             card_sprite.center_x = x
             card_sprite.center_y = y
-            
             self.card_sprite_list.append(card_sprite)
-        
+            
     def on_show(self):
         arcade.set_background_color(arcade.color.BLACK)
 
