@@ -11,7 +11,7 @@ import room_dimensions
 from guess_box import Guess
 import card
 from game_screens.inventory import InventoryMenu
-
+from game_screens.player_select_screen import PlayerSelect
 
 class StartView(arcade.View):
     def __init__(self, width, height):
@@ -23,8 +23,8 @@ class StartView(arcade.View):
 
     def on_mouse_press(self, _x, _y, _button, _modifiers):
         """ If the user presses the mouse button, start the game. """
-        clueGameView = ClueGameView(self.width, self.height)
-        self.window.show_view(clueGameView)
+        selectScreen = PlayerSelect(self.width, self.height)
+        self.window.show_view(selectScreen)
 
     def on_draw(self):
         """ Draw this view """

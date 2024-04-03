@@ -32,6 +32,8 @@ from room import Room
 # the remaining character tokens will remain on the board to be moved into rooms
 # if a player accuses them, but they will not do anything on their own and will not
 # be granted turns
+
+
 class Player(arcade.Sprite):
 
     def __init__(self, name, center_x, center_y, fileName, scale):
@@ -106,22 +108,22 @@ class Player(arcade.Sprite):
 
         for card in shuffled_cards:
             if card.owner == 'Scarlet':
-                scarlets_deck.append(card)
+                scarlets_deck.append(card.name)
                 buffer += 1
             elif card.owner == 'Plum':
-                plums_deck.append(card)
+                plums_deck.append(card.name)
                 buffer += 1
             elif card.owner == 'Peacock':
-                peacocks_deck.append(card)
+                peacocks_deck.append(card.name)
                 buffer += 1
             elif card.owner == 'Mustard':
-                mustards_deck.append(card)
+                mustards_deck.append(card.name)
                 buffer += 1
             elif card.owner == 'Green':
-                greens_deck.append(card)
+                greens_deck.append(card.name)
                 buffer += 1
             elif card.owner == 'White':
-                whites_deck.append(card)
+                whites_deck.append(card.name)
                 buffer += 1
             if buffer == cards_to_deal:
                 break

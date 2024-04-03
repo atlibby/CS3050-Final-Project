@@ -30,11 +30,12 @@ HEIGHT = 30
 MARGIN = 2
 
 class ClueGameView(arcade.View):  # (arcade.Window)
-    def __init__(self, width, height):
+    def __init__(self, width, height, player_selected):
         super().__init__()
         # super().__init__(width, height, title)
         self.width = width
         self.height = height
+        self.current_player = player_selected
 
         # Make a deck
         self.deck = Deck.initialize_cards()
@@ -73,7 +74,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         
         #split up the cards, player select screen
-        self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
+        #self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
         
         self.hands = Player.divide_cards()
         self.player_cards = []
@@ -144,6 +145,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
+        arcade.set_background_color(arcade.color.BLACK)
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
                 pos = row * COLUMN_COUNT + column
