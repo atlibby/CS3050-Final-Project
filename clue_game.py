@@ -355,6 +355,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if self.press >= self.move_limit:
             self.players[0].change_y = 0
             self.players[0].change_x = 0
+            self.press = 0
         # for i in range(self.moves_list):
         #     if self.players[0].center == self.moves_list[i-1]:
 
@@ -429,7 +430,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                             self.can_player_move = False        # this still has issues, player still moves if key held
                             self.whos_turn = self.players[1]
                             self.has_die_rolled = False     # reinitializing die roll so that AI can roll once
-                            #print(self.press)
 
         # now handling AI turns
         # first will be second player, then third, etc
@@ -441,11 +441,14 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 self.move_limit = self.die.die_value
                 # npc movement
 
+                """
                 # after npc movement, turn shifts to next person and has die rolled is reinitialized to false,
                 # but has to be in a way that everything is frozen except for current player
                 self.whos_turn = self.players[2]
                 self.has_die_rolled = False  # reinitializing die roll so that AI can roll once
+                """
 
+    '''
         if self.whos_turn == self.players[2]:
             # die will be rolled for them and the value they get will be shown
             if not self.has_die_rolled:
@@ -487,10 +490,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 self.move_limit = self.die.die_value
                 # npc movement
 
+                # this was the last player's turn, so it goes back to player 1
                 self.whos_turn = self.players[0]
                 self.has_die_rolled = False  # reinitializing die roll so that AI can roll once
 
-
+        # still need a game ending event
+    '''
     '''
     # event handler for player turn order and npc movement
     def run(self):
