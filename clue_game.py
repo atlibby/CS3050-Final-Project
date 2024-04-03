@@ -5,7 +5,7 @@ import time
 from typing import List
 from player import *
 import room_dimensions
-from guess_box import Guess
+from guess_box import guessing_box
 import card
 from game_screens.inventory import InventoryMenu
 
@@ -35,6 +35,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # super().__init__(width, height, title)
         self.width = width
         self.height = height
+
+        # Make a deck
+        self.deck = Deck.initialize_cards()
 
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
@@ -73,14 +76,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
         
         self.hands = Player.divide_cards()
-        print(self.hands)
         self.player_cards = []
         for i, hand in enumerate(self.hands):
             if i == self.current_player:
                 for card in hand:
                     self.player_cards.append(card)
-        print(len(self.player_cards))
-        print(self.player_cards)
         self.player_npcs = []
 
         # Sprite Info
@@ -136,6 +136,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.sidebar_buttons = []
         self.draw_buttons()
 
+        # guess box
+        self.guess_box = guessing_box
+
+        # case file
+        self.case_file = self.get_case_file()
+
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
         for row in range(ROW_COUNT):
@@ -181,15 +187,22 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         print("Roll:", event)
 
     # Method  that randomly selects three cards for the case file
-    def get_case_file(self, deck):
-        one_of_each_list = ["character", "room", "weapon"]
+    def get_case_file(self):
         case_file = []
-        for card in deck:
+        one_of_each_list = ["character", "room", "weapon"]
+        for card in self.deck:
             if card.cardType in one_of_each_list:
                 case_file.append(card)
                 one_of_each_list.remove(card.cardType)
-                deck.remove(card)
         return case_file
+    
+    def check_guess_for_win(self):
+        guess = []
+        for card in self.deck:
+            if card.selected:
+                guess.append(card)
+        if guess == self.case_file:
+            print("WINNER")
 
     # Method for drawing sidebar
     def draw_sidebar(self):
@@ -200,31 +213,25 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.height,
             arcade.color.LIGHT_BROWN
         )
-        y_value = 750
-        for card_type in ['Weapons', 'Rooms', 'Players']:
-            if card_type == 'Players':
+        y_value = 730
+        for card_type in ['Players', 'Rooms', 'Weapons']:
+            if card_type == 'Weapons':
                 y_value -= 50
             arcade.draw_text(card_type, self.width - SIDEBAR_WIDTH + 10, y_value,
                              arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
             y_value -= 135
 
     def draw_buttons(self):
-        characters = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
-                      'Professor Plum']
-        rooms = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
-                 'Hall', 'Study']
-        weapons = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
-        y_value = 780
-        for items in [weapons, rooms, characters]:
-            y_value -= 42
-            for item in items:
-                y_value -= 16
-                # adding button objects so that checkboxes can be clickable
-                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, item, False))
-                self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, item, True))
-
-    def draw_guess_box(self):
-        text = 'Make Guess'
+        y_value = 720
+        last_card_type = self.deck[0].cardType
+        for card in self.deck:
+            if(last_card_type != card.cardType):
+                y_value -= 42
+            y_value -= 16
+            # adding button objects so that checkboxes can be clickable
+            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, card, False))
+            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, card, True))
+            last_card_type = card.cardType
 
     def on_draw(self):
         # Clear pixels
@@ -247,9 +254,14 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # draw sidebar buttons:
         for button in self.sidebar_buttons:
             button.draw()
+        
+        self.guess_box.draw()
+
+    
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
+        self.check_guess_for_win()
         self.players[0].update()
         self.run()
 
@@ -409,4 +421,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # making boxes clickable
         for button in self.sidebar_buttons:
             button.check_click(x, y)
-
+        
+        # check for guess | make sure player is in room for this to be possible
+        self.guess_box.check_click(x, y)
+        

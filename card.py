@@ -39,6 +39,7 @@ class Card:
             raise ValueError("Invalid card type. Must be 'character', 'room', 'weapon', or 'clue'.")
         self.name = name.lower()
         self.owner = None
+        self.selected = False
 
     def __str__(self):
         return f"{self.cardType.capitalize()}: {self.name.capitalize()}, Owner: {self.owner}"
@@ -65,8 +66,10 @@ class Deck:
             cards.append(Card('weapon', weapon))
 
         # shuffling cards
-        random.shuffle(cards)
         return cards
+    
+    def shuffle_deck(cards):
+        random.shuffle(cards)
 
 
 class ClueCard(arcade.Sprite):
@@ -123,19 +126,6 @@ if __name__ == "__main__":
             andrews_deck.append(card)
         elif card.owner == 'nat':
             nats_deck.append(card)
-
-    print("\n,Steven's Deck: ")
-    for card in stevens_deck:
-        print(card, "\n")
-    print("Reuben's Deck: ")
-    for card in reubens_deck:
-        print(card, "\n")
-    print("Andrew's Deck: ")
-    for card in andrews_deck:
-        print(card, "\n")
-    print("Nat's Deck: ")
-    for card in nats_deck:
-        print(card, "\n")
 
     print("\n-------------------\n\tClue Cards:\n-------------------\n")
     # testing initializing clue cards
