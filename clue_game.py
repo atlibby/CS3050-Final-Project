@@ -141,21 +141,36 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         ''' 
         variables for turns
-        - self.whos_turn: overhead manager type variable which keeps track of who's turn it is. This will be used
-        later on to determine what gets drawn, who can move, and who's icon is shown. Will hold the first player object
-        in self.players for now, could become a dictionary if it works better later.
-        
-        - self.has_die_rolled: overhead manager type variable which keeps track of whether the player has rolled the die
-        or not, which enforces the die to be rolled only once per turn. Example use: If player has rolled die,
-        then self.has_die_rolled will be true, and in on_mouse_click(), the code that allows the player to click the 
-        die will be false.
+    
         '''
+        # self.whos_turn: overhead manager type variable which keeps track of who's turn it is. This will be used
+        # later on to determine what gets drawn, who can move, and who's icon is shown. Will hold the first player
+        # object in self.players for now, could become a dictionary if it works better later.
         self.whos_turn = self.players[0]
+
+        # self.has_die_rolled: overhead manager type variable which keeps track of whether the player has rolled the die
+        # or not, which enforces the die to be rolled only once per turn. Example use: If player has rolled die,
+        # then self.has_die_rolled will be true, and in on_mouse_click(), the code that allows the player to click the
+        # die will be false.
         self.has_die_rolled = False
-        # setting can_player_move to false so that player cannot move until die has been rolled
+
+        # can_player_move is false so that player cannot move until die has been rolled
         # this will be reflected in on_key_press, where all key presses will be unavailable if
         # can_player_move is false
         self.can_player_move = False
+
+        # submitted_turn is false to prevent turn from moving forward. This is changed in
+        # on_key_press, after user presses enter
+        self.submitted_turn = False
+
+        # has_player_moved is false to prevent the user pressing the enter button from doing anything until
+        # the player has finished moving.
+        self.has_player_moved = False
+
+        # move_limit_set is set to false, to become true later once the move_limit takes the die_value
+        # purpose of this var is to prevent the move_limit from being reinitialized
+        self.move_limit_set = False
+
 
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
@@ -270,7 +285,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             button.draw()
 
         ''' Turn Based Drawings '''
-
         # first, an indication of who's turn it is at the top of the sidebar
         arcade.draw_text(str(self.whos_turn.name) + "'s turn!", (self.width - SIDEBAR_WIDTH) + 110, 755,
                          color=arcade.color.BLACK, font_size=10)
@@ -278,18 +292,25 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # for when it's the user's turn
         if self.whos_turn == self.players[0]:  # it's the user player's turn
             if not self.has_die_rolled:
-                # indicate for user to roll the die
+                # indicate the user to roll the die
                 arcade.draw_text("Roll The Die!", DIE_X - 37, DIE_Y - 50, arcade.color.BLACK, 10)
             else:
                 # now after the die has been rolled, it will display the value
                 text = f"You rolled a {self.die.die_value}!"
                 arcade.draw_text(text, DIE_X - 45, DIE_Y - 50, arcade.color.BLACK, 10)
+                # if the player has already done all their moves, but hasn't submitted their turn
+                if self.has_player_moved and not self.submitted_turn:
+                    # indicate the user to press enter to switch turns
+                    arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
         else:
             if self.has_die_rolled:
                 # now after the die has been rolled, it will display the value
                 text = f"{self.whos_turn.name} rolled a {self.die.die_value}!"
                 arcade.draw_text(text, DIE_X - 50, DIE_Y - 50, arcade.color.BLACK, 10)
-
+                # if the player has already done all their moves, but hasn't submitted their turn
+                if self.has_player_moved and not self.submitted_turn:
+                    # indicate the user to press enter to switch turns
+                    arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
@@ -317,6 +338,10 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 elif key == arcade.key.RIGHT:
                     self.right_pressed = True
                     self.update_player_movement()
+            if self.has_player_moved:
+                if key == arcade.key.ENTER:
+                    self.whos_turn = self.players[+1]
+                    self.submitted_turn = True
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP:
@@ -402,7 +427,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         """
         if self.whos_turn == self.players[0]:  # it's the user player's turn
-            ''' 
+            """ 
             Following code present in on_draw, based on some variables such as whos_turn and has_die_rolled:
             
             Under "Turn Based Drawings"
@@ -417,29 +442,66 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             where the bool will be true once the area of the die is clicked. Which can only happen
             during the user's turn.
             - these drawings will go away once its not the players turn anymore
-            '''
+            """
             # once the die has been rolled, the limit for the amount of moves will be set to
             # the die value
             if self.has_die_rolled:
-                self.move_limit = self.die.die_value        # player movement has to be tuned to this
-                if self.move_limit > 1:
+                if not self.move_limit_set:        # prevents move_limit from being reset each update of run
+                    self.move_limit = self.die.die_value  # player movement has to be tuned to this
+                    self.move_limit_set = True
+
+                if self.move_limit >= 1:
                     self.can_player_move = True
                     if self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed:
                         self.press += 1
-                        if self.press >= self.move_limit:
-                            self.can_player_move = False        # this still has issues, player still moves if key held
-                            self.whos_turn = self.players[1]
-                            self.has_die_rolled = False     # reinitializing die roll so that AI can roll once
 
-        # now handling AI turns
-        # first will be second player, then third, etc
-        if self.whos_turn == self.players[1]:
-            # die will be rolled for them and the value they get will be shown
-            if not self.has_die_rolled:
-                self.die.roll_die()
-                self.has_die_rolled = True
-                self.move_limit = self.die.die_value
-                # npc movement
+                    if self.press >= self.move_limit:
+                        self.can_player_move = False  # this still has issues, player still moves if key held
+                        """
+                        in on_key_press, a condition exists for when has_player_moved is true,
+                        which allows the player to press enter to switch the turn. This allows the
+                        sprite to catch up to the player's final move before switching turns,
+                        which was previously an issue.
+                        boolean that indicates the player has moved, which activates the ability
+                        to press ENTER to officially switch the next player
+                        """
+                        self.has_player_moved = True
+                        self.move_limit = 0
+
+        # if the player submitted their turn, now its AI turn
+        if self.submitted_turn:
+            # reinitializing variables for AI to roll die and move
+            self.has_die_rolled = False
+            self.move_limit_set = False
+            # first will be second player, then third, etc
+            if self.whos_turn == self.players[1]:
+                # die will be rolled for them and the value they get will be shown
+                if not self.has_die_rolled:
+                    self.die.roll_die()
+                    self.has_die_rolled = True
+                    self.move_limit = self.die.die_value
+                    self.move_limit_set = True
+                    # npc movement
+                    for i in range(0, self.move_limit):
+                        # for each move, will move a random direction, either up, left, or down
+                        rand = random.randrange(0, 4)
+                        if rand == 0:
+                            self.players[1].change_x = PLAYER_MOVEMENT
+                            self.players[1].update()
+                            time.sleep(0.25)
+                        elif rand == 1:
+                            self.players[1].change_y = PLAYER_MOVEMENT
+                            self.players[1].update()
+                            time.sleep(0.25)
+                        elif rand == 2:
+                            self.players[1].change_x = -PLAYER_MOVEMENT
+                            self.players[1].update()
+                            time.sleep(0.25)
+                        elif rand == 3:
+                            self.players[1].change_y = -PLAYER_MOVEMENT
+                            self.players[1].update()
+                            time.sleep(0.25)
+                    self.whos_turn = self.players[2]
 
                 """
                 # after npc movement, turn shifts to next person and has die rolled is reinitialized to false,
