@@ -8,7 +8,7 @@ import room_dimensions
 from guess_box import guessing_box
 from guess_box import Guess
 import card
-from game_screens import InventoryMenu
+from game_screens.inventory import InventoryMenu
 
 # Width of Sidebar
 SIDEBAR_WIDTH = 320
