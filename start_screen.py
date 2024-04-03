@@ -10,7 +10,7 @@ from player import *
 import room_dimensions
 from guess_box import Guess
 import card
-from game_screens.inventory import InventoryMenu
+from game_screens import InventoryMenu
 
 
 class StartView(arcade.View):

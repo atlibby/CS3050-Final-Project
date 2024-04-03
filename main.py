@@ -8,7 +8,7 @@ import room_dimensions
 from start_screen import StartView
 from guess_box import Guess
 import card
-from game_screens.inventory import InventoryMenu
+# from game_screens.inventory import InventoryMenu
 import clue_game
 
 # Screen dimensions
