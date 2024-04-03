@@ -21,9 +21,8 @@ CARD_WIDTH = 100
 CARD_HEIGHT = 150
 CARD_MARGIN = 10
 
-all_card_names = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock', 'Professor Plum',
-                  'Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge', 'Hall',
-                  'Study', 'Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
+
+all_card_names = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock', 'Professor Plum', 'Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge', 'Hall', 'Study', 'Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
 
 
 # show the inventory of the player
@@ -40,9 +39,9 @@ class InventoryMenu(arcade.View):
         print(num_columns)
         for i, card in enumerate(self.hand):
             # Calculate the x position to center the cards horizontally
-            x = (SCREEN_WIDTH - (CARD_WIDTH * num_columns) - (CARD_MARGIN * (num_columns - 1))) / 2 + (
-                        CARD_WIDTH + CARD_MARGIN) * i
 
+            x = (SCREEN_WIDTH - (CARD_WIDTH * num_columns) - (CARD_MARGIN * (num_columns - 1))) / 2 + (CARD_WIDTH + CARD_MARGIN) * i
+            
             # Center the cards vertically
             y = SCREEN_HEIGHT / 2
 
@@ -56,8 +55,9 @@ class InventoryMenu(arcade.View):
 
     def on_draw(self):
         arcade.start_render()
-        arcade.draw_text("Inventory", SCREEN_WIDTH / 2, SCREEN_HEIGHT - 30, arcade.color.WHITE, 24)
-        self.card_sprite_list.draw()
 
+        arcade.draw_text("Inventory", SCREEN_WIDTH/2, SCREEN_HEIGHT-30, arcade.color.WHITE, 24)
+        self.card_sprite_list.draw()
+        
     def on_key_press(self, key, modifiers):
-        self.window.show_view(self.game_view)
+         self.window.show_view(self.game_view)

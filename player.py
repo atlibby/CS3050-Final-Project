@@ -20,7 +20,6 @@ import random as r
 from card import *
 from room import Room
 
-
 # test function for dividing cards evenly between six players
 # will integrate with get_case_file method in main later
 # for now, takes deck of cards from Card class, shuffles them,
@@ -34,11 +33,10 @@ from room import Room
 # if a player accuses them, but they will not do anything on their own and will not
 # be granted turns
 
-
 class Player(arcade.Sprite):
 
     def __init__(self, name, center_x, center_y, fileName, scale):
-        super().__init__(filename=fileName, scale=scale)
+        super().__init__(filename = fileName, scale = scale)
         self.name = name
         self.center_x = center_x
         self.center_y = center_y
@@ -109,26 +107,28 @@ class Player(arcade.Sprite):
 
         for card in shuffled_cards:
             if card.owner == 'Scarlet':
-                scarlets_deck.append(card.name)
+
+                scarlets_deck.append(card)
                 buffer += 1
             elif card.owner == 'Plum':
-                plums_deck.append(card.name)
+                plums_deck.append(card)
                 buffer += 1
             elif card.owner == 'Peacock':
-                peacocks_deck.append(card.name)
+                peacocks_deck.append(card)
                 buffer += 1
             elif card.owner == 'Mustard':
-                mustards_deck.append(card.name)
+                mustards_deck.append(card)
                 buffer += 1
             elif card.owner == 'Green':
-                greens_deck.append(card.name)
+                greens_deck.append(card)
                 buffer += 1
             elif card.owner == 'White':
-                whites_deck.append(card.name)
+                whites_deck.append(card)
                 buffer += 1
             if buffer == cards_to_deal:
                 break
         return [plums_deck, whites_deck, greens_deck, scarlets_deck, peacocks_deck, mustards_deck, case_file]
+
 
     # class functions
     def roll_die(self):
@@ -155,10 +155,14 @@ class Player(arcade.Sprite):
     def make_accusation(self, accused_name, accused_room, accused_weapon, accuser):
         print(accuser + " thinks it was " + accused_name + " in the " + accused_room + " with the " + accused_weapon)
 
+
     def mark_sheet(self):
         pass
 
     def reveal_card(self):
         pass
 
-# divide_cards()
+
+
+#divide_cards()
+

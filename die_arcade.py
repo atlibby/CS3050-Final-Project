@@ -55,7 +55,9 @@ class Die:
     def roll_die(self):
         self.die_value = random.randint(1, 6)
         generate_points(self.die_value)
+
         return self.die_value
+
 
     def draw(self):
         arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.BLUSH)

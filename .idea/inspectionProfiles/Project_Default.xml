@@ -1,6 +1,7 @@
 <component name="InspectionProjectProfileManager">
   <profile version="1.0">
     <option name="myName" value="Project Default" />
+<<<<<<< HEAD
     <inspection_tool class="HtmlUnknownAttribute" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="myValues">
         <value>
@@ -11,10 +12,13 @@
       </option>
       <option name="myCustomValuesEnabled" value="true" />
     </inspection_tool>
+=======
+>>>>>>> main
     <inspection_tool class="PyPep8NamingInspection" enabled="true" level="WEAK WARNING" enabled_by_default="true">
       <option name="ignoredErrors">
         <list>
           <option value="N806" />
+<<<<<<< HEAD
           <option value="N802" />
           <option value="N803" />
           <option value="N801" />
@@ -25,6 +29,8 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="str.__and__" />
+=======
+>>>>>>> main
         </list>
       </option>
     </inspection_tool>

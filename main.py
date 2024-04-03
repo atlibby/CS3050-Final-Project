@@ -17,12 +17,12 @@ SCREEN_HEIGHT = (clue_game.HEIGHT + clue_game.MARGIN) * clue_game.ROW_COUNT + cl
 SCREEN_TITLE = "Clue"
 
 
+
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     startView = StartView(SCREEN_WIDTH, SCREEN_HEIGHT)
     window.show_view(startView)
     arcade.run()
-
-
+    
 if __name__ == "__main__":
     main()

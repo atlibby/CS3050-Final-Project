@@ -67,10 +67,12 @@ class Deck:
 
         # shuffling cards
         return cards
-
+    
     def shuffle_deck(cards):
         random.shuffle(cards)
 
+    def shuffle_deck(cards):
+        random.shuffle(cards)
 
 class ClueCard(arcade.Sprite):
     def __init__(self, name, description, task):
