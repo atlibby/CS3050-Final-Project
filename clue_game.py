@@ -38,8 +38,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.height = height
         self.current_player = player_selected
 
-        # Make a deck
         self.deck = Deck.initialize_cards()
+        Deck.shuffle_deck(self.deck)
 
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
@@ -77,15 +77,16 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         
         #split up the cards, player select screen
         #self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
+        # Make a deck
         
-        self.hands = Player.divide_cards()
-
+        self.hands = Player.divide_cards(self.deck)  
         self.player_cards = []
+        #creating player hands  
         for i, hand in enumerate(self.hands):
             if i == self.current_player:
                 for card in hand:
                     self.player_cards.append(card)
-
+        self.case_file = self.hands[-1]
         self.player_npcs = arcade.SpriteList()
 
         for player in self.players:
@@ -183,8 +184,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # guess box
         self.guess_box = guessing_box
 
-        # case file
-        self.case_file = self.get_case_file()
 
 
     # Method for reloading sprites after I/O or other changes
@@ -233,15 +232,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         print("Roll:", event)
 
     # Method  that randomly selects three cards for the case file
-
-    def get_case_file(self):
-        case_file = []
-        one_of_each_list = ["character", "room", "weapon"]
-        for card in self.deck:
-            if card.cardType in one_of_each_list:
-                case_file.append(card)
-                one_of_each_list.remove(card.cardType)
-        return case_file
     
     def check_guess_for_win(self):
         guess = []
@@ -270,9 +260,30 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
     def draw_buttons(self):
         y_value = 720
-        last_card_type = self.deck[0].cardType
+        player_card_list = []
+        room_card_list = []
+        weapon_card_list = []
         for card in self.deck:
-            if (last_card_type != card.cardType):
+            if(card.cardType == 'character'):
+                player_card_list.append(card)
+            elif(card.cardType == 'room'):
+                room_card_list.append(card)
+            else:
+                weapon_card_list.append(card)
+        for card in self.hands[-1]:
+            if(card.cardType == 'character'):
+                player_card_list.append(card)
+            elif(card.cardType == 'room'):
+                room_card_list.append(card)
+            else:
+                weapon_card_list.append(card)
+        all_card_list = []
+        for card in player_card_list:   all_card_list.append(card)
+        for card in room_card_list:   all_card_list.append(card)
+        for card in weapon_card_list:   all_card_list.append(card)
+        last_card_type = all_card_list[0].cardType
+        for card in all_card_list:
+            if(last_card_type != card.cardType):
                 y_value -= 42
             y_value -= 16
             # adding button objects so that checkboxes can be clickable
@@ -681,9 +692,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
-        if row >= ROW_COUNT or column >= COLUMN_COUNT:
+        #if row >= ROW_COUNT or column >= COLUMN_COUNT:
             # Simply return from this method since nothing needs updating
-            return
+            #return
 
         # 915 - 925,  718 - 728 -16y
         """
@@ -694,7 +705,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.grid[row][column] = 0
         """
         # Update the sprite colors to match the new grid
-        self.resync_grid_with_sprites()
+        #self.resync_grid_with_sprites()
 
         # if it's the player's turn and the die hasn't been rolled, then the user can roll the die
         # once. In another section of the code, has_die_rolled will be reinitialized to false once the
