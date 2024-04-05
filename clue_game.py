@@ -86,7 +86,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 for card in hand:
                     self.player_cards.append(card)
 
-        self.player_npcs = []
+        self.player_npcs = arcade.SpriteList()
+
+        for player in self.players:
+            self.player_npcs.append(player)
+
+        self.player_npcs.remove(self.player_npcs[self.current_player])
 
         # Sprite Info
         self.grid_sprite_list = arcade.SpriteList()
@@ -150,7 +155,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # self.whos_turn: overhead manager type variable which keeps track of who's turn it is. This will be used
         # later on to determine what gets drawn, who can move, and who's icon is shown. Will hold the first player
         # object in self.players for now, could become a dictionary if it works better later.
-        self.whos_turn = self.players[0]
+        self.whos_turn = 0
 
         # self.has_die_rolled: overhead manager type variable which keeps track of whether the player has rolled the die
         # or not, which enforces the die to be rolled only once per turn. Example use: If player has rolled die,
@@ -300,12 +305,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.guess_box.draw()
 
         ''' Turn Based Drawings '''
-        # first, an indication of who's turn it is at the top of the sidebar
-        arcade.draw_text(str(self.whos_turn.name) + "'s turn!", (self.width - SIDEBAR_WIDTH) + 110, 755,
-                         color=arcade.color.BLACK, font_size=10)
 
         # for when it's the user's turn
-        if self.whos_turn == self.players[0]:  # it's the user player's turn
+        if self.whos_turn == 0:  # it's the user player's turn
+            # first, an indication of who's turn it is at the top of the sidebar
+            arcade.draw_text(str(self.players[self.current_player].name) + "'s turn!", (self.width - SIDEBAR_WIDTH) + 110, 755,
+                             color=arcade.color.BLACK, font_size=10)
             if not self.has_die_rolled:
                 # indicate the user to roll the die
                 arcade.draw_text("Roll The Die!", DIE_X - 37, DIE_Y - 50, arcade.color.BLACK, 10)
@@ -320,7 +325,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         else:
             if self.has_die_rolled:
                 # now after the die has been rolled, it will display the value
-                text = f"{self.whos_turn.name} rolled a {self.die.die_value}!"
+                text = f"{self.player_npcs[self.whos_turn - 1].name} rolled a {self.die.die_value}!"
                 arcade.draw_text(text, DIE_X - 50, DIE_Y - 50, arcade.color.BLACK, 10)
                 # if the player has already done all their moves, but hasn't submitted their turn
                 if self.has_player_moved and not self.submitted_turn:
@@ -331,7 +336,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
         self.check_guess_for_win()
-        self.players[0].update()
+        self.players[self.current_player].update()
         self.run()
 
     # Allow player movement with arrow keys
@@ -341,7 +346,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if key == arcade.key.I:
             inv = InventoryMenu(self, self.player_cards)
             self.window.show_view(inv)
-        if self.whos_turn == self.players[0]:
+        if self.whos_turn == 0:
             if self.can_player_move:
                 if key == arcade.key.UP:
                     self.up_pressed = True
@@ -357,7 +362,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     self.update_player_movement()
             if self.has_player_moved:
                 if key == arcade.key.ENTER:
-                    self.whos_turn = self.players[+1]
+                    self.whos_turn += 1
                     self.submitted_turn = True
 
 
@@ -376,30 +381,29 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.update_player_movement()
 
     def update_player_movement(self):
-        self.players[0].change_x = 0
-        self.players[0].change_y = 0
+        self.players[self.current_player].change_x = 0
+        self.players[self.current_player].change_y = 0
 
         if self.up_pressed and not self.down_pressed:
-            self.players[0].change_y = PLAYER_MOVEMENT
+            self.players[self.current_player].change_y = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.players[0].center_y)
+            self.move_list.append(self.players[self.current_player].center_y)
         elif self.down_pressed and not self.up_pressed:
-            self.players[0].change_y = -PLAYER_MOVEMENT
+            self.players[self.current_player].change_y = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.players[0].center_y)
+            self.move_list.append(self.players[self.current_player].center_y)
         if self.left_pressed and not self.right_pressed:
-            self.players[0].change_x = -PLAYER_MOVEMENT
+            self.players[self.current_player].change_x = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.players[0].center_x)
+            self.move_list.append(self.players[self.current_player].center_x)
         elif self.right_pressed and not self.left_pressed:
-            self.players[0].change_x = PLAYER_MOVEMENT
+            self.players[self.current_player].change_x = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.players[0].center_x)
+            self.move_list.append(self.players[self.current_player].center_x)
 
         if self.press >= self.move_limit:
-            self.players[0].change_y = 0
-            self.players[0].change_x = 0
-            self.press = 0
+            self.players[self.current_player].change_y = 0
+            self.players[self.current_player].change_x = 0
         # for i in range(self.moves_list):
         #     if self.players[0].center == self.moves_list[i-1]:
 
@@ -445,7 +449,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 For when AI is already in a room when their turn starts...
 
         """
-        if self.whos_turn == self.players[0]:  # it's the user player's turn
+        if self.whos_turn == 0:  # it's the user player's turn
             """ 
             Following code present in on_draw, based on some variables such as whos_turn and has_die_rolled:
             
@@ -493,34 +497,51 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.has_die_rolled = False
             self.move_limit_set = False
             # first will be second player, then third, etc
-            if self.whos_turn == self.players[1]:
-                # die will be rolled for them and the value they get will be shown
-                if not self.has_die_rolled:
-                    self.die.roll_die()
-                    self.has_die_rolled = True
-                    self.move_limit = self.die.die_value
-                    self.move_limit_set = True
-                    # npc movement
-                    for i in range(0, self.move_limit):
-                        # for each move, will move a random direction, either up, left, or down
-                        rand = random.randrange(0, 4)
-                        if rand == 0:
-                            self.players[1].change_x = PLAYER_MOVEMENT
-                            self.players[1].update()
-                            time.sleep(0.25)
-                        elif rand == 1:
-                            self.players[1].change_y = PLAYER_MOVEMENT
-                            self.players[1].update()
-                            time.sleep(0.25)
-                        elif rand == 2:
-                            self.players[1].change_x = -PLAYER_MOVEMENT
-                            self.players[1].update()
-                            time.sleep(0.25)
-                        elif rand == 3:
-                            self.players[1].change_y = -PLAYER_MOVEMENT
-                            self.players[1].update()
-                            time.sleep(0.25)
-                    self.whos_turn = self.players[2]
+        for count, npc in enumerate(self.player_npcs):
+            if self.whos_turn == 1 + count:
+                self.moves += 1
+                if self.moves >= self.idle:
+                    # die will be rolled for them and the value they get will be shown
+                    if not self.has_die_rolled:
+                        self.die.roll_die()
+                        self.has_die_rolled = True
+                        self.move_limit = self.die.die_value
+                        self.move_limit_set = True
+                        # npc movement
+                        for i in range(1, self.move_limit):
+                            # for each move, will move a random direction, either up, left, or down
+                            rand = random.randrange(0, 4)
+                            if rand == 0:
+                                npc.change_x = PLAYER_MOVEMENT
+                                npc.update()
+                                time.sleep(0.25)
+                            elif rand == 1:
+                                npc.change_y = PLAYER_MOVEMENT
+                                npc.update()
+                                time.sleep(0.25)
+                            elif rand == 2:
+                                npc.change_x = -PLAYER_MOVEMENT
+                                npc.update()
+                                time.sleep(0.25)
+                            elif rand == 3:
+                                npc.change_y = -PLAYER_MOVEMENT
+                                npc.update()
+                                time.sleep(0.25)
+                        self.whos_turn += 1
+                        self.moves = 0
+                        self.has_die_rolled = False
+                        self.move_limit_set = False
+                        self.move_limit = 0
+
+                if self.whos_turn > len(self.player_npcs):
+                    self.press = 0
+                    self.whos_turn = 0
+                    self.moves = 0
+                    self.has_die_rolled = False
+                    self.move_limit_set = False
+                    self.move_limit = 0
+                    self.submitted_turn = False
+
 
                 """
                 # after npc movement, turn shifts to next person and has die rolled is reinitialized to false,
@@ -678,7 +699,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # if it's the player's turn and the die hasn't been rolled, then the user can roll the die
         # once. In another section of the code, has_die_rolled will be reinitialized to false once the
         # turn has ended
-        if self.whos_turn == self.players[0]:
+        if self.whos_turn == 0:
             if not self.has_die_rolled:
                 # clicking within area of die to roll it, if die is visible
                 # if self.die_visible:
