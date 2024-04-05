@@ -102,12 +102,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.press = 0
 
-        self.idle = 50
+        self.idle = 90
 
         # steven - changing self.move_limit from 6 to 0, so that player cannot move until this value is updated from
         # rollDie()
         self.move_limit = 0
-
 
         self.left_pressed = False
 
@@ -323,6 +322,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     # indicate the user to press enter to switch turns
                     arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
         else:
+            arcade.draw_text(str(self.player_npcs[self.whos_turn - 1].name) + "'s turn!",
+                             (self.width - SIDEBAR_WIDTH) + 110, 755,
+                             color=arcade.color.BLACK, font_size=10)
             if self.has_die_rolled:
                 # now after the die has been rolled, it will display the value
                 text = f"{self.player_npcs[self.whos_turn - 1].name} rolled a {self.die.die_value}!"
@@ -332,7 +334,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     # indicate the user to press enter to switch turns
                     arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
 
-    # Redraw sprite when sprite moves
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
         self.check_guess_for_win()
@@ -677,7 +678,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         column = int(x // (WIDTH + MARGIN))
         row = int(y // (HEIGHT + MARGIN))
 
-        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({row}, {column})")
+        print(f"Click coordinates: ({x}, {y}). Grid coordinates: ({column}, {row})")
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
@@ -711,7 +712,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # making boxes clickable
         for button in self.sidebar_buttons:
             button.check_click(x, y)
-        
+
         # check for guess | make sure player is in room for this to be possible
         self.guess_box.check_click(x, y)
 
