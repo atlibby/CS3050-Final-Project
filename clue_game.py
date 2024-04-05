@@ -137,8 +137,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         for self.room in self.roomList:
             self.room_sprite_list.append(self.room)
 
-        # Resyncing
-        self.resync_grid_with_sprites()
 
         # adding die to sidebar as class object
         self.die = Die(DIE_X, DIE_Y, 50, 50)
@@ -183,6 +181,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # guess box
         self.guess_box = guessing_box
+        
+         # Resyncing
+        self.resync_grid_with_sprites()
 
 
 
@@ -334,6 +335,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     # indicate the user to press enter to switch turns
                     arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
         else:
+            
             if self.has_die_rolled:
                 # now after the die has been rolled, it will display the value
                 text = f"{self.player_npcs[self.whos_turn - 1].name} rolled a {self.die.die_value}!"

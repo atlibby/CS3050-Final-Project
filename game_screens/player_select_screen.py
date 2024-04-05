@@ -45,31 +45,37 @@ class PlayerSelect(arcade.View):
     self.player_selected = 0
     clue_game_view = ClueGameView(self.width, self.height, self.player_selected)
     self.window.show_view(clue_game_view)
+    self.arcade.close_window()
     
   def on_click_player_1(self, event):
     self.player_selected = 1
     clue_game_view = ClueGameView(self.width, self.height, self.player_selected)
     self.window.show_view(clue_game_view)
+    self.arcade.close_window()
     
   def on_click_player_2(self, event):
     self.player_selected = 2
     clue_game_view = ClueGameView(self.width, self.height, self.player_selected)
     self.window.show_view(clue_game_view)
+    self.arcade.close_window()
     
   def on_click_player_3(self, event):
     self.player_selected = 3
     clue_game_view = ClueGameView(self.width, self.height, self.player_selected)
     self.window.show_view(clue_game_view)
+    self.arcade.close_window()
     
   def on_click_player_4(self, event):
     self.player_selected = 4
     clue_game_view = ClueGameView(self.width, self.height, self.player_selected)
     self.window.show_view(clue_game_view)
+    self.arcade.close_window()
     
   def on_click_player_5(self, event):
     self.player_selected = 5
     clue_game_view = ClueGameView(self.width, self.height, self.player_selected)
     self.window.show_view(clue_game_view)
+    self.arcade.close_window()
     
   def on_draw(self):
       self.clear()
