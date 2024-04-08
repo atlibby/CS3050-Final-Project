@@ -8,6 +8,7 @@ import room_dimensions
 from start_screen import StartView
 from guess_box import Guess
 import card
+# from game_screens.player_select_screen import PlayerSelect
 # from game_screens.inventory import InventoryMenu
 import clue_game
 
@@ -21,6 +22,7 @@ SCREEN_TITLE = "Clue"
 def main():
     window = arcade.Window(SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE)
     startView = StartView(SCREEN_WIDTH, SCREEN_HEIGHT)
+    
     window.show_view(startView)
     arcade.run()
     
