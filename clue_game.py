@@ -93,6 +93,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.player_npcs.append(player)
 
         self.player_npcs.remove(self.player_npcs[self.current_player])
+        
+        #test = testNPCShowCard(self.hands, self.player_npcs)
 
         # Sprite Info
         self.grid_sprite_list = arcade.SpriteList()
@@ -184,8 +186,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
          # Resyncing
         self.resync_grid_with_sprites()
 
-
-
+    
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -195,21 +196,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 if self.grid[row][column] == 0:
                     self.grid_sprite_list[pos].color = arcade.color.GRAY
 
-    def get_color_for_room(self, room):
-        room_colors = {
-            'lounge': arcade.color.JET,
-            'library': arcade.color.ANTIQUE_BRASS,
-            'hall': arcade.color.APRICOT,
-            'study': arcade.color.CORDOVAN,
-            'billiard_room': arcade.color.BITTERSWEET_SHIMMER,
-            'conservatory': arcade.color.BRIGHT_UBE,
-            'ballroom': arcade.color.DARK_LIVER,
-            'kitchen': arcade.color.KHAKI,
-            'dining-room': arcade.color.FIELD_DRAB,
-            'guessing_room': arcade.color.BLACK
-
-        }
-        return room_colors.get(room, arcade.color.BURNT_ORANGE)
 
     # Method for creating and returning a list of the classic rooms from Clue
     def generate_rooms(self):
