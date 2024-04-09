@@ -5,8 +5,7 @@ import time
 from typing import List
 from player import *
 import room_dimensions
-from guess_box import guessing_box
-from guess_box import Guess
+from guess_box import Guess, GUESS_BOX_X, GUESS_BOX_Y
 import card
 from game_screens.inventory import InventoryMenu
 
@@ -40,7 +39,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.deck = Deck.initialize_cards()
         Deck.shuffle_deck(self.deck)
-
         # We can quickly build a grid with python list comprehension
         self.grid = [[0] * COLUMN_COUNT for _ in range(ROW_COUNT)]
 
@@ -74,7 +72,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.players.append(Player(self.player_names[x], self.player_xs[x], self.player_ys[x], self.player_images[x],
                                        self.player_scales[x]))
 
-        
         #split up the cards, player select screen
         #self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
         # Make a deck
@@ -88,7 +85,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     self.player_cards.append(card)
         self.case_file = self.hands[-1]
         self.player_npcs = arcade.SpriteList()
-
+        for card in self.case_file:
+            print(card)
         for player in self.players:
             self.player_npcs.append(player)
 
@@ -142,6 +140,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # bool to control whether die appears or not
         self.die_visible = True
 
+        # guess box
+        self.guess_box = Guess(GUESS_BOX_X, GUESS_BOX_Y, 110, 30, "Make Guess",
+                               [self.players[self.current_player].center_x / WIDTH,
+                                self.players[self.current_player].center_y / HEIGHT])
+
         # adding class object, sidebar buttons
         self.sidebar_buttons = []
         self.draw_buttons()
@@ -177,9 +180,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # move_limit_set is set to false, to become true later once the move_limit takes the die_value
         # purpose of this var is to prevent the move_limit from being reinitialized
         self.move_limit_set = False
-
-        # guess box
-        self.guess_box = guessing_box
 
          # Resyncing
         self.resync_grid_with_sprites()
@@ -238,7 +238,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         for card in self.deck:
             if card.selected:
                 guess.append(card)
-        if guess == self.case_file:
+        if set(guess) == set(self.case_file):
             print("WINNER")
 
     # Method for drawing sidebar
@@ -270,13 +270,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 room_card_list.append(card)
             else:
                 weapon_card_list.append(card)
-        for card in self.hands[-1]:
-            if(card.cardType == 'character'):
-                player_card_list.append(card)
-            elif(card.cardType == 'room'):
-                room_card_list.append(card)
-            else:
-                weapon_card_list.append(card)
         all_card_list = []
         for card in player_card_list:   all_card_list.append(card)
         for card in room_card_list:   all_card_list.append(card)
@@ -287,8 +280,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 y_value -= 42
             y_value -= 16
             # adding button objects so that checkboxes can be clickable
-            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, card, False))
-            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, card, True))
+            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, card, False, self.guess_box))
+            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, card, True, self.guess_box))
             last_card_type = card.cardType
 
     def on_draw(self):
@@ -351,6 +344,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.check_guess_for_win()
         self.players[self.current_player].update()
         self.run()
+
 
     # Allow player movement with arrow keys
     # time delay to allow for sprite to move
@@ -417,8 +411,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if self.press >= self.move_limit:
             self.players[self.current_player].change_y = 0
             self.players[self.current_player].change_x = 0
-        # for i in range(self.moves_list):
-        #     if self.players[0].center == self.moves_list[i-1]:
 
     # turn function
     def run(self):

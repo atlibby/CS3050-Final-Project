@@ -83,16 +83,14 @@ class Player(arcade.Sprite):
         scarlets_deck = []
         peacocks_deck = []
         mustards_deck = []
-        #Deck.shuffle_deck(deck)
-        for card in deck:
-            print(card)
         card_type = ["character", "room", "weapon"]
         case_file = []
+        random.shuffle(deck)
         for card in deck:
             if card.cardType in card_type:
                 case_file.append(card)
                 card_type.remove(card.cardType)
-                deck.remove(card)
+        random.shuffle(deck)
         deck_size = len(deck)
         players = ["Scarlet", "Plum", "Peacock", "Mustard", "Green", "White"]
         remainder = deck_size % len(players)
@@ -100,13 +98,13 @@ class Player(arcade.Sprite):
         idx = 0
         buffer = 0
         for card in deck:
-            card.owner = players[idx]
-            print(card)
-            # go to beginning of player list again, simulating loop
-            if idx == len(players) - 1:
-                idx = 0
-            else:
-                idx += 1
+            if card not in case_file:
+                card.owner = players[idx]
+                # go to beginning of player list again, simulating loop
+                if idx == len(players) - 1:
+                    idx = 0
+                else:
+                    idx += 1
 
         for card in deck:
             if card.owner == 'Scarlet':
@@ -129,8 +127,6 @@ class Player(arcade.Sprite):
                 buffer += 1
             if buffer == cards_to_deal:
                 break
-        for card in case_file:
-            print(card.name)
         return [plums_deck, whites_deck, greens_deck, scarlets_deck, peacocks_deck, mustards_deck, case_file]
 
 
