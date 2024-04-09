@@ -1,4 +1,5 @@
 import arcade
+from room_dimensions import room_list
 
 # Constants
 GUESS_BOX_X = 840
@@ -15,10 +16,23 @@ class Guess:
         self.player_coords = player_coords
 
     def draw(self):
-            arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.ASH_GREY)
-            arcade.draw_text(self.text, self.x - 43, self.y + 10, arcade.color.BLACK, 12, width=180,
+        in_room = False
+        scaled_coords = []
+        scaled_coords.append(int(self.player_coords[0] / 30))
+        scaled_coords.append(int(self.player_coords[1] / 30))
+        for room in room_list:
+            if (scaled_coords in room):
+                    arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.ASH_GREY)
+                    arcade.draw_text(self.text, self.x - 43, self.y + 10, arcade.color.BLACK, 12, width=180,
                                 align="left", anchor_x="left", anchor_y="top")
+                    in_room = True
+        if(not in_room):
+            arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.LIGHT_BROWN)
+            self.guess_clicked = False
 
     def check_click(self, x, y):
-            if self.x - self.width / 2 < x < self.x + self.width / 2 and self.y - self.height / 2 < y < self.y + self.height / 2:
+        if self.x - self.width / 2 < x < self.x + self.width / 2 and self.y - self.height / 2 < y < self.y + self.height / 2:
                 self.guess_clicked = not self.guess_clicked
+
+    def update_user_position(self, x_coord, y_coord):
+        self.player_coords = [x_coord, y_coord]
