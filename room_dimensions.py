@@ -48,6 +48,9 @@ GUESSING_ROOM_MIN_Y = 9
 GUESSING_ROOM_MAX_X = 15
 GUESSING_ROOM_MAX_Y = 13
 
+ROOM_BOUNDARIES_X = []
+ROOM_BOUNDARIES_Y = []
+
 study = [(23, 0),(22, 0),(21, 0),(20, 0),(20, 1),(20, 2),(20, 3),(20, 4),(20, 5),(20, 6), (22, 6),
          (21, 6),(23, 5),(23, 4),(23, 3),(23, 2),(23, 1),(22, 1),(22, 2),(22, 3),(22, 4),(22, 5),(21, 5),
          (21, 4),(21, 3),(21, 2),(21, 1)]
@@ -130,3 +133,8 @@ guessing_room = [
     (11, 12), (11, 11), (11, 10),
     (10, 10), (10, 11), (10, 12)
 ]
+
+for room in [study, hall, lounge, library, billiard_room, conservatory, ballroom, kitchen, dining_room, guessing_room]:
+    for coord in room:
+        ROOM_BOUNDARIES_X.append([coord[1]])
+        ROOM_BOUNDARIES_Y.append(coord[0])

@@ -29,6 +29,11 @@ HEIGHT = 30
 # This sets the margin between each cell and offset for screen edges
 MARGIN = 2
 
+ROOM_BOUNDARIES_X = room_dimensions.ROOM_BOUNDARIES_X
+ROOM_BOUNDARIES_Y = room_dimensions.ROOM_BOUNDARIES_Y
+
+
+
 class ClueGameView(arcade.View):  # (arcade.Window)
     def __init__(self, width, height, player_selected):
         super().__init__()
@@ -60,46 +65,45 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.player_scales = [0.06, 0.065, 0.045, 0.065, 0.028, 0.027]
 
-
-        self.player_images = ["images/Red-Circle-Transparent.png", "images//Purple_Circle.png", "images/Pan_Blue_Circle.png",
+        self.player_images = ["images/Red-Circle-Transparent.png", "images//Purple_Circle.png",
+                              "images/Pan_Blue_Circle.png",
                               "images/Yellow_Circle.png", "images/—Pngtree—circle clipart green circle_5553152.png",
                               "images/open-circle-ring-transparent-png-png-see-through-background.png"]
 
         self.players = arcade.SpriteList()
 
         for x in range(0, len(self.player_names)):
-            self.players.append(Player(self.player_names[x], self.player_xs[x], self.player_ys[x], self.player_images[x],
-                                       self.player_scales[x]))
-
+            self.players.append(
+                Player(self.player_names[x], self.player_xs[x], self.player_ys[x], self.player_images[x],
+                       self.player_scales[x]))
 
         # self.user will be the player object using the index of player_selected,
         # then from a list of players not the user, will iterate thru them
         self.user = self.players[player_selected]
 
-        #split up the cards, player select screen
-        #self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
+        # split up the cards, player select screen
+        # self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
         # Make a deck
 
         self.hands = Player.divide_cards(self.deck)
         self.player_cards = []
-        #creating player hands
+        # creating player hands
         for i, hand in enumerate(self.hands):
             if i == player_selected:
                 for card in hand:
                     self.player_cards.append(card)
         self.case_file = self.hands[-1]
 
-        #self.player_npcs = arcade.SpriteList()
+        # self.player_npcs = arcade.SpriteList()
 
-        #for player in self.players:
-            #self.player_npcs.append(player)
+        # for player in self.players:
+        # self.player_npcs.append(player)
 
-       # self.player_npcs.remove(self.player_npcs[self.current_player])
+        # self.player_npcs.remove(self.player_npcs[self.current_player])
 
         for card in self.case_file:
             print(card)
-        #test = testNPCShowCard(self.hands, self.player_npcs)
-
+        # test = testNPCShowCard(self.hands, self.player_npcs)
 
         # Sprite Info
         self.grid_sprite_list = arcade.SpriteList()
@@ -142,7 +146,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         for self.room in self.roomList:
             self.room_sprite_list.append(self.room)
-
 
         # adding die to sidebar as class object
         self.die = Die(DIE_X, DIE_Y, 50, 50)
@@ -194,12 +197,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # purpose of this var is to prevent the move_limit from being reinitialized
         self.move_limit_set = False
 
-
-
-         # Resyncing
+        # Resyncing
         self.resync_grid_with_sprites()
 
-    
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -208,7 +208,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 pos = row * COLUMN_COUNT + column
                 if self.grid[row][column] == 0:
                     self.grid_sprite_list[pos].color = arcade.color.GRAY
-
 
     # Method for creating and returning a list of the classic rooms from Clue
     def generate_rooms(self):
@@ -231,7 +230,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         print("Roll:", event)
 
     # Method  that randomly selects three cards for the case file
-    
+
     def check_guess_for_win(self):
         guess = []
         for card in self.deck:
@@ -263,9 +262,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         room_card_list = []
         weapon_card_list = []
         for card in self.deck:
-            if(card.cardType == 'character'):
+            if (card.cardType == 'character'):
                 player_card_list.append(card)
-            elif(card.cardType == 'room'):
+            elif (card.cardType == 'room'):
                 room_card_list.append(card)
             else:
                 weapon_card_list.append(card)
@@ -275,12 +274,14 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         for card in weapon_card_list:   all_card_list.append(card)
         last_card_type = all_card_list[0].cardType
         for card in all_card_list:
-            if(last_card_type != card.cardType):
+            if (last_card_type != card.cardType):
                 y_value -= 42
             y_value -= 16
             # adding button objects so that checkboxes can be clickable
-            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, card, False, self.guess_box))
-            self.sidebar_buttons.append(Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, card, True, self.guess_box))
+            self.sidebar_buttons.append(
+                Button(self.width - SIDEBAR_WIDTH + 150, y_value, 10, 10, card, False, self.guess_box))
+            self.sidebar_buttons.append(
+                Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, card, True, self.guess_box))
             last_card_type = card.cardType
 
     def on_draw(self):
@@ -335,12 +336,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 if self.has_player_moved:
                     # indicate the user to press enter to switch turns
                     arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
+
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
         self.check_guess_for_win()
         self.user.update()
         self.run()
-
 
     # Allow player movement with arrow keys
     # time delay to allow for sprite to move
@@ -352,6 +353,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         if self.whos_turn == self.user:
             if self.can_player_move:
+
                 if key == arcade.key.UP:
                     self.up_pressed = True
                     self.update_player_movement()
@@ -392,7 +394,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 self.has_die_rolled = False
                 self.move_limit_set = False
 
-
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP:
             self.up_pressed = False
@@ -414,22 +415,17 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if self.up_pressed and not self.down_pressed:
             self.user.change_y = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_y)
         elif self.down_pressed and not self.up_pressed:
             self.user.change_y = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_y)
         if self.left_pressed and not self.right_pressed:
             self.user.change_x = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_x)
         elif self.right_pressed and not self.left_pressed:
             self.user.change_x = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_x)
 
         if self.press >= self.move_limit:
-
             self.user.change_y = 0
             self.user.change_x = 0
             self.press = 0
@@ -437,16 +433,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # for i in range(self.moves_list):
         #     if self.players[0].center == self.moves_list[i-1]:
 
-
     # turn function
     def run(self):
 
         """
         pseudocode / design:
-
-        first, it'll be the player's turn.
-        What should happen in the player's turn?
-
         Player's turn:
 
             1. An indication that it is their turn.
@@ -478,26 +469,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 want to show, to the inventory of the AI.
                 3. Turn Ends.
 
-                For when AI is already in a room when their turn starts...
-
         """
         if self.whos_turn == self.user:  # it's the user player's turn
-            """ 
-            Following code present in on_draw, based on some variables such as whos_turn and has_die_rolled:
-
-            Under "Turn Based Drawings"
-
-            - an indication of who's turn it is at the top of the sidebar
-
-
-            - for when it's the user's turn and the die has not been rolled,
-            text will be drawn that says "Roll The Die!"
-            - otherwise if the die has been rolled, then the value will be shown in text.
-            - the validation of whether the die has been rolled is present in on_mouse_click(),
-            where the bool will be true once the area of the die is clicked. Which can only happen
-            during the user's turn.
-            - these drawings will go away once its not the players turn anymore
-            """
             # once the die has been rolled, the limit for the amount of moves will be set to
             # the die value
             if self.has_die_rolled:
@@ -507,6 +480,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
                 if self.move_limit >= 1:
                     self.can_player_move = True
+
                     if self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed:
                         self.press += 1
 
@@ -557,7 +531,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                 time.sleep(0.25)
                         self.has_player_moved = True
 
-
     # Mouse listener
     def on_mouse_press(self, x, y, button, modifiers):
 
@@ -569,20 +542,14 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # Make sure we are on-grid. It is possible to click in the upper right
         # corner in the margin and go to a grid location that doesn't exist
-        #if row >= ROW_COUNT or column >= COLUMN_COUNT:
-            # Simply return from this method since nothing needs updating
-            #return
+        # if row >= ROW_COUNT or column >= COLUMN_COUNT:
+        # Simply return from this method since nothing needs updating
+        # return
 
         # 915 - 925,  718 - 728 -16y
-        """
-        # Flip the location between 1 and 0.
-        if self.grid[row][column] == 0:
-            self.grid[row][column] = 1
-        else:
-            self.grid[row][column] = 0
-        """
+
         # Update the sprite colors to match the new grid
-        #self.resync_grid_with_sprites()
+        # self.resync_grid_with_sprites()
 
         # if it's the player's turn and the die hasn't been rolled, then the user can roll the die
         # once. In another section of the code, has_die_rolled will be reinitialized to false once the
@@ -602,4 +569,3 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # check for guess | make sure player is in room for this to be possible
         self.guess_box.check_click(x, y)
-
