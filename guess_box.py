@@ -5,6 +5,11 @@ from room_dimensions import room_list
 GUESS_BOX_X = 840
 GUESS_BOX_Y = 130
 
+WIDTH = 30
+HEIGHT = 30
+
+MARGIN = 2
+
 class Guess:
     def __init__(self, x, y, width, height, text, player_coords):
         self.x = x
@@ -18,8 +23,8 @@ class Guess:
     def draw(self):
         in_room = False
         scaled_coords = []
-        scaled_coords.append(int(self.player_coords[0] / 30))
-        scaled_coords.append(int(self.player_coords[1] / 30))
+        scaled_coords.append(self.player_coords[1] // (WIDTH + MARGIN))
+        scaled_coords.append(self.player_coords[0] // (HEIGHT + MARGIN))
         for room in room_list:
             if (scaled_coords in room):
                     arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.ASH_GREY)

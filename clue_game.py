@@ -127,6 +127,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.press = 0
 
+        self.valid_move = True
+
         self.idle = 90
 
         # steven - changing self.move_limit from 6 to 0, so that player cannot move until this value is updated from
@@ -424,11 +426,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if key == arcade.key.I:
             inv = InventoryMenu(self, self.player_hand)
             self.window.show_view(inv)
-        user_coords = [int(self.user.center_y / 30), int(self.user.center_x / 30)]
+        user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
         for room in room_list:
             if user_coords in room:
-                return
-        if self.whos_turn == self.user:
+                self.valid_move = True
+                #return
+        if (self.whos_turn == self.user) and self.valid_move:
             if self.can_player_move:
                 if key == arcade.key.UP:
                     self.up_pressed = True
@@ -585,7 +588,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
                 if self.move_limit >= 1:
                     self.can_player_move = True
-                    if self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed:
+                    if (self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed) and self.valid_move:
                         self.press += 1
 
                     if self.press >= self.move_limit:
@@ -600,7 +603,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         """
                         self.has_player_moved = True
                         self.move_limit = 0
-                        
+                        self.valid_move = True
                         
 
         # otherwise it's the ai's turn, so the list of ai players will be iterated through
