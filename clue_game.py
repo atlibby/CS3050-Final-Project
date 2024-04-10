@@ -4,6 +4,7 @@ from checkboxes import Button
 import time
 from typing import List
 from player import *
+from room_dimensions import room_list
 import room_dimensions
 from guess_box import Guess, GUESS_BOX_X, GUESS_BOX_Y
 import card
@@ -307,6 +308,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         for button in self.sidebar_buttons:
             button.draw()
 
+
         self.guess_box.draw()
 
         ''' Turn Based Drawings '''
@@ -350,7 +352,10 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if key == arcade.key.I:
             inv = InventoryMenu(self, self.player_cards)
             self.window.show_view(inv)
-
+        user_coords = [int(self.user.center_y / 30), int(self.user.center_x / 30)]
+        for room in room_list:
+            if user_coords in room:
+                return
         if self.whos_turn == self.user:
             if self.can_player_move:
 
@@ -430,8 +435,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.user.change_x = 0
             self.press = 0
 
-        # for i in range(self.moves_list):
-        #     if self.players[0].center == self.moves_list[i-1]:
+        self.guess_box.update_user_position(self.user.center_x, self.user.center_y)
 
     # turn function
     def run(self):
@@ -475,7 +479,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = self.die.die_value
+                    self.move_limit = 999
+                    #self.move_limit = self.die.die_value
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
