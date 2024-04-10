@@ -93,21 +93,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # Make a deck
 
         self.hands = Player.divide_cards(self.deck)
-        self.player_cards = []
-        self.npc_hands = []
-        #creating player hands
         self.case_file = self.hands[-1]
-        for i, hand in enumerate(self.hands):
-            if i == player_selected:
-                for card in hand:
-                    self.player_cards.append(card)
-            else:
-                if hand != self.case_file:
-                    self.npc_hands.append(hand) #now we have the npc hands
-                    
-        for i, npc in enumerate(self.ai_players):  
-            npc.set_player_hand(self.npc_hands[i])
-            
+        
+        
+        # all the hands for all the players are innitialized            
+        for i, player in enumerate(self.players):  
+            player.set_player_hand(self.hands[i])
+        self.player_hand = self.user.get_player_hand()
         for npc in self.ai_players:
             print(npc.name)
             npc_hand = npc.get_player_hand()
@@ -430,7 +422,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if key == arcade.key.A:
             self.test_player_accusation('miss scarlett', 'ballroom', 'dagger')
         if key == arcade.key.I:
-            inv = InventoryMenu(self, self.player_cards)
+            inv = InventoryMenu(self, self.player_hand)
             self.window.show_view(inv)
         user_coords = [int(self.user.center_y / 30), int(self.user.center_x / 30)]
         for room in room_list:

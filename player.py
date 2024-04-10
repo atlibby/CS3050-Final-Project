@@ -132,7 +132,7 @@ class Player(arcade.Sprite):
                 buffer += 1
             if buffer == cards_to_deal:
                 break
-        return [plums_deck, whites_deck, greens_deck, scarlets_deck, peacocks_deck, mustards_deck, case_file]
+        return [scarlets_deck, plums_deck, peacocks_deck, mustards_deck, greens_deck, whites_deck, case_file]
 
 
     # class functions
