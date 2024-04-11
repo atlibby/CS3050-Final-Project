@@ -48,11 +48,18 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.background_color = arcade.color.BLACK
 
         # Create a dictionary to store room locations
-        self.rooms = {'study': room_dimensions.study, 'hall': room_dimensions.hall, 'lounge': room_dimensions.lounge,
-                      'library': room_dimensions.library, 'billiard_room': room_dimensions.billiard_room,
-                      'conservatory': room_dimensions.conservatory, 'ballroom': room_dimensions.ballroom,
-                      'kitchen': room_dimensions.kitchen, 'dining-room': room_dimensions.dining_room,
-                      'guessing_room': room_dimensions.guessing_room}
+        self.rooms = {
+            'study': room_dimensions.study, 
+            'hall': room_dimensions.hall, 
+            'lounge': room_dimensions.lounge,
+            'library': room_dimensions.library, 
+            'billiard_room': room_dimensions.billiard_room,
+            'conservatory': room_dimensions.conservatory, 
+            'ballroom': room_dimensions.ballroom,
+            'kitchen': room_dimensions.kitchen, 
+            'dining-room': room_dimensions.dining_room,
+            'guessing_room': room_dimensions.guessing_room
+         }
 
         # Player Info
         self.player_names = ["Scarlet", "Plum", "Peacock", "Mustard", "Green", "White"]
@@ -249,29 +256,48 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             npc_card_view = CardViewNPC(self, npc_with_card, card)
             self.window.show_view(npc_card_view)
     
-    def test_non_player_accusation(self, player_card, weapon_card, room_card, whos_turn):
-        npc_accusing = whos_turn
-        card_seen = False
-        cards_in_accusation = []
-        for card in self.player_cards:
-            if card.name == player_card:
-                card_seen = True
-                cards_in_accusation.append(card)
-            elif card.name == weapon_card:
-                card_seen = True
-                cards_in_accusation.append(card)
-            elif card.name == room_card:
-                card_seen = True
-                cards_in_accusation.append(card)
-        if card_seen: #you have at least one of the cards in the accusation
-            #show player card view
-            print(cards_in_accusation)
-        else:
-            # npc looks through other npc hands
-            # should display a screen that says one player shows something to another 
-            print('you own no cards in accusation')
+    def test_non_player_accusation(self, player_card, weapon_card, room_card):
+        turn_order = []
+        npc_accusing = self.whos_turn
+        npc_accusing_index = self.players.index(npc_accusing)
         
-                     
+        # creating a queue of players to show their cards in turn
+        # the player making a guess is not in this list
+        for i in range (npc_accusing_index+1, len(self.players)):
+            turn_order.append(self.players[i])
+    
+        if npc_accusing_index != 0:
+            for i in range(0, npc_accusing_index):
+                turn_order.append(self.players[i])
+        # now we want to iterate through each character in the list, and compare the cards in their hand with what's in the accusation hand
+        # this is going to check all the cards that match in one players hand, once a player has a card that matches it looks for no other players but finishes looking through their hand
+        seen_cards = []
+        match_found = False
+        player_with_matched_card = None
+        done_searching = 0
+        while match_found == False and done_searching == 0:
+            for player in turn_order:
+                player_hand = player.get_player_hand()
+                for card in player_hand:
+                    if card.name in [player_card, weapon_card, room_card]:
+                        seen_cards.append(card)
+                        match_found = True
+                        player_with_matched_card = player  
+                        break  # break out of the inner loop
+                if match_found:
+                    break  # break out of the outer loop
+            done_searching = 1
+        # at this point we have the player with the card, and the card(s) they have that match
+        if match_found == False:
+            print("no matches were found")
+        else:
+            if player_with_matched_card == self.user:
+                # this is where we will show the player npc view
+                print(f"you have the card: {seen_cards[0].name}")
+            else: 
+                # now we have the player_with_matched card show one card to the npc
+                print(f"{player_with_matched_card.name} has {seen_cards[0].name}")
+                
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
         arcade.set_background_color(arcade.color.BLACK)
@@ -422,7 +448,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
         if key == arcade.key.A:
-            self.test_player_accusation('miss scarlett', 'ballroom', 'dagger')
+            self.test_non_player_accusation('miss scarlett', 'ballroom', 'dagger')
         if key == arcade.key.I:
             inv = InventoryMenu(self, self.player_hand)
             self.window.show_view(inv)
