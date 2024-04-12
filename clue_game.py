@@ -4,7 +4,7 @@ from checkboxes import Button
 import time
 from typing import List
 from player import *
-from room_dimensions import room_list
+from room_dimensions import room_list, door_list
 import room_dimensions
 from guess_box import Guess, GUESS_BOX_X, GUESS_BOX_Y
 import card
@@ -101,6 +101,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.hands = Player.divide_cards(self.deck)
         self.case_file = self.hands[-1]
+
+        self.old_coords = []
         
         
         # all the hands for all the players are innitialized            
@@ -447,35 +449,45 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # time delay to allow for sprite to move
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
+        if not self.has_player_moved:
+            self.old_coords = [self.user.center_y, self.user.center_x]
         if key == arcade.key.A:
             self.test_non_player_accusation('miss scarlett', 'ballroom', 'dagger')
         if key == arcade.key.I:
             inv = InventoryMenu(self, self.player_hand)
             self.window.show_view(inv)
         user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
-        for room in room_list:
-            if user_coords in room:
-                self.valid_move = True
-                #return
-        if (self.whos_turn == self.user) and self.valid_move:
+        if (self.whos_turn == self.user):
             if self.can_player_move:
                 if key == arcade.key.UP:
                     self.up_pressed = True
-                    self.update_player_movement()
                 elif key == arcade.key.DOWN:
                     self.down_pressed = True
-                    self.update_player_movement()
                 elif key == arcade.key.LEFT:
                     self.left_pressed = True
-                    self.update_player_movement()
                 elif key == arcade.key.RIGHT:
                     self.right_pressed = True
+                for room in room_list:
+                    if self.right_pressed and [user_coords[0], user_coords[1] + 1] in room:
+                        self.valid_move = False
+                    if self.left_pressed and [user_coords[0], user_coords[1] - 1] in room:
+                        self.valid_move = False
+                    if self.up_pressed and [user_coords[0] + 1, user_coords[1]] in room:
+                        self.valid_move = False
+                    if self.down_pressed and [user_coords[0] - 1, user_coords[1]] in room:
+                        self.valid_move = False
+                if(self.valid_move):
                     self.update_player_movement()
+                    self.press += 1
+                self.valid_move = True
 
         # in the case the player (ai or user) has moved but not submitted turn
         if self.has_player_moved:
             if key == arcade.key.ENTER:
-
+                if(self.guess_box.guess_clicked):
+                    self.user.center_y = self.old_coords[0]
+                    self.user.center_x = self.old_coords[1]
+                self.update_player_movement()
                 # creating the next player index for ai
                 next_player_index = 0
                 if self.whos_turn in self.ai_players:
@@ -587,6 +599,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 For when AI is already in a room when their turn starts...
 
         """
+
         if self.whos_turn == self.user:  # it's the user player's turn
             """ 
             Following code present in on_draw, based on some variables such as whos_turn and has_die_rolled:
@@ -608,15 +621,28 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = 999
-                    #self.move_limit = self.die.die_value
+                    self.move_limit = self.die.die_value
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
                     self.can_player_move = True
-                    if (self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed) and self.valid_move:
-                        self.press += 1
+                    user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
+                    in_door_list = False
+                    door = -1
+                    for x in range(0, len(door_list)):
+                        if door_list[x] == user_coords:
+                            in_door_list = True
+                            door = x
+                    if in_door_list:
+                        teleport_list = [[12, 3], [11, 11], [11, 11], [11, 11], [11, 20], [6, 20], [6, 20],
+                                         [8, 3], [8, 3], [5, 2], [5, 2], [3, 11], [3, 11], [3, 11], [3, 11],
+                                         [2, 3], [2, 21], [7, 11], [7, 11], [7, 11]]
+                        # add offset for each character
+                        self.press = self.move_limit
+                        self.user.center_x = teleport_list[door][1] * (WIDTH + MARGIN)
+                        self.user.center_y = teleport_list[door][0] * (WIDTH + HEIGHT)
 
+                        self.press = self.move_limit
                     if self.press >= self.move_limit:
                         self.can_player_move = False  # this still has issues, player still moves if key held
                         """

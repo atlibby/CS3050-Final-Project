@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0f8d2774-c6ca-4acd-9b7e-129099a88ecb" name="Changes" comment="merging">
+    <list default="true" id="0f8d2774-c6ca-4acd-9b7e-129099a88ecb" name="Changes" comment="fixed boundaries">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clue_game.py" beforeDir="false" afterPath="$PROJECT_DIR$/clue_game.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/guess_box.py" beforeDir="false" afterPath="$PROJECT_DIR$/guess_box.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/room_dimensions.py" beforeDir="false" afterPath="$PROJECT_DIR$/room_dimensions.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -181,7 +180,12 @@
       <workItem from="1712619287810" duration="105000" />
       <workItem from="1712620010892" duration="563000" />
       <workItem from="1712682122467" duration="665000" />
-      <workItem from="1712780863124" duration="1214000" />
+      <workItem from="1712780863124" duration="1255000" />
+      <workItem from="1712932830249" duration="74000" />
+      <workItem from="1712937131375" duration="6923000" />
+      <workItem from="1712944901052" duration="67000" />
+      <workItem from="1712945920721" duration="156000" />
+      <workItem from="1712950696704" duration="506000" />
     </task>
     <task id="LOCAL-00001" summary="merging">
       <option name="closed" value="true" />
@@ -191,7 +195,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710963481343</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="fixed boundaries">
+      <option name="closed" value="true" />
+      <created>1712782102899</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1712782102899</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -223,14 +235,15 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="merging" />
     <MESSAGE value="Made further updates to NPC movement according to updated code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Made further updates to NPC movement according to updated code" />
+    <MESSAGE value="fixed boundaries" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed boundaries" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/clue_game.py</url>
-          <line>645</line>
+          <line>697</line>
           <option name="timeStamp" value="1" />
         </line-breakpoint>
       </breakpoints>
@@ -245,7 +258,7 @@
     <SUITE FILE_PATH="coverage/CS3050_Final_Project$room.coverage" NAME="room Coverage Results" MODIFIED="1711319098863" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CS3050_Final_Project$die.coverage" NAME="die Coverage Results" MODIFIED="1710962845848" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CS3050_Final_Project$die_arcade.coverage" NAME="die_arcade Coverage Results" MODIFIED="1711547125180" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/CS3050_Final_Project$main.coverage" NAME="main Coverage Results" MODIFIED="1712782057007" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/CS3050_Final_Project$main.coverage" NAME="main Coverage Results" MODIFIED="1712951194553" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/CS3050_Final_Project$clue_game.coverage" NAME="clue_game Coverage Results" MODIFIED="1712171334738" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
