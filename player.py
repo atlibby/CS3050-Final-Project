@@ -42,6 +42,7 @@ class Player(arcade.Sprite):
         self.name = name
         self.center_x = center_x
         self.center_y = center_y
+        self.player_seen_cards = []
 
 
     # getters
@@ -62,6 +63,9 @@ class Player(arcade.Sprite):
     
     def get_player_hand(self):
         return self.player_hand
+    
+    def get_player_seen_cards(self):
+        return self.player_seen_cards
     # setters
     def set_x(self, center_x):
         self.x = center_x
@@ -80,6 +84,9 @@ class Player(arcade.Sprite):
     
     def set_player_hand(self, player_hand):
         self.player_hand = player_hand
+    
+    def set_player_seen_cards(self, card):
+        self.player_seen_cards.append(card)
         
     # this function returns the hands each player has including the case file
     @staticmethod

@@ -1,22 +1,16 @@
 import arcade
-
 # Set how many rows and columns we will have
 ROW_COUNT = 24
 COLUMN_COUNT = 34
-
 TIME = 0.5
-
 # This sets the WIDTH and HEIGHT of each grid location
 WIDTH = 30
 HEIGHT = 30
-
 # This sets the margin between each cell and offset for screen edges
 MARGIN = 2
-
 # Screen dimensions
 SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
-
 CARD_WIDTH = 150
 CARD_HEIGHT = 225
 CARD_MARGIN = 15
