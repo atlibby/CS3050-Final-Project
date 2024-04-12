@@ -19,6 +19,7 @@ import arcade
 import random as r
 from card import *
 from room import Room
+from room_dimensions import room_list
 
 # test function for dividing cards evenly between six players
 # will integrate with get_case_file method in main later
@@ -41,6 +42,7 @@ class Player(arcade.Sprite):
         self.name = name
         self.center_x = center_x
         self.center_y = center_y
+
 
     # getters
     def get_x(self):

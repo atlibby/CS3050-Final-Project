@@ -151,6 +151,14 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.down_pressed = False
 
+        '''
+        creating move list to keep track of player's n moves. n will be set to the die value once rolled
+        so move_list will be reinitialzied then like so: [] * n, and user coords will be appended each move
+
+        functionality: to keep track of players' moves, in order to 1. prevent back stepping and
+        2. to have player move back once their move is invalid when they go into room boundaries
+        '''
+
         self.move_list = []
 
         # Create a list of solid-color sprites to represent each grid location
@@ -212,6 +220,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # move_limit_set is set to false, to become true later once the move_limit takes the die_value
         # purpose of this var is to prevent the move_limit from being reinitialized
         self.move_limit_set = False
+
 
         # Resyncing
         self.resync_grid_with_sprites()
@@ -438,7 +447,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
         self.check_guess_for_win()
-        self.user.update()
         self.run()
 
     # Allow player movement with arrow keys
@@ -457,19 +465,27 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 #return
         if (self.whos_turn == self.user) and self.valid_move:
             if self.can_player_move:
-
                 if key == arcade.key.UP:
                     self.up_pressed = True
                     self.update_player_movement()
+                    self.move_list.append([self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)])
+                    print(self.move_list)
                 elif key == arcade.key.DOWN:
                     self.down_pressed = True
                     self.update_player_movement()
+                    self.move_list.append([self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)])
+                    print(self.move_list)
                 elif key == arcade.key.LEFT:
                     self.left_pressed = True
                     self.update_player_movement()
+                    self.move_list.append([self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)])
+                    print(self.move_list)
                 elif key == arcade.key.RIGHT:
                     self.right_pressed = True
                     self.update_player_movement()
+                    self.move_list.append([self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)])
+                    print(self.move_list)
+
 
         # in the case the player (ai or user) has moved but not submitted turn
         if self.has_player_moved:
@@ -518,16 +534,19 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         if self.up_pressed and not self.down_pressed:
             self.user.change_y = PLAYER_MOVEMENT
-            time.sleep(0.1)
+            self.user.update()
+
         elif self.down_pressed and not self.up_pressed:
             self.user.change_y = -PLAYER_MOVEMENT
-            time.sleep(0.1)
+            self.user.update()
+
         if self.left_pressed and not self.right_pressed:
             self.user.change_x = -PLAYER_MOVEMENT
-            time.sleep(0.1)
+            self.user.update()
+
         elif self.right_pressed and not self.left_pressed:
             self.user.change_x = PLAYER_MOVEMENT
-            time.sleep(0.1)
+            self.user.update()
 
         if self.press >= self.move_limit:
             self.user.change_y = 0
@@ -535,6 +554,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.press = 0
 
         self.guess_box.update_user_position(self.user.center_x, self.user.center_y)
+
 
     # turn function
     def run(self):
@@ -601,6 +621,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         self.has_player_moved = True
                         self.move_limit = 0
                         self.valid_move = True
+
+            '''
+            Handling room logic. Either inside user turn, or in a different area
+            '''
+
                         
 
         # otherwise it's the ai's turn, so the list of ai players will be iterated through
