@@ -1,3 +1,5 @@
+from random import randint
+
 import arcade.gui
 from die_arcade import DIE_X, DIE_Y, Die
 from checkboxes import Button
@@ -224,39 +226,23 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
     def test_player_accusation(self, player_card, weapon_card, room_card):
         card_seen = False
-        card = []
+        npc_cards = []
         npc_with_card = ''
         for npc in self.ai_players:
             npc_hand = npc.get_player_hand()   
             # check for suspect card
             for npc_card in npc_hand:
-                if npc_card.name == player_card:
-                    card_seen = True
-                    card = npc_card
+                if npc_card.name in [player_card, weapon_card, room_card]:
+                    npc_cards.append(npc_card)
                     npc_with_card = npc.name
-                    break   
-            # check for weapon card
-            if not card_seen:
-                for npc_card in npc_hand:
-                    if npc_card.name == weapon_card:
-                        card_seen = True
-                        card = npc_card
-                        npc_with_card = npc.name
-                        break
-            # check for room card
-            if not card_seen:
-                for npc_card in npc_hand:
-                    if npc_card.name == room_card:
-                        card_seen = True
-                        card = npc_card
-                        npc_with_card = npc.name
-                        break
+                    card_seen = True
             # if a card is found, break out of the loop
             if card_seen:
                 break
         # show the card if found
         if card_seen:
-            npc_card_view = CardViewNPC(self, npc_with_card, card)
+            random_index = randint(0, len(npc_cards))
+            npc_card_view = CardViewNPC(self, npc_with_card, npc_cards[random_index])
             self.window.show_view(npc_card_view)
     
     def test_non_player_accusation(self, player_card, weapon_card, room_card):
@@ -446,7 +432,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
         self.check_guess_for_win()
-        self.user.update()
         self.run()
 
 
@@ -489,6 +474,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # in the case the player (ai or user) has moved but not submitted turn
         if self.has_player_moved:
             if key == arcade.key.ENTER:
+                if self.guess_box.guess_clicked:
+                    accusation = []
+                    for button in self.sidebar_buttons:
+                        if button.guess:
+                            if button.card.selected:
+                                accusation.append(button.card.name)
+                    self.test_player_accusation(accusation[0], accusation[1], accusation[2])
                 if(self.guess_box.guess_clicked):
                     self.user.center_y = self.old_coords[0]
                     self.user.center_x = self.old_coords[1]
@@ -551,6 +543,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.user.change_x = PLAYER_MOVEMENT
             time.sleep(0.1)
             self.move_list.append(self.user.center_x)
+
+        self.user.update()
 
         if self.press >= self.move_limit:
 
@@ -626,7 +620,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = self.die.die_value
+                    self.move_limit = 999
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
@@ -744,4 +738,3 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # check for guess | make sure player is in room for this to be possible
         self.guess_box.check_click(x, y)
-
