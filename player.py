@@ -57,7 +57,9 @@ class Player(arcade.Sprite):
 
     def get_player_status(self):
         return self.player_status
-
+    
+    def get_player_hand(self):
+        return self.player_hand
     # setters
     def set_x(self, center_x):
         self.x = center_x
@@ -73,7 +75,10 @@ class Player(arcade.Sprite):
 
     def set_player_status(self, player_status):
         self.player_status = player_status
-
+    
+    def set_player_hand(self, player_hand):
+        self.player_hand = player_hand
+        
     # this function returns the hands each player has including the case file
     @staticmethod
     def divide_cards(deck):
@@ -127,7 +132,7 @@ class Player(arcade.Sprite):
                 buffer += 1
             if buffer == cards_to_deal:
                 break
-        return [plums_deck, whites_deck, greens_deck, scarlets_deck, peacocks_deck, mustards_deck, case_file]
+        return [scarlets_deck, plums_deck, peacocks_deck, mustards_deck, greens_deck, whites_deck, case_file]
 
 
     # class functions

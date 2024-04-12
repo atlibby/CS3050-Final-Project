@@ -23,12 +23,22 @@ CARD_MARGIN = 15
 player_names = ["Scarlet", "Plum", "Peacock", "Mustard", "Green", "White"]
 
 class CardViewNPC(arcade.View):
-  def __init__(self, game_view, player, npc_hands):
+  def __init__(self, game_view, player, card):
     super().__init__()
     self.game_view = game_view
-    self.player = player_names[player]
-    self.npc_hand = npc_hands
+    self.player = player
+    self.card = card
+    
+    self.card_sprite_list = arcade.SpriteList()
+    
+    x = (SCREEN_WIDTH/2)-(SCREEN_HEIGHT/2)
+    y = SCREEN_HEIGHT / 2
+    card_sprite = arcade.Sprite(filename="card_images/" + self.card.name + ".png",image_width=CARD_WIDTH, image_height=CARD_HEIGHT)
+    card_sprite.scale = 1
 
+    card_sprite.center_x = x
+    card_sprite.center_y = y
+    self.card_sprite_list.append(card_sprite)
   def on_show(self):
     arcade.set_background_color(arcade.color.BLACK)
 

@@ -9,6 +9,8 @@ import room_dimensions
 from guess_box import Guess, GUESS_BOX_X, GUESS_BOX_Y
 import card
 from game_screens.inventory import InventoryMenu
+from game_screens.npc_show_card import CardViewNPC
+#from game_screens.win_screen import WinScreen
 
 # Width of Sidebar
 SIDEBAR_WIDTH = 320
@@ -30,10 +32,6 @@ HEIGHT = 30
 # This sets the margin between each cell and offset for screen edges
 MARGIN = 2
 
-ROOM_BOUNDARIES_X = room_dimensions.ROOM_BOUNDARIES_X
-ROOM_BOUNDARIES_Y = room_dimensions.ROOM_BOUNDARIES_Y
-
-
 
 class ClueGameView(arcade.View):  # (arcade.Window)
     def __init__(self, width, height, player_selected):
@@ -51,11 +49,18 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.background_color = arcade.color.BLACK
 
         # Create a dictionary to store room locations
-        self.rooms = {'study': room_dimensions.study, 'hall': room_dimensions.hall, 'lounge': room_dimensions.lounge,
-                      'library': room_dimensions.library, 'billiard_room': room_dimensions.billiard_room,
-                      'conservatory': room_dimensions.conservatory, 'ballroom': room_dimensions.ballroom,
-                      'kitchen': room_dimensions.kitchen, 'dining-room': room_dimensions.dining_room,
-                      'guessing_room': room_dimensions.guessing_room}
+        self.rooms = {
+            'study': room_dimensions.study, 
+            'hall': room_dimensions.hall, 
+            'lounge': room_dimensions.lounge,
+            'library': room_dimensions.library, 
+            'billiard_room': room_dimensions.billiard_room,
+            'conservatory': room_dimensions.conservatory, 
+            'ballroom': room_dimensions.ballroom,
+            'kitchen': room_dimensions.kitchen, 
+            'dining-room': room_dimensions.dining_room,
+            'guessing_room': room_dimensions.guessing_room
+         }
 
         # Player Info
         self.player_names = ["Scarlet", "Plum", "Peacock", "Mustard", "Green", "White"]
@@ -74,26 +79,41 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.players = arcade.SpriteList()
 
         for x in range(0, len(self.player_names)):
-            self.players.append(
-                Player(self.player_names[x], self.player_xs[x], self.player_ys[x], self.player_images[x],
-                       self.player_scales[x]))
+            self.players.append(Player(self.player_names[x], self.player_xs[x], self.player_ys[x], self.player_images[x],
+                                       self.player_scales[x]))
+
+        for player in self.players:
+            print(player)
 
         # self.user will be the player object using the index of player_selected,
         # then from a list of players not the user, will iterate thru them
         self.user = self.players[player_selected]
+        
+         # creating a copy of self.players, which I will pop self.user and then
+        # that will be the ai players
+        self.ai_players = arcade.SpriteList()
+
+        for i in range(0, len(self.players)):
+            if self.players[i] != self.user:
+                self.ai_players.append(self.players[i])
 
         # split up the cards, player select screen
         # self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
         # Make a deck
 
         self.hands = Player.divide_cards(self.deck)
-        self.player_cards = []
-        # creating player hands
-        for i, hand in enumerate(self.hands):
-            if i == player_selected:
-                for card in hand:
-                    self.player_cards.append(card)
         self.case_file = self.hands[-1]
+        
+        
+        # all the hands for all the players are innitialized            
+        for i, player in enumerate(self.players):  
+            player.set_player_hand(self.hands[i])
+        self.player_hand = self.user.get_player_hand()
+        for npc in self.ai_players:
+            print(npc.name)
+            npc_hand = npc.get_player_hand()
+            for card in npc_hand:
+                print(card)       
 
         # self.player_npcs = arcade.SpriteList()
 
@@ -114,6 +134,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.moves = 0
 
         self.press = 0
+
+        self.valid_move = True
 
         self.idle = 90
 
@@ -170,15 +192,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # later on to determine what gets drawn, who can move, and who's icon is shown. Will hold the first player
         # object in self.players for now, could become a dictionary if it works better later.
         self.whos_turn = self.user
-
-        # creating a copy of self.players, which I will pop self.user and then
-        # that will be the ai players
-        self.ai_players = arcade.SpriteList()
-
-        for i in range(0, len(self.players)):
-            if self.players[i] != self.user:
-                self.ai_players.append(self.players[i])
-
+        
+        
         # self.has_die_rolled: overhead manager type variable which keeps track of whether the player has rolled the die
         # or not, which enforces the die to be rolled only once per turn. Example use: If player has rolled die,
         # then self.has_die_rolled will be true, and in on_mouse_click(), the code that allows the player to click the
@@ -200,6 +215,85 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # Resyncing
         self.resync_grid_with_sprites()
+
+    def test_player_accusation(self, player_card, weapon_card, room_card):
+        card_seen = False
+        card = []
+        npc_with_card = ''
+        for npc in self.ai_players:
+            npc_hand = npc.get_player_hand()   
+            # check for suspect card
+            for npc_card in npc_hand:
+                if npc_card.name == player_card:
+                    card_seen = True
+                    card = npc_card
+                    npc_with_card = npc.name
+                    break   
+            # check for weapon card
+            if not card_seen:
+                for npc_card in npc_hand:
+                    if npc_card.name == weapon_card:
+                        card_seen = True
+                        card = npc_card
+                        npc_with_card = npc.name
+                        break
+            # check for room card
+            if not card_seen:
+                for npc_card in npc_hand:
+                    if npc_card.name == room_card:
+                        card_seen = True
+                        card = npc_card
+                        npc_with_card = npc.name
+                        break
+            # if a card is found, break out of the loop
+            if card_seen:
+                break
+        # show the card if found
+        if card_seen:
+            npc_card_view = CardViewNPC(self, npc_with_card, card)
+            self.window.show_view(npc_card_view)
+    
+    def test_non_player_accusation(self, player_card, weapon_card, room_card):
+        turn_order = []
+        npc_accusing = self.whos_turn
+        npc_accusing_index = self.players.index(npc_accusing)
+        
+        # creating a queue of players to show their cards in turn
+        # the player making a guess is not in this list
+        for i in range (npc_accusing_index+1, len(self.players)):
+            turn_order.append(self.players[i])
+    
+        if npc_accusing_index != 0:
+            for i in range(0, npc_accusing_index):
+                turn_order.append(self.players[i])
+        # now we want to iterate through each character in the list, and compare the cards in their hand with what's in the accusation hand
+        # this is going to check all the cards that match in one players hand, once a player has a card that matches it looks for no other players but finishes looking through their hand
+        seen_cards = []
+        match_found = False
+        player_with_matched_card = None
+        done_searching = 0
+        while match_found == False and done_searching == 0:
+            for player in turn_order:
+                player_hand = player.get_player_hand()
+                for card in player_hand:
+                    if card.name in [player_card, weapon_card, room_card]:
+                        seen_cards.append(card)
+                        match_found = True
+                        player_with_matched_card = player  
+                        break  # break out of the inner loop
+                if match_found:
+                    break  # break out of the outer loop
+            done_searching = 1
+        # at this point we have the player with the card, and the card(s) they have that match
+        if match_found == False:
+            print("no matches were found")
+        else:
+            if player_with_matched_card == self.user:
+                # this is where we will show the player npc view
+                print(f"you have the card: {seen_cards[0].name}")
+            else: 
+                # now we have the player_with_matched card show one card to the npc
+                print(f"{player_with_matched_card.name} has {seen_cards[0].name}")
 
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
@@ -239,6 +333,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 guess.append(card)
         if set(guess) == set(self.case_file):
             print("WINNER")
+            #win = WinScreen()
+            #self.window.show_view(win)
 
     # Method for drawing sidebar
     def draw_sidebar(self):
@@ -349,14 +445,17 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # time delay to allow for sprite to move
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.A:
+            self.test_non_player_accusation('miss scarlett', 'ballroom', 'dagger')
         if key == arcade.key.I:
-            inv = InventoryMenu(self, self.player_cards)
+            inv = InventoryMenu(self, self.player_hand)
             self.window.show_view(inv)
-        user_coords = [int(self.user.center_y / 30), int(self.user.center_x / 30)]
+        user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
         for room in room_list:
             if user_coords in room:
-                return
-        if self.whos_turn == self.user:
+                self.valid_move = True
+                #return
+        if (self.whos_turn == self.user) and self.valid_move:
             if self.can_player_move:
 
                 if key == arcade.key.UP:
@@ -486,7 +585,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 if self.move_limit >= 1:
                     self.can_player_move = True
 
-                    if self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed:
+                    if (self.right_pressed or self.left_pressed or self.up_pressed or self.down_pressed) and self.valid_move:
                         self.press += 1
 
                     if self.press >= self.move_limit:
@@ -501,6 +600,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         """
                         self.has_player_moved = True
                         self.move_limit = 0
+                        self.valid_move = True
+                        
 
         # otherwise it's the ai's turn, so the list of ai players will be iterated through
         # to handle their turns
@@ -535,10 +636,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                 self.ai_players[i].update()
                                 time.sleep(0.25)
                         self.has_player_moved = True
+                        
+                        # logic for npc player making an accusation
 
     # Mouse listener
     def on_mouse_press(self, x, y, button, modifiers):
-
+        
         # Convert the clicked mouse position into grid coordinates
         column = int(x // (WIDTH + MARGIN))
         row = int(y // (HEIGHT + MARGIN))
