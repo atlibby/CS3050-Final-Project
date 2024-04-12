@@ -10,6 +10,7 @@ from guess_box import Guess, GUESS_BOX_X, GUESS_BOX_Y
 import card
 from game_screens.inventory import InventoryMenu
 from game_screens.npc_show_card import CardViewNPC
+from game_screens.player_show_card import CardShowViewPlayer, PlayerWatchExchange
 #from game_screens.win_screen import WinScreen
 
 # Width of Sidebar
@@ -260,7 +261,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     
     def test_non_player_accusation(self, player_card, weapon_card, room_card):
         turn_order = []
-        npc_accusing = self.whos_turn
+        npc_accusing = self.whos_turn #self.players[3] 
         npc_accusing_index = self.players.index(npc_accusing)
         
         # creating a queue of players to show their cards in turn
@@ -285,7 +286,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         seen_cards.append(card)
                         match_found = True
                         player_with_matched_card = player  
-                        break  # break out of the inner loop
+                        break  
                 if match_found:
                     break  # break out of the outer loop
             done_searching = 1
@@ -296,9 +297,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             if player_with_matched_card == self.user:
                 # this is where we will show the player npc view
                 print(f"you have the card: {seen_cards[0].name}")
+                card_show_view_player = CardShowViewPlayer(self, npc_accusing, seen_cards)
+                self.window.show_view(card_show_view_player)
             else: 
                 # now we have the player_with_matched card show one card to the npc
                 print(f"{player_with_matched_card.name} has {seen_cards[0].name}")
+                npc_exchange_view = PlayerWatchExchange(self, npc_accusing, player_with_matched_card, seen_cards[0])
+                self.window.show_view(npc_exchange_view)
                 
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
