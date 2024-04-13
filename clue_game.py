@@ -157,6 +157,10 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.move_list = []
 
+        self.move_list_x = []
+
+        self.move_list_y = []
+
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
             for column in range(COLUMN_COUNT):
@@ -451,12 +455,16 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             if self.can_player_move:
                 if key == arcade.key.UP:
                     self.up_pressed = True
+                    self.move_list_y.append(self.user.center_y)
                 elif key == arcade.key.DOWN:
                     self.down_pressed = True
+                    self.move_list_y.append(self.user.center_y)
                 elif key == arcade.key.LEFT:
                     self.left_pressed = True
+                    self.move_list_x.append(self.user.center_x)
                 elif key == arcade.key.RIGHT:
                     self.right_pressed = True
+                    self.move_list_x.append(self.user.center_x)
                 for room in room_list:
                     if self.right_pressed and [user_coords[0], user_coords[1] + 1] in room:
                         self.valid_move = False
@@ -466,6 +474,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         self.valid_move = False
                     if self.down_pressed and [user_coords[0] - 1, user_coords[1]] in room:
                         self.valid_move = False
+
+
+
                 if(self.valid_move):
                     self.update_player_movement()
                     self.press += 1
@@ -530,24 +541,19 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if self.up_pressed and not self.down_pressed:
             self.user.change_y = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_y)
         elif self.down_pressed and not self.up_pressed:
             self.user.change_y = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_y)
         if self.left_pressed and not self.right_pressed:
             self.user.change_x = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_x)
         elif self.right_pressed and not self.left_pressed:
             self.user.change_x = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.user.center_x)
 
         self.user.update()
 
         if self.press >= self.move_limit:
-
             self.user.change_y = 0
             self.user.change_x = 0
             self.press = 0
@@ -620,7 +626,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = 999
+                    self.move_limit = self.die.die_value
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
@@ -663,6 +669,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             for i in range(0, len(self.ai_players)):
                 # first will be second player, then third, etc
                 if self.whos_turn == self.ai_players[i]:
+                    ai_coords = [self.ai_players[i].center_y // (WIDTH + MARGIN), self.ai_players[i].center_x // (HEIGHT + MARGIN)]
                     # die will be rolled for them and the value they get will be shown
                     if not self.has_die_rolled:
                         self.die.roll_die()
@@ -671,24 +678,50 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         self.move_limit_set = True
                         # npc movement
                         for j in range(0, self.move_limit):
+                            print(self.ai_players[i].name)
+                            print(self.die.die_value)
                             # for each move, will move a random direction, either up, left, or down
                             rand = random.randrange(0, 4)
                             if rand == 0:
                                 self.ai_players[i].change_x = PLAYER_MOVEMENT
-                                self.ai_players[i].update()
+                                self.ai_players[i].change_y = 0
+                                if self.valid_move:
+                                    self.ai_players[i].update()
+                                    print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
                             elif rand == 1:
                                 self.ai_players[i].change_y = PLAYER_MOVEMENT
-                                self.ai_players[i].update()
+                                self.ai_players[i].change_x = 0
+                                if self.valid_move:
+                                    self.ai_players[i].update()
+                                    print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
                             elif rand == 2:
                                 self.ai_players[i].change_x = -PLAYER_MOVEMENT
-                                self.ai_players[i].update()
+                                self.ai_players[i].change_y = 0
+                                if self.valid_move:
+                                    self.ai_players[i].update()
+                                    print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
                             elif rand == 3:
                                 self.ai_players[i].change_y = -PLAYER_MOVEMENT
-                                self.ai_players[i].update()
+                                self.ai_players[i].change_x = 0
+                                if self.valid_move:
+                                    self.ai_players[i].update()
+                                    print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
+
+                            for room in room_list:
+                                if [ai_coords[0], ai_coords[1] + 1] in room:
+                                    self.valid_move = False
+                                if [ai_coords[0], ai_coords[1] - 1] in room:
+                                    self.valid_move = False
+                                if [ai_coords[0] + 1, ai_coords[1]] in room:
+                                    self.valid_move = False
+                                if [ai_coords[0] - 1, ai_coords[1]] in room:
+                                    self.valid_move = False
+                            self.valid_move = True
+
                         self.has_player_moved = True
                         
                         # logic for npc player making an accusation
