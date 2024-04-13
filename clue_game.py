@@ -612,6 +612,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.user.change_y = 0
             self.user.change_x = 0
             self.press = 0
+            self.key_presses.clear()
 
         self.guess_box.update_user_position(self.user.center_x, self.user.center_y)
 
@@ -767,47 +768,65 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                             # for each move, will move a random direction, either up, left, or down
                             rand = random.randrange(0, 4)
                             if rand == 0:
-                                self.ai_players[i].change_x = PLAYER_MOVEMENT
-                                self.ai_players[i].change_y = 0
+                                if self.valid_move:
+                                    self.ai_players[i].change_x = PLAYER_MOVEMENT
+                                    self.ai_players[i].change_y = 0
+                                    # self.ai_players[i].update()
+                                else:
+                                    self.ai_players[i].change_x = 0
+                                    self.ai_players[i].change_y = 0
+                                    print(self.ai_players[i].name + " hit a wall!")
+                                self.ai_players[i].update()
+                                self.valid_move = True
                                 # if self.valid_move:
                                 #     self.ai_players[i].update()
                                 #     print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
                             elif rand == 1:
-                                self.ai_players[i].change_y = PLAYER_MOVEMENT
-                                self.ai_players[i].change_x = 0
+                                if self.valid_move:
+                                    self.ai_players[i].change_y = PLAYER_MOVEMENT
+                                    self.ai_players[i].change_x = 0
+                                    # self.ai_players[i].update()
+                                else:
+                                    self.ai_players[i].change_x = 0
+                                    self.ai_players[i].change_y = 0
+                                    print(self.ai_players[i].name + " hit a wall!")
+                                self.ai_players[i].update()
+                                self.valid_move = True
                                 # if self.valid_move:
                                 #     self.ai_players[i].update()
                                 #     print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
                             elif rand == 2:
-                                self.ai_players[i].change_x = -PLAYER_MOVEMENT
-                                self.ai_players[i].change_y = 0
+                                if self.valid_move:
+                                    self.ai_players[i].change_x = -PLAYER_MOVEMENT
+                                    self.ai_players[i].change_y = 0
+                                    # self.ai_players[i].update()
+                                else:
+                                    self.ai_players[i].change_x = 0
+                                    self.ai_players[i].change_y = 0
+                                    print(self.ai_players[i].name + " hit a wall!")
+                                self.ai_players[i].update()
+                                self.valid_move = True
                                 # if self.valid_move:
                                 #     self.ai_players[i].update()
                                 #     print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
                             elif rand == 3:
-                                self.ai_players[i].change_y = -PLAYER_MOVEMENT
-                                self.ai_players[i].change_x = 0
+                                if self.valid_move:
+                                    self.ai_players[i].change_y = -PLAYER_MOVEMENT
+                                    self.ai_players[i].change_x = 0
+                                    # self.ai_players[i].update()
+                                else:
+                                    self.ai_players[i].change_x = 0
+                                    self.ai_players[i].change_y = 0
+                                    print(self.ai_players[i].name + " hit a wall!")
+                                self.ai_players[i].update()
+                                self.valid_move = True
                                 # if self.valid_move:
                                 #     self.ai_players[i].update()
                                 #     print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
-
-                            self.check_player_in_room()
-
-                            if self.player_in_room:
-                                if self.ai_guessed:
-                                    self.has_player_moved = True
-                                    self.move_limit = 0
-                                    self.valid_move = True
-                                    self.ai_guessed = False
-                            else:
-                                self.has_player_moved = True
-                                self.move_limit = 0
-                                self.valid_move = True
-
 
                             for room in room_list:
                                 if [ai_coords[0], ai_coords[1] + 1] in room:
@@ -818,10 +837,19 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                     self.valid_move = False
                                 if [ai_coords[0] - 1, ai_coords[1]] in room:
                                     self.valid_move = False
+                            # self.valid_move = True
 
-                            if self.valid_move:
-                                self.ai_players[i].update()
+                        self.check_player_in_room()
 
+                        if self.player_in_room:
+                            if self.ai_guessed:
+                                self.has_player_moved = True
+                                self.move_limit = 0
+                                self.valid_move = True
+                                self.ai_guessed = False
+                        else:
+                            self.has_player_moved = True
+                            self.move_limit = 0
                             self.valid_move = True
 
                         self.has_player_moved = True
