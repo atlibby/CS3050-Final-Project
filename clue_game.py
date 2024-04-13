@@ -673,7 +673,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = 6
+                    self.move_limit = self.die.die_value
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
