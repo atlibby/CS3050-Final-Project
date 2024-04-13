@@ -14,16 +14,17 @@ class Button:
         self.guess = guess
         self.guess_box = guess_box
 
-    def draw(self):
+    def draw(self, valid):
         room_names = ['Study', 'Hall', 'Lounge', 'Library', 'Billiard Room', 'Conservatory',
                       'Ballroom', 'Kitchen', 'Dining Room', 'Guessing Room']
         if self.clicked:
             if not self.guess:
                 arcade.draw_rectangle_filled(self.x, self.y-8, self.width, self.height, arcade.color.GREEN)
-            elif self.guess and self.guess_box.guess_clicked:
+            elif self.guess and self.guess_box.guess_clicked and valid:
                 arcade.draw_rectangle_filled(self.x, self.y-8, self.width, self.height, arcade.color.GREEN)
                 self.card.selected = True
             else:
+                arcade.draw_rectangle_filled(self.x, self.y - 8, self.width, self.height, arcade.color.BLACK)
                 self.clicked = not self.clicked
         else:
             if not self.guess:
