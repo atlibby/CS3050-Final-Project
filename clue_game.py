@@ -13,8 +13,10 @@ import card
 from game_screens.inventory import InventoryMenu
 from game_screens.npc_show_card import CardViewNPC
 from game_screens.player_show_card import CardShowViewPlayer, PlayerWatchExchange
+from game_screens.win_screen import WinScreen
+from game_screens.lose_screen import LoseScreen
+from game_screens.instructions import Instructions
 
-# from game_screens.win_screen import WinScreen
 
 # Width of Sidebar
 SIDEBAR_WIDTH = 320
@@ -250,6 +252,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
     def test_non_player_accusation(self, player_card, weapon_card, room_card):
         turn_order = []
+        npc_guess = [player_card, weapon_card, room_card]
         npc_accusing = self.whos_turn  # self.players[3]
         npc_accusing_index = self.players.index(npc_accusing)
 
@@ -286,12 +289,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             if player_with_matched_card == self.user:
                 # this is where we will show the player npc view
                 print(f"you have the card: {seen_cards[0].name}")
-                card_show_view_player = CardShowViewPlayer(self, npc_accusing, seen_cards)
+                card_show_view_player = CardShowViewPlayer(self, npc_accusing, seen_cards, npc_guess)
                 self.window.show_view(card_show_view_player)
             else:
                 # now we have the player_with_matched card show one card to the npc
                 print(f"{player_with_matched_card.name} has {seen_cards[0].name}")
-                npc_exchange_view = PlayerWatchExchange(self, npc_accusing, player_with_matched_card, seen_cards[0])
+                npc_exchange_view = PlayerWatchExchange(self, npc_accusing, player_with_matched_card, seen_cards[0], npc_guess)
                 self.window.show_view(npc_exchange_view)
 
     # Method for reloading sprites after I/O or other changes
@@ -331,9 +334,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             if card.selected:
                 guess.append(card)
         if set(guess) == set(self.case_file):
-            print("WINNER")
-            # win = WinScreen()
-            # self.window.show_view(win)
+            #print("WINNER")
+            win = WinScreen()
+            self.window.show_view(win)
 
     # Method for drawing sidebar
     def draw_sidebar(self):
@@ -465,6 +468,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # time delay to allow for sprite to move
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
+        if key == arcade.key.L:
+             lose = LoseScreen()
+             self.window.show_view(lose)
+        if key == arcade.key.G:
+            instructions = Instructions()
+            self.window.show_view(instructions)
         if not self.has_player_moved:
             self.old_coords = [self.user.center_y, self.user.center_x]
 

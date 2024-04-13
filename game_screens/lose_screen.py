@@ -17,21 +17,21 @@ MARGIN = 2
 SCREEN_WIDTH = (WIDTH + MARGIN) * COLUMN_COUNT + MARGIN
 SCREEN_HEIGHT = (HEIGHT + MARGIN) * ROW_COUNT + MARGIN
 
-class WinScreen(arcade.View):
+class LoseScreen(arcade.View):
   def __init__(self):
     super().__init__()
     self.width = SCREEN_WIDTH
     self.height = SCREEN_HEIGHT
   
   def on_show(self):
-    arcade.set_background_color(arcade.color.GRANNY_SMITH_APPLE)
+    arcade.set_background_color(arcade.color.RED)
     
   def on_draw(self):
     arcade.start_render()
 
-    text_width = len("You Win") * 24 
+    text_width = len("LOSER you guessed wrong... sorry") * 24 
     text_x = (SCREEN_WIDTH-text_width)/2
     text_y = SCREEN_HEIGHT/2
-    arcade.draw_text("You Win", text_x, text_y, arcade.color.BLACK, 30)
+    arcade.draw_text("LOSER you guessed wrong... sorry", text_x, text_y, arcade.color.BLACK, 30)
       
   
