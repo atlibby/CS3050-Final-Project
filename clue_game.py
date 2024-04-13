@@ -867,18 +867,18 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                     self.valid_move = False
                             # self.valid_move = True
 
-                        self.check_player_in_room()
-
-                        if self.player_in_room:
-                            if self.ai_guessed:
-                                self.has_player_moved = True
-                                self.move_limit = 0
-                                self.valid_move = True
-                                self.ai_guessed = False
-                        else:
+                        self.can_player_move = False
+                    self.check_player_in_room()
+                    if self.player_in_room:
+                        if self.ai_guessed:
                             self.has_player_moved = True
                             self.move_limit = 0
                             self.valid_move = True
+                            self.ai_guessed = False
+                    else:
+                        self.has_player_moved = True
+                        self.move_limit = 0
+                        self.valid_move = True
 
                         # self.has_player_moved = True
 
