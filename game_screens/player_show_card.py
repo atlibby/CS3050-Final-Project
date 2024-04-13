@@ -16,11 +16,12 @@ CARD_HEIGHT = 225
 CARD_MARGIN = 15
 
 class CardShowViewPlayer(arcade.View):
-  def __init__(self, game_view, guessing_player, cards):
+  def __init__(self, game_view, guessing_player, cards, npc_guess):
     super().__init__()
     self.game_view = game_view
     self.guessing_player = guessing_player
     self.cards = cards
+    self.npc_guess_cards = npc_guess
     
     self.card_sprite_list = arcade.SpriteList()
 
@@ -51,6 +52,11 @@ class CardShowViewPlayer(arcade.View):
     text_y = SCREEN_HEIGHT - 60 
     arcade.draw_text("Pick a card you want to show: " + self.guessing_player.name, text_x, text_y, arcade.color.WHITE, 30)
     
+    text_width_two = len(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2]) * 20 
+    text_x2 = (SCREEN_WIDTH - text_width_two)/2
+    text_y2 = SCREEN_HEIGHT - 150 
+    arcade.draw_text(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2], text_x2, text_y2, arcade.color.WHITE, 30)
+    
     self.card_sprite_list.draw()
     
   def on_mouse_press(self, x, y, button, modifiers):
@@ -61,25 +67,34 @@ class CardShowViewPlayer(arcade.View):
           self.window.show_view(self.game_view)
           
 class PlayerWatchExchange(arcade.View):
-  def __init__(self, game_view, guessing_player, player_with_card, card):
+  def __init__(self, game_view, guessing_player, player_with_card, card, npc_guess):
     super().__init__()
     self.game_view = game_view
     self.guessing_player = guessing_player
     self.player_with_card = player_with_card
     self.card = card
+    self.npc_guess_cards = npc_guess
     
     self.guessing_player.set_player_seen_cards(self.card.name)
+    self.seen = self.guessing_player.get_player_seen_cards()
+    for card in self.seen:
+      print(f"{self.guessing_player.name} has seen {card}")
     
   def on_show(self):
     arcade.set_background_color(arcade.color.BLACK)
     
   def on_draw(self):
     arcade.start_render()
+    y = SCREEN_HEIGHT/2
     
     text_width = len(self.player_with_card.name + " shows " + self.guessing_player.name + " a card") * 24 
     text_x = (SCREEN_WIDTH - text_width)/2
     text_y = SCREEN_HEIGHT - 60 
-    arcade.draw_text(self.player_with_card.name + " shows " + self.guessing_player.name + " a card", text_x, text_y, arcade.color.WHITE, 30)
+    arcade.draw_text(self.player_with_card.name + " shows " + self.guessing_player.name + " a card", text_x, y, arcade.color.WHITE, 30)
+    
+    text_width_two = len(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2]) * 20
+    text_x2 = (SCREEN_WIDTH - text_width_two)/2
+    arcade.draw_text(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2], text_x2, text_y, arcade.color.WHITE, 30)
     
   def on_mouse_press(self, x, y, button, modifiers):
     self.window.show_view(self.game_view)
