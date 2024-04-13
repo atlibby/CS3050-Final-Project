@@ -470,6 +470,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if key == arcade.key.I:
             inv = InventoryMenu(self, self.player_hand)
             self.window.show_view(inv)
+
         user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
         if (self.whos_turn == self.user):
             if self.can_player_move:
@@ -751,32 +752,32 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                     print(str(self.ai_players[i].center_x) + " " + str(self.ai_players[i].center_y))
                                 time.sleep(0.25)
 
-                            self.check_player_in_room()
+                    self.check_player_in_room()
 
-                            if self.player_in_room:
-                                if self.ai_guessed:
-                                    self.has_player_moved = True
-                                    self.move_limit = 0
-                                    self.valid_move = True
-                                    self.ai_guessed = False
-                            else:
-                                self.has_player_moved = True
-                                self.move_limit = 0
-                                self.valid_move = True
-
-
-                            '''for room in room_list:
-                                if [ai_coords[0], ai_coords[1] + 1] in room:
-                                    self.valid_move = False
-                                if [ai_coords[0], ai_coords[1] - 1] in room:
-                                    self.valid_move = False
-                                if [ai_coords[0] + 1, ai_coords[1]] in room:
-                                    self.valid_move = False
-                                if [ai_coords[0] - 1, ai_coords[1]] in room:
-                                    self.valid_move = False
+                    if self.player_in_room:
+                        if self.ai_guessed:
+                            self.has_player_moved = True
+                            self.move_limit = 0
                             self.valid_move = True
+                            self.ai_guessed = False
+                    else:
+                        self.has_player_moved = True
+                        self.move_limit = 0
+                        self.valid_move = True
 
-                        self.has_player_moved = True'''
+
+                    '''for room in room_list:
+                        if [ai_coords[0], ai_coords[1] + 1] in room:
+                            self.valid_move = False
+                        if [ai_coords[0], ai_coords[1] - 1] in room:
+                            self.valid_move = False
+                        if [ai_coords[0] + 1, ai_coords[1]] in room:
+                            self.valid_move = False
+                        if [ai_coords[0] - 1, ai_coords[1]] in room:
+                            self.valid_move = False
+                    self.valid_move = True
+
+                self.has_player_moved = True'''
 
                         # logic for npc player making an accusation
 
