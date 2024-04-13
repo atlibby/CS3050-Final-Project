@@ -15,8 +15,9 @@ class PlayerSelect(arcade.View):
     self.height = height
     self.player_selected = None
     self.player_buttons = arcade.SpriteList()
+    self.background_img = arcade.load_texture("images/clue_image.jpeg")
 
-    arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+    # arcade.set_background_color(arcade.color.RASPBERRY)
     self.v_box = arcade.gui.UIBoxLayout()
     
     i = 0
@@ -40,7 +41,7 @@ class PlayerSelect(arcade.View):
             anchor_y="center_y",
             child=self.v_box)
     )
-
+    
   def on_click_player_0(self, event):
     self.player_selected = 0
     clue_game_view = ClueGameView(self.width, self.height, self.player_selected)
@@ -83,5 +84,13 @@ class PlayerSelect(arcade.View):
     
     
   def on_draw(self):
-      self.clear()
-      self.manager.draw()
+    self.clear()
+    arcade.draw_texture_rectangle(
+        self.width // 2,
+        self.height // 2,
+        self.width,
+        self.height,
+        self.background_img
+    )
+
+    self.manager.draw()

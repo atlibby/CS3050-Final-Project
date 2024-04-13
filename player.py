@@ -64,6 +64,7 @@ class Player(arcade.Sprite):
     def get_player_hand(self):
         return self.player_hand
     
+    # this is a list of the names of cards that they have seen
     def get_player_seen_cards(self):
         return self.player_seen_cards
     # setters
