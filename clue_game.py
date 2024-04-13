@@ -433,13 +433,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 text = f"You rolled a {self.die.die_value}!"
                 arcade.draw_text(text, DIE_X - 45, DIE_Y - 50, arcade.color.BLACK, 10)
 
-                if (not self.can_player_move and self.player_in_room and not self.user_guessed and
-                        not self.has_player_moved):
+                if (self.player_in_room and (not self.user_guessed) and self.has_player_moved):
                     # indicate the user to press A to see cards
-                    arcade.draw_text("Check the boxes, then click ENTER", DIE_X - 100, DIE_Y + 50, arcade.color.BLACK, 10)
+                    arcade.draw_text("Check the boxes, then click ENTER", DIE_X - 115, DIE_Y + 50, arcade.color.BLACK, 10)
 
                 # if the player has already done all their moves, but hasn't submitted their turn
-                if self.has_player_moved:
+                elif not self.player_in_room and self.has_player_moved:
                     # indicate the user to press enter to switch turns
                     arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
         else:
@@ -673,7 +672,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = self.die.die_value
+                    self.move_limit = 6
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
