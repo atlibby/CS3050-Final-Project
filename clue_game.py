@@ -6,7 +6,7 @@ from checkboxes import Button
 import time
 from typing import List
 from player import *
-from room_dimensions import room_list, door_list
+from room_dimensions import room_list, door_dict
 import room_dimensions
 from guess_box import Guess, GUESS_BOX_X, GUESS_BOX_Y
 import card
@@ -45,6 +45,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # super().__init__(width, height, title)
         self.width = width
         self.height = height
+
+        self.door_list = []
+        for room in door_dict:
+            for door in door_dict.get(room):
+                self.door_list.append(door)
 
         self.deck = Deck.initialize_cards()
         Deck.shuffle_deck(self.deck)
@@ -122,8 +127,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 npc.set_player_seen_cards(card.name)
                 if card.cardType == "room":
                     npc.no_go_rooms.append(card.name)
-            random_room_index = random.randint(0, len(door_list) - 1)
-            npc.target_coords = door_list[random_room_index]
+
+            random_room_index = random.randint(0, len(self.door_list) - 1)
+            npc.target_coords = self.door_list[random_room_index]
 
                 # self.player_npcs = arcade.SpriteList()
 
@@ -481,8 +487,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if key == arcade.key.G:
             instructions = Instructions()
             self.window.show_view(instructions)
-        if not self.has_player_moved:
+        if not self.player_in_room:
             self.old_coords = [self.whos_turn.center_y, self.whos_turn.center_x]
+        print(self.old_coords)
 
         # if its the player's turn and the player can't move (so theyve made their moves) and they're in a room and
         # they haven't guessed, then they can guess
@@ -691,7 +698,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = 6
+                    self.move_limit = self.die.die_value
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
@@ -699,11 +706,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
                     in_door_list = False
                     door = -1
-                    for x in range(0, len(door_list)):
-                        if door_list[x] == user_coords:
+                    for x in range(0, len(self.door_list)):
+                        if self.door_list[x] == user_coords:
                             in_door_list = True
                             door = x
                     if in_door_list:
+                        self.has_player_moved = True
                         teleport_list = [[12, 3], [11, 11], [11, 11], [11, 11], [11, 20], [6, 20], [6, 20],
                                          [8, 3], [8, 3], [5, 2], [5, 2], [3, 11], [3, 11], [3, 11], [3, 11],
                                          [2, 3], [2, 21], [7, 11], [7, 11], [7, 11]]
@@ -715,7 +723,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
                         # add offset for each character
                         self.press = self.move_limit
-                        self.has_player_moved = True
 
                     if self.press >= self.move_limit:
                         self.can_player_move = False
@@ -760,7 +767,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     ai_coords = [self.ai_players[i].center_y // (WIDTH + MARGIN),
                                  self.ai_players[i].center_x // (HEIGHT + MARGIN)]
                     # die will be rolled for them and the value they get will be shown
-                    self.old_coords = [self.ai_players[i].center_y, self.ai_players[i].center_x]
                     if not self.has_die_rolled:
                         self.die.roll_die()
                         self.has_die_rolled = True
@@ -768,13 +774,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         self.move_limit_set = True
                         # npc movement
                         last_move = -1
-                        count = 0
-                        while self.move_limit > 0 and self.valid_move:
-                            count += 1
+                        while self.move_limit > 0:
                             ai_coords = [self.ai_players[i].center_y // (WIDTH + MARGIN),
                                          self.ai_players[i].center_x // (HEIGHT + MARGIN)]
                             self.ai_players[i].priority.clear()
-                            # for each move, will move a random direction, either up, left, or down
+                            # for each move, we prioritize a list of directions based on NPC position
                             if ai_coords[1] < self.whos_turn.get_target_coords()[1]:
                                 self.whos_turn.priority.append(1)
                                 if ai_coords[0] < self.whos_turn.get_target_coords()[0]:
@@ -802,17 +806,35 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                     self.whos_turn.priority.append(3)
                                 self.whos_turn.priority.append(2)
                                 self.whos_turn.priority.append(1)
-                            print(self.whos_turn.get_target_coords())
-                            print(self.whos_turn.priority)
-                            print(ai_coords)
+                            in_door_list = False
+                            # if the npc is not in a door or room, we update their last location
+                            if not self.player_in_room and ai_coords not in self.door_list:
+                                self.old_coords = [self.whos_turn.center_y, self.whos_turn.center_x]
+                            # if they are in a door, we teleport them inside the room
+                            for x in range(0, len(self.door_list)):
+                                if self.door_list[x] == ai_coords:
+                                    in_door_list = True
+                                    door = x
+                            if in_door_list:
+                                teleport_list = [[12, 3], [11, 11], [11, 11], [11, 11], [11, 20], [6, 20], [6, 20],
+                                                 [8, 3], [8, 3], [5, 2], [5, 2], [3, 11], [3, 11], [3, 11], [3, 11],
+                                                 [2, 3], [2, 21], [7, 11], [7, 11], [7, 11]]
+                                #TODO: add offset for each character
+                                self.press = self.move_limit
+                                self.whos_turn.center_x = teleport_list[door][1] * (WIDTH + MARGIN)
+                                self.whos_turn.center_y = teleport_list[door][0] * (WIDTH + HEIGHT)
+                                self.player_in_room = True
+                                break
+                            # bad moves are ones that are invalid (walking into a wall)
+                            bad_move_list = [False, False, False, False]
+                            # here we loop through the directions by priority, and try to find a good move
                             for direction in self.whos_turn.priority:
-                                if direction == 1 and last_move != 2:
+                                if direction == 1 and last_move != 2 and not bad_move_list[0]:
                                     if ai_coords[1] != 23:
                                         for room in room_list:
                                             if [ai_coords[0], ai_coords[1] + 1] in room:
                                                 self.valid_move = False
                                         if self.valid_move:
-                                            print('right')
                                             self.ai_players[i].change_x = PLAYER_MOVEMENT
                                             self.ai_players[i].change_y = 0
                                             self.ai_players[i].update()
@@ -820,22 +842,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                             last_move = 1
                                             count = 0
                                             break
-                                        else:
-                                            self.ai_players[i].change_x = 0
-                                            self.ai_players[i].change_y = 0
-                                    else:
-                                        self.ai_players[i].change_x = 0
-                                        self.ai_players[i].change_y = 0
-                                    self.ai_players[i].update()
-                                    self.valid_move = True
-                                    time.sleep(0.25)
-                                elif direction == 3 and last_move != 4:
+                                        bad_move_list[0] = True
+                                if direction == 3 and last_move != 4 and not bad_move_list[2]:
                                     if ai_coords[0] != 23:
                                         for room in room_list:
                                             if [ai_coords[0] + 1, ai_coords[1]] in room:
                                                 self.valid_move = False
                                         if self.valid_move:
-                                            print('up')
                                             self.ai_players[i].change_y = PLAYER_MOVEMENT
                                             self.ai_players[i].change_x = 0
                                             self.move_limit -= 1
@@ -843,22 +856,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                             last_move = 3
                                             count = 0
                                             break
-                                        else:
-                                            self.ai_players[i].change_x = 0
-                                            self.ai_players[i].change_y = 0
-                                    else:
-                                        self.ai_players[i].change_x = 0
-                                        self.ai_players[i].change_y = 0
-                                    self.ai_players[i].update()
-                                    self.valid_move = True
-                                    time.sleep(0.25)
-                                elif direction == 2 and last_move != 1:
+                                        bad_move_list[2] = True
+                                if direction == 2 and last_move != 1 and not bad_move_list[1]:
                                     if ai_coords[1] != 0:
                                         for room in room_list:
                                             if [ai_coords[0], ai_coords[1] - 1] in room:
                                                 self.valid_move = False
                                         if self.valid_move:
-                                            print('left')
                                             self.ai_players[i].change_x = -PLAYER_MOVEMENT
                                             self.ai_players[i].change_y = 0
                                             self.move_limit -= 1
@@ -866,22 +870,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                             last_move = 2
                                             count = 0
                                             break
-                                        else:
-                                            self.ai_players[i].change_x = 0
-                                            self.ai_players[i].change_y = 0
-                                    else:
-                                        self.ai_players[i].change_x = 0
-                                        self.ai_players[i].change_y = 0
-                                    self.ai_players[i].update()
-                                    self.valid_move = True
-                                    time.sleep(0.25)
-                                elif direction == 4 and last_move != 3:
+                                        bad_move_list[1] = True
+                                if direction == 4 and last_move != 3 and not bad_move_list[3]:
                                     if ai_coords[0] != 0:
                                         for room in room_list:
                                             if [ai_coords[0] - 1, ai_coords[1]] in room:
                                                 self.valid_move = False
                                         if self.valid_move:
-                                            print('down')
                                             self.ai_players[i].change_y = -PLAYER_MOVEMENT
                                             self.ai_players[i].change_x = 0
                                             self.move_limit -= 1
@@ -889,20 +884,20 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                             last_move = 4
                                             count = 0
                                             break
-                                        else:
-                                            self.ai_players[i].change_x = 0
-                                            self.ai_players[i].change_y = 0
-                                    else:
-                                        self.ai_players[i].change_x = 0
-                                        self.ai_players[i].change_y = 0
-                                    self.ai_players[i].update()
-                                    self.valid_move = True
-                                    time.sleep(0.25)
+                                        bad_move_list[3] = True
+                                self.valid_move = True
 
                         self.can_player_move = False
                     self.check_player_in_room()
+                    # if the AI is in a room, we reset their target coordinates and teleport them
+                    # out of the room once they have guessed
                     if self.player_in_room:
                         if self.ai_guessed:
+                            if len(self.whos_turn.player_seen_cards) > 14:
+                                self.whos_turn.target_coords = [15, 11]
+                            else:
+                                random_room_index = random.randint(0, len(self.door_list) - 1)
+                                self.whos_turn.target_coords = self.door_list[random_room_index]
                             self.has_player_moved = True
                             self.move_limit = 0
                             self.valid_move = True
