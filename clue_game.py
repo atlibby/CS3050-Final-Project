@@ -479,7 +479,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
              lose = LoseScreen()
              self.window.show_view(lose)
         if key == arcade.key.G:
-            instructions = Instructions(self)
+            instructions = Instructions(self, self.width, self.height)
             self.window.show_view(instructions)
         if not self.player_in_room:
             self.old_coords = [self.whos_turn.center_y, self.whos_turn.center_x]
