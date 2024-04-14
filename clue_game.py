@@ -1,3 +1,4 @@
+import random
 from random import randint
 
 import arcade.gui
@@ -9,7 +10,6 @@ from player import *
 from room_dimensions import room_list, door_dict
 import room_dimensions
 from guess_box import Guess, GUESS_BOX_X, GUESS_BOX_Y
-import card
 from game_screens.inventory import InventoryMenu
 from game_screens.npc_show_card import CardViewNPC
 from game_screens.player_show_card import CardShowViewPlayer, PlayerWatchExchange
@@ -45,6 +45,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # super().__init__(width, height, title)
         self.width = width
         self.height = height
+
+        self.character_cards = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
+                           'Professor Plum']
+        self.room_cards = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
+                      'Hall', 'Study']
+        self.weapon_cards = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
 
         self.door_list = []
         for room in door_dict:
@@ -495,21 +501,32 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     room_card = None
                     weapon_card = None
                     player_seen_cards = self.whos_turn.get_player_seen_cards()
-                    
-                    for card in self.deck:
-                        if card.name not in player_seen_cards:
-                            if card.cardType == 'character' and not player_card:
-                                player_card = card.name
-                            elif card.cardType == 'room' and not room_card:
-                                room_card = card.name
-                            elif card.cardType == 'weapon' and not weapon_card:
-                                weapon_card = card.name
-                    if not player_card:   
-                        player_card = self.whos_turn.name
-                    if not room_card:
-                        room_card = 'ballroom'
-                    if not weapon_card:
-                        weapon_card = 'dagger'
+                    save_list = []
+                    for card in self.weapon_cards:
+                        if card in player_seen_cards:
+                            save_list.append(card)
+                            self.weapon_cards.remove(card)
+                    random_index = random.randint(0, len(self.weapon_cards) - 1)
+                    weapon_card = self.weapon_cards[random_index].lower()
+                    for card in self.character_cards:
+                        if card in player_seen_cards:
+                            save_list.append(card)
+                            self.character_cards.remove(card)
+                    random_index = random.randint(0, len(self.character_cards) - 1)
+                    player_card = self.character_cards[random_index].lower()
+                    for card in self.room_cards:
+                        if card in player_seen_cards:
+                            save_list.append(card)
+                            self.room_cards.remove(card)
+                    random_index = random.randint(0, len(self.character_cards) - 1)
+                    room_card = self.room_cards[random_index].lower()
+                    for card in save_list:
+                        if card.cardType == 'weapon':
+                            self.weapon_cards.append(card)
+                        elif card.cardType == 'room':
+                            self.room_cards.append(card)
+                        else:
+                            self.character_cards.append(card)
                     self.test_non_player_accusation(player_card, room_card, weapon_card)
                     self.ai_guessed = True
 
