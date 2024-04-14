@@ -93,4 +93,5 @@ class PlayerSelect(arcade.View):
         self.background_img
     )
 
+
     self.manager.draw()

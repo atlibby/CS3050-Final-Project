@@ -36,7 +36,7 @@ class CardViewNPC(arcade.View):
     card_sprite = arcade.Sprite(filename="card_images/" + self.card.name + ".png",image_width=CARD_WIDTH, image_height=CARD_HEIGHT)
     card_sprite.scale = 1
 
-    card_sprite.center_x = x
+    card_sprite.center_x = SCREEN_WIDTH / 2
     card_sprite.center_y = y
     self.card_sprite_list.append(card_sprite)
   def on_show(self):

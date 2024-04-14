@@ -17,7 +17,6 @@ from game_screens.win_screen import WinScreen
 from game_screens.lose_screen import LoseScreen
 from game_screens.instructions import Instructions
 
-
 # Width of Sidebar
 SIDEBAR_WIDTH = 320
 
@@ -47,9 +46,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.height = height
 
         self.character_cards = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
-                           'Professor Plum']
+                                'Professor Plum']
         self.room_cards = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
-                      'Hall', 'Study']
+                           'Hall', 'Study']
         self.weapon_cards = ['Candlestick', 'Dagger', 'Lead Pipe', 'Revolver', 'Rope', 'Wrench']
 
         self.door_list = []
@@ -102,11 +101,12 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         for player in self.players:
             print(player)
+
         # self.user will be the player object using the index of player_selected,
         # then from a list of players not the user, will iterate thru them
         self.user = self.players[player_selected]
 
-        # creating a copy of self.players, which I will pop self.user and then
+        # creating a copy of self.players, which I will append each player that's not self.user and then
         # that will be the ai players
         self.ai_players = arcade.SpriteList()
 
@@ -123,7 +123,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.old_coords = []
 
-        # all the hands for all the players are innitialized
+        # all the hands for all the players are initialized
         for i, player in enumerate(self.players):
             player.set_player_hand(self.hands[i])
         self.player_hand = self.user.get_player_hand()
@@ -137,7 +137,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             random_room_index = random.randint(0, len(self.door_list) - 1)
             npc.target_coords = self.door_list[random_room_index]
 
-                # self.player_npcs = arcade.SpriteList()
+            # self.player_npcs = arcade.SpriteList()
 
         # for player in self.players:
         # self.player_npcs.append(player)
@@ -279,8 +279,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if npc_accusing_index != 0:
             for i in range(0, npc_accusing_index):
                 turn_order.append(self.players[i])
-        # now we want to iterate through each character in the list, and compare the cards in their hand with what's in the accusation hand
-        # this is going to check all the cards that match in one players hand, once a player has a card that matches it looks for no other players but finishes looking through their hand
+
+        # now we want to iterate through each character in the list, and
+        # compare the cards in their hand with what's in the accusation hand
+        # this is going to check all the cards that match in one players hand,
+        # once a player has a card that matches it looks for no other players but finishes looking through their hand
         seen_cards = []
         match_found = False
         player_with_matched_card = None
@@ -297,6 +300,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 if match_found:
                     break  # break out of the outer loop
             done_searching = 1
+
         # at this point we have the player with the card, and the card(s) they have that match
         if match_found == False:
             print("no matches were found")
@@ -309,7 +313,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             else:
                 # now we have the player_with_matched card show one card to the npc
                 print(f"{player_with_matched_card.name} has {seen_cards[0].name}")
-                npc_exchange_view = PlayerWatchExchange(self, npc_accusing, player_with_matched_card, seen_cards[0], npc_guess)
+                npc_exchange_view = PlayerWatchExchange(self, npc_accusing, player_with_matched_card, seen_cards[0],
+                                                        npc_guess)
                 self.window.show_view(npc_exchange_view)
 
     # Method for reloading sprites after I/O or other changes
@@ -452,7 +457,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 self.check_player_in_room()
 
                 if self.player_in_room and (not self.user_guessed) and self.has_player_moved:
-                    arcade.draw_text("Check the boxes, then click ENTER", DIE_X - 115, DIE_Y + 50, arcade.color.BLACK, 10)
+                    arcade.draw_text("Check the boxes, then click ENTER", DIE_X - 115, DIE_Y + 50, arcade.color.BLACK,
+                                     10)
 
                 # if the player has already done all their moves, but hasn't submitted their turn
                 elif not self.player_in_room and self.has_player_moved:
@@ -466,7 +472,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
                 if self.player_in_room and not self.ai_guessed and not self.has_player_moved:
                     # indicate the user to press A to show cards
-                    arcade.draw_text("A to Show Cards!", DIE_X - 75, DIE_Y + 50, arcade.color.BLACK, 10)
+                    arcade.draw_text("A to Show Cards!", DIE_X - 55, DIE_Y + 50, arcade.color.BLACK, 10)
                 # if the player has already done all their moves, but hasn't submitted their turn
                 if self.has_player_moved:
                     # indicate the user to press enter to switch turns
@@ -483,8 +489,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     # one grid square at a time per key press
     def on_key_press(self, key, modifiers):
         if key == arcade.key.L:
-             lose = LoseScreen()
-             self.window.show_view(lose)
+            lose = LoseScreen()
+            self.window.show_view(lose)
         if key == arcade.key.G:
             instructions = Instructions(self, self.width, self.height)
             self.window.show_view(instructions)
@@ -592,7 +598,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     next_player_index = 0
                     if self.whos_turn in self.ai_players:
                         current_player_index = self.ai_players.index(self.whos_turn)  # Get index of current player
-                        next_player_index = (current_player_index + 1) % len(self.ai_players)  # Calculate the next index
+                        next_player_index = (current_player_index + 1) % len(
+                            self.ai_players)  # Calculate the next index
 
                     # covers three cases where its the user, so it moves to the first ai player
                     # or its the last ai player, so it goes to the user
@@ -626,9 +633,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                     self.user.center_y = self.old_coords[0]
                     self.user.center_x = self.old_coords[1]
                     self.player_in_room = False
-                self.update_player_movement()
-                self.user_guessed = True
-
+                    self.update_player_movement()
+                    self.user_guessed = True
 
     def on_key_release(self, key, modifiers):
         if key == arcade.key.UP:
@@ -670,7 +676,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.key_presses.clear()
 
         self.guess_box.update_user_position(self.user.center_x, self.user.center_y)
-
 
     def check_player_in_room(self):
         current_player_coords = [self.whos_turn.center_y // (WIDTH + MARGIN),
@@ -868,7 +873,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                                 teleport_list = [[12, 3], [11, 11], [11, 11], [11, 11], [11, 20], [6, 20], [6, 20],
                                                  [8, 3], [8, 3], [5, 2], [5, 2], [3, 11], [3, 11], [3, 11], [3, 11],
                                                  [2, 3], [2, 21], [7, 11], [7, 11], [7, 11]]
-                                #TODO: add offset for each character
+                                # TODO: add offset for each character
                                 self.press = self.move_limit
                                 self.whos_turn.center_x = teleport_list[door][1] * (WIDTH + MARGIN)
                                 self.whos_turn.center_y = teleport_list[door][0] * (WIDTH + HEIGHT)

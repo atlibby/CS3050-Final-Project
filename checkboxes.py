@@ -1,6 +1,8 @@
 import arcade
+
 # Constants
 SIDEBAR_WIDTH = 200
+
 
 class Button:
     def __init__(self, x, y, width, height, card, guess, guess_box):
@@ -19,19 +21,19 @@ class Button:
                       'Ballroom', 'Kitchen', 'Dining Room', 'Guessing Room']
         if self.clicked:
             if not self.guess:
-                arcade.draw_rectangle_filled(self.x, self.y-8, self.width, self.height, arcade.color.GREEN)
+                arcade.draw_rectangle_filled(self.x, self.y - 8, self.width, self.height, arcade.color.GREEN)
             elif self.guess and self.guess_box.guess_clicked and valid:
-                arcade.draw_rectangle_filled(self.x, self.y-8, self.width, self.height, arcade.color.GREEN)
+                arcade.draw_rectangle_filled(self.x, self.y - 8, self.width, self.height, arcade.color.GREEN)
                 self.card.selected = True
             else:
                 arcade.draw_rectangle_filled(self.x, self.y - 8, self.width, self.height, arcade.color.BLACK)
                 self.clicked = not self.clicked
         else:
             if not self.guess:
-                arcade.draw_rectangle_filled(self.x, self.y-8, self.width, self.height, arcade.color.BLACK)
+                arcade.draw_rectangle_filled(self.x, self.y - 8, self.width, self.height, arcade.color.BLACK)
                 self.card.selected = False
             elif self.guess_box.guess_clicked:
-                arcade.draw_rectangle_filled(self.x, self.y-8, self.width, self.height, arcade.color.BLACK)
+                arcade.draw_rectangle_filled(self.x, self.y - 8, self.width, self.height, arcade.color.BLACK)
                 self.card.selected = False
 
         if not self.guess:
@@ -39,9 +41,9 @@ class Button:
                              align="left", anchor_x="left", anchor_y="top")
 
     def check_click(self, x, y):
-        if(not self.guess):
+        if (not self.guess):
             if self.x - self.width / 2 < x < self.x + self.width / 2 and self.y - self.height / 2 < y + 8 < self.y + self.height / 2:
                 self.clicked = not self.clicked
-        elif(self.guess_box.guess_clicked):
+        elif (self.guess_box.guess_clicked):
             if self.x - self.width / 2 < x < self.x + self.width / 2 and self.y - self.height / 2 < y + 8 < self.y + self.height / 2:
                 self.clicked = not self.clicked
