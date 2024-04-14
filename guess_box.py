@@ -26,12 +26,12 @@ class Guess:
         scaled_coords.append(self.player_coords[1] // (WIDTH + MARGIN))
         scaled_coords.append(self.player_coords[0] // (HEIGHT + MARGIN))
         for room in room_list:
-            if (scaled_coords in room):
-                    arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.ASH_GREY)
-                    arcade.draw_text(self.text, self.x - 43, self.y + 10, arcade.color.BLACK, 12, width=180,
-                                align="left", anchor_x="left", anchor_y="top")
-                    in_room = True
-        if(not in_room):
+            if scaled_coords in room:
+                arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.ASH_GREY)
+                arcade.draw_text(self.text, self.x - 43, self.y + 10, arcade.color.BLACK, 12, width=180,
+                            align="left", anchor_x="left", anchor_y="top")
+                in_room = True
+        if not in_room:
             arcade.draw_rectangle_filled(self.x, self.y, self.width, self.height, arcade.color.LIGHT_BROWN)
             self.guess_clicked = False
 

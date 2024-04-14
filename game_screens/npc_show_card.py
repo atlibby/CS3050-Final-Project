@@ -49,6 +49,7 @@ class CardViewNPC(arcade.View):
     text_x = (SCREEN_WIDTH - text_width)/2
     text_y = SCREEN_HEIGHT - 60 
     arcade.draw_text(self.player + " shows you", text_x, text_y, arcade.color.WHITE, 30)
+    arcade.draw_text("Press ENTER to continue", text_x - 50, text_y - 600, arcade.color.WHITE, 30)
 
     self.card_sprite_list.draw()
       

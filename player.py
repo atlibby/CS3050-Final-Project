@@ -43,6 +43,9 @@ class Player(arcade.Sprite):
         self.center_x = center_x
         self.center_y = center_y
         self.player_seen_cards = []
+        self.priority = []
+        self.no_go_rooms = []
+        self.target_coords =[]
 
 
     # getters
@@ -67,6 +70,15 @@ class Player(arcade.Sprite):
     # this is a list of the names of cards that they have seen
     def get_player_seen_cards(self):
         return self.player_seen_cards
+
+    def get_no_go_rooms(self):
+        return self.no_go_rooms
+
+    def get_target_coords(self):
+        return self.target_coords
+
+    def get_priority(self):
+        return self.priority
     # setters
     def set_x(self, center_x):
         self.x = center_x
