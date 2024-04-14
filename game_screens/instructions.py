@@ -1,49 +1,62 @@
 import arcade
 from arcade import load_texture
 from arcade.gui import UIManager
-from arcade.gui.widgets import UITextArea, UIInputText, UITexturePane
+from arcade.gui.widgets import UITextArea, UITexturePane
 
-LOREM_IPSUM = (
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eget pellentesque velit. "
-    "Nam eu rhoncus nulla. Fusce ornare libero eget ex vulputate, vitae mattis orci eleifend. "
-    "Donec quis volutpat arcu. Proin lacinia velit id imperdiet ultrices. Fusce porta magna leo, "
-    "non maximus justo facilisis vel. Duis pretium sem ut eros scelerisque, a dignissim ante "
-    "pellentesque. Cras rutrum aliquam fermentum. Donec id mollis mi.\n"
-    "\n"
-    "Nullam vitae nunc aliquet, lobortis purus eget, porttitor purus. Curabitur feugiat purus sit "
-    "amet finibus accumsan. Proin varius, enim in pretium pulvinar, augue erat pellentesque ipsum, "
-    "sit amet varius leo risus quis tellus. Donec posuere ligula risus, et scelerisque nibh cursus "
-    "ac. Mauris feugiat tortor turpis, vitae imperdiet mi euismod aliquam. Fusce vel ligula volutpat, "
-    "finibus sapien in, lacinia lorem. Proin tincidunt gravida nisl in pellentesque. Aenean sed "
-    "arcu ipsum. Vivamus quam arcu, elementum nec auctor non, convallis non elit. Maecenas id "
-    "scelerisque lectus. Vivamus eget sem tristique, dictum lorem eget, maximus leo. Mauris lorem "
-    "tellus, molestie eu orci ut, porta aliquam est. Nullam lobortis tempor magna, egestas lacinia lectus.\n"
+# Instructions for Clue game
+CLUE_INSTRUCTIONS = (
+    "Welcome to Clue!\n\n"
+    "Objective:\n"
+    "The objective of the game is to determine the details of the murder mystery: "
+    "who committed the murder, in which room, and with which weapon.\n\n"
+    
+    "Gameplay:\n"
+    "Players move around the mansion, making suggestions about the murderer, room, and weapon. "
+    "Other players disprove these suggestions using cards in their hands.\n"
+    "To win, a player must make an accusation and correctly identify all three aspects of the murder.\n\n"
+    
+    "Controls:\n"
+    "Use arrow keys to move around the mansion.\n"
+    "Press 'S' to make a suggestion.\n"
+    "Press 'A' to make an accusation.\n\n"
+    
+    "Good luck!"
 )
 
 
 class Instructions(arcade.View):
-    def __init__(self):
-        super().__init__()
-        self.manager = UIManager()
-        self.manager.enable()
-        arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
+  def __init__(self, game_view):
+    super().__init__()
+    self.manager = UIManager()
+    self.manager.enable()
+    self.game_view = game_view
+    arcade.set_background_color(arcade.color.DARK_BLUE_GRAY)
 
-        bg_tex = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
-        text_area = UITextArea(x=100,
-                               y=200,
-                               width=200,
-                               height=300,
-                               text=LOREM_IPSUM,
-                               text_color=(0, 0, 0, 255))
-        self.manager.add(
-            UITexturePane(
-                text_area.with_space_around(right=20),
-                tex=bg_tex,
-                padding=(10, 10, 10, 10)
-            )
-        )
+    # Load background texture
+    bg_tex = load_texture(":resources:gui_basic_assets/window/grey_panel.png")
+    
+    # Create text area with instructions
+    text_area = UITextArea(x=100,
+                            y=200,
+                            width=600,
+                            height=400,
+                            text=CLUE_INSTRUCTIONS,
+                            text_color=(0, 0, 0, 255))
+      
+    # Add text area to the manager
+    self.manager.add(
+      UITexturePane(
+          text_area.with_space_around(right=20),
+          tex=bg_tex,
+          padding=(10, 10, 10, 10)
+      )
+  )
 
-
-    def on_draw(self):
-        self.clear()
-        self.manager.draw()
+  def on_draw(self):
+    # Clear the screen
+    self.clear()
+    # Draw UI elements
+    self.manager.draw()
+  
+  def on_key_press(self, symbol: int, modifiers: int):
+    self.window.show_view(self.game_view)
