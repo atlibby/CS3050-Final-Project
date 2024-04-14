@@ -305,8 +305,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 print(f"{player_with_matched_card.name} has {seen_cards[0].name}")
                 npc_exchange_view = PlayerWatchExchange(self, npc_accusing, player_with_matched_card, seen_cards[0], npc_guess)
                 self.window.show_view(npc_exchange_view)
-            for card in seen_cards:
-                self.ai_players[npc_accusing_index].set_player_seen_cards(card)
 
     # Method for reloading sprites after I/O or other changes
     def resync_grid_with_sprites(self):
@@ -481,7 +479,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
              lose = LoseScreen()
              self.window.show_view(lose)
         if key == arcade.key.G:
-            instructions = Instructions()
+            instructions = Instructions(self)
             self.window.show_view(instructions)
         if not self.player_in_room:
             self.old_coords = [self.whos_turn.center_y, self.whos_turn.center_x]
@@ -493,7 +491,26 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if self.whos_turn != self.user:
             if not self.can_player_move and not self.ai_guessed:
                 if key == arcade.key.A:
-                    self.test_non_player_accusation('miss scarlett', 'ballroom', 'dagger')
+                    player_card = None
+                    room_card = None
+                    weapon_card = None
+                    player_seen_cards = self.whos_turn.get_player_seen_cards()
+                    
+                    for card in self.deck:
+                        if card.name not in player_seen_cards:
+                            if card.cardType == 'character' and not player_card:
+                                player_card = card.name
+                            elif card.cardType == 'room' and not room_card:
+                                room_card = card.name
+                            elif card.cardType == 'weapon' and not weapon_card:
+                                weapon_card = card.name
+                    if not player_card:   
+                        player_card = self.whos_turn.name
+                    if not room_card:
+                        room_card = 'ballroom'
+                    if not weapon_card:
+                        weapon_card = 'dagger'
+                    self.test_non_player_accusation(player_card, room_card, weapon_card)
                     self.ai_guessed = True
 
         if key == arcade.key.I:
