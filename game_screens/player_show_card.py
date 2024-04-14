@@ -50,12 +50,12 @@ class CardShowViewPlayer(arcade.View):
     text_width = len("Pick a card you want to show: " + self.guessing_player.name) * 24 
     text_x = (SCREEN_WIDTH - text_width)/2
     text_y = SCREEN_HEIGHT - 60 
-    arcade.draw_text("Pick a card you want to show: " + self.guessing_player.name, text_x, text_y, arcade.color.WHITE, 30)
+    arcade.draw_text("Pick a card you want to show: " + self.guessing_player.name, text_x+25, text_y, arcade.color.WHITE, 30)
 
     text_width_two = len(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2]) * 20 
     text_x2 = (SCREEN_WIDTH - text_width_two)/2
     text_y2 = SCREEN_HEIGHT - 150 
-    arcade.draw_text(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2], text_x2, text_y2, arcade.color.WHITE, 30)
+    arcade.draw_text(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2], text_x2+40, text_y2, arcade.color.WHITE, 30)
 
     #arcade.draw_text("Click HERE to continue", text_x, text_y - 600, arcade.color.WHITE, 30)
 
@@ -92,13 +92,13 @@ class PlayerWatchExchange(arcade.View):
     text_width = len(self.player_with_card.name + " shows " + self.guessing_player.name + " a card") * 24 
     text_x = (SCREEN_WIDTH - text_width * .95)/2
     text_y = SCREEN_HEIGHT - 60 
-    arcade.draw_text(self.player_with_card.name + " shows " + self.guessing_player.name + " a card", text_x, y, arcade.color.WHITE, 30)
+    arcade.draw_text(self.player_with_card.name + " shows " + self.guessing_player.name + " a card", text_x+35, y, arcade.color.WHITE, 30)
     
     text_width_two = len(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2]) * 20
     text_x2 = (SCREEN_WIDTH - text_width_two / 1.05)
-    arcade.draw_text(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2], text_x2, text_y, arcade.color.WHITE, 20)
+    arcade.draw_text(self.guessing_player.name + " guesses " + self.npc_guess_cards[0] + ", " + self.npc_guess_cards[1] + ", " + self.npc_guess_cards[2], text_x2+40, text_y, arcade.color.WHITE, 20)
 
-    arcade.draw_text("Click HERE to continue", text_x, text_y - 600, arcade.color.WHITE, 30)
+    arcade.draw_text("Click HERE to continue", text_x+75, text_y - 600, arcade.color.WHITE, 30)
 
   def on_mouse_press(self, x, y, button, modifiers):
     self.window.show_view(self.game_view)
