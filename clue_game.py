@@ -439,7 +439,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # first, an indication of who's turn it is at the top of the sidebar
         arcade.draw_text(str(self.whos_turn.name) + "'s turn!", (self.width - SIDEBAR_WIDTH) + 110, 755,
                          color=arcade.color.BLACK, font_size=10)
-
+        arcade.draw_text("Press G for Instructions", DIE_X - 150, DIE_Y - 100, arcade.color.BLACK, 15)
         # for when it's the user's turn
         if self.whos_turn == self.user:  # it's the user player's turn
             if not self.has_die_rolled:
