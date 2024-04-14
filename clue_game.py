@@ -161,11 +161,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.down_pressed = False
 
-        self.move_list = []
-
-        self.move_list_x = []
-
-        self.move_list_y = []
+        self.key_presses = []
 
         # Create a list of solid-color sprites to represent each grid location
         for row in range(ROW_COUNT):
@@ -502,12 +498,17 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             if self.can_player_move:
                 if key == arcade.key.UP:
                     self.up_pressed = True
+                    self.key_presses.append(1)
                 elif key == arcade.key.DOWN:
                     self.down_pressed = True
+                    self.key_presses.append(2)
                 elif key == arcade.key.LEFT:
                     self.left_pressed = True
+                    self.key_presses.append(3)
                 elif key == arcade.key.RIGHT:
                     self.right_pressed = True
+                    self.key_presses.append(4)
+                # if the user hits a room wall, that movement won't count as a move
                 for room in room_list:
                     if self.right_pressed and [user_coords[0], user_coords[1] + 1] in room:
                         self.valid_move = False
@@ -517,6 +518,22 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         self.valid_move = False
                     if self.down_pressed and [user_coords[0] - 1, user_coords[1]] in room:
                         self.valid_move = False
+
+                # if the user tries to go back a grid square, they won't be able to
+                # won't count as a move
+                if len(self.key_presses) >= 2:
+                    if self.up_pressed and self.key_presses[-2] == 2:
+                        self.valid_move = False
+                        self.key_presses.remove(self.key_presses[-1])
+                    if self.down_pressed and self.key_presses[-2] == 1:
+                        self.valid_move = False
+                        self.key_presses.remove(self.key_presses[-1])
+                    if self.left_pressed and self.key_presses[-2] == 4:
+                        self.valid_move = False
+                        self.key_presses.remove(self.key_presses[-1])
+                    if self.right_pressed and self.key_presses[-2] == 3:
+                        self.valid_move = False
+                        self.key_presses.remove(self.key_presses[-1])
 
                 if (self.valid_move):
                     self.update_player_movement()
@@ -592,19 +609,15 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         if self.up_pressed and not self.down_pressed:
             self.whos_turn.change_y = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.whos_turn.center_y)
         elif self.down_pressed and not self.up_pressed:
             self.whos_turn.change_y = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.whos_turn.center_y)
         if self.left_pressed and not self.right_pressed:
             self.whos_turn.change_x = -PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.whos_turn.center_x)
         elif self.right_pressed and not self.left_pressed:
             self.whos_turn.change_x = PLAYER_MOVEMENT
             time.sleep(0.1)
-            self.move_list.append(self.whos_turn.center_x)
 
         self.whos_turn.update()
 
@@ -612,6 +625,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.whos_turn.change_y = 0
             self.whos_turn.change_x = 0
             self.press = 0
+            self.key_presses.clear()
 
         self.guess_box.update_user_position(self.user.center_x, self.user.center_y)
 
@@ -691,7 +705,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             # the die value
             if self.has_die_rolled:
                 if not self.move_limit_set:  # prevents move_limit from being reset each update of run
-                    self.move_limit = 6
+                    self.move_limit = self.die.die_value
                     self.move_limit_set = True
 
                 if self.move_limit >= 1:
