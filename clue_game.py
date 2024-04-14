@@ -474,6 +474,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
     # Redraw sprite when sprite moves
     def on_update(self, delta_time):
+        # run
         self.check_guess_for_win()
         self.run()
 
