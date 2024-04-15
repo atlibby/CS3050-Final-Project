@@ -312,6 +312,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 self.window.show_view(card_show_view_player)
             else:
                 # now we have the player_with_matched card show one card to the npc
+                npc_accusing.set_player_seen_cards(seen_cards[0].name)
                 print(f"{player_with_matched_card.name} has {seen_cards[0].name}")
                 npc_exchange_view = PlayerWatchExchange(self, npc_accusing, player_with_matched_card, seen_cards[0],
                                                         npc_guess)

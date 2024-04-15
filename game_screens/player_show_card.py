@@ -76,8 +76,7 @@ class PlayerWatchExchange(arcade.View):
     self.player_with_card = player_with_card
     self.card = card
     self.npc_guess_cards = npc_guess
-    
-    self.guessing_player.set_player_seen_cards(self.card.name)
+
     self.seen = self.guessing_player.get_player_seen_cards()
     for card in self.seen:
       print(f"{self.guessing_player.name} has seen {card}")
