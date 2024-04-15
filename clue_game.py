@@ -1,11 +1,14 @@
-import random
-from random import randint
+'''
+clue_game.py is the main file for the game functionality. Contains functionality for
+player and non player movement, turns, guessing, accusing, winning, losing, and more.
+'''
 
+# imports
+from random import randint
 import arcade.gui
 from die_arcade import DIE_X, DIE_Y, Die
 from checkboxes import Button
 import time
-from typing import List
 from player import *
 from room_dimensions import room_list, door_dict
 import room_dimensions
@@ -16,6 +19,8 @@ from game_screens.player_show_card import CardShowViewPlayer, PlayerWatchExchang
 from game_screens.win_screen import WinScreen
 from game_screens.lose_screen import LoseScreen
 from game_screens.instructions import Instructions
+
+# constants
 
 # Width of Sidebar
 SIDEBAR_WIDTH = 320
@@ -38,13 +43,12 @@ HEIGHT = 30
 MARGIN = 2
 
 
-class ClueGameView(arcade.View):  # (arcade.Window)
+class ClueGameView(arcade.View):
+
     def __init__(self, width, height, player_selected):
         super().__init__()
-        # super().__init__(width, height, title)
         self.width = width
         self.height = height
-
         self.character_cards = ['Miss Scarlett', 'Colonel Mustard', 'Mrs. White', 'Mr. Green', 'Mrs. Peacock',
                                 'Professor Plum']
         self.room_cards = ['Kitchen', 'Ballroom', 'Conservatory', 'Dining Room', 'Billiard Room', 'Library', 'Lounge',
@@ -114,10 +118,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             if self.players[i] != self.user:
                 self.ai_players.append(self.players[i])
 
-        # split up the cards, player select screen
-        # self.current_player = 0 #this will be a function that calls player select view or gets information fed into it by player-select
-        # Make a deck
-
         self.hands = Player.divide_cards(self.deck)
         self.case_file = self.hands[-1]
 
@@ -137,13 +137,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             random_room_index = random.randint(0, len(self.door_list) - 1)
             npc.target_coords = self.door_list[random_room_index]
 
-            # self.player_npcs = arcade.SpriteList()
-
-        # for player in self.players:
-        # self.player_npcs.append(player)
-
-        # self.player_npcs.remove(self.player_npcs[self.current_player])
-
         for card in self.case_file:
             print(card)
         # test = testNPCShowCard(self.hands, self.player_npcs)
@@ -162,7 +155,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         self.idle = 90
 
         # steven - changing self.move_limit from 6 to 0, so that player cannot move until this value is updated from
-        # rollDie()
         self.move_limit = 0
 
         self.left_pressed = False
@@ -235,16 +227,22 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         # purpose of this var is to prevent the move_limit from being reinitialized
         self.move_limit_set = False
 
+        # user guessed is set to false, to become true later once the user has guessed
+        # purpose is to prevent user from moving forward without guessing
         self.user_guessed = False
 
+        # same as user guessed, but for ai
         self.ai_guessed = False
 
+        # bool that checks if a given player is in a room. This is reinitialized for each player's turn,
+        # and controls various purposes such as whether a turn can switch, or if they can guess or not
         self.player_in_room = False
 
         # Resyncing
         self.resync_grid_with_sprites()
 
-    def test_player_accusation(self, player_card, weapon_card, room_card):
+    # function for when player guesses and npc shows their card
+    def player_guess(self, player_card, weapon_card, room_card):
         card_seen = False
         npc_cards = []
         npc_with_card = ''
@@ -265,7 +263,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             npc_card_view = CardViewNPC(self, npc_with_card, npc_cards[random_index])
             self.window.show_view(npc_card_view)
 
-    def test_non_player_accusation(self, player_card, weapon_card, room_card):
+    # function for when npc guesses and user or npc shows their card
+    def non_player_guess(self, player_card, weapon_card, room_card):
         turn_order = []
         npc_guess = [player_card, weapon_card, room_card]
         npc_accusing = self.whos_turn  # self.players[3]
@@ -302,7 +301,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             done_searching = 1
 
         # at this point we have the player with the card, and the card(s) they have that match
-        if match_found == False:
+        if not match_found:
             print("no matches were found")
         else:
             if player_with_matched_card == self.user:
@@ -343,12 +342,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         return [hall, lounge, study, clue_room, dining_room, billiard_room, kitchen, conservatory, ballroom, library]
 
-    # Dice Roll event caller
-    def on_click_roll(self, event):
-        print("Roll:", event)
-
     # Method  that randomly selects three cards for the case file
-
     def check_guess_for_win(self):
         guess = []
         for card in self.deck:
@@ -375,6 +369,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                              arcade.color.BLACK, 12, width=180, align="left", anchor_x="left", anchor_y="top")
             y_value -= 135
 
+    # function for drawing each of the buttons on the sidebar
     def draw_buttons(self):
         y_value = 720
         player_card_list = []
@@ -403,6 +398,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 Button(self.width - SIDEBAR_WIDTH + 200, y_value, 10, 10, card, True, self.guess_box))
             last_card_type = card.cardType
 
+    # main drawing function for the window
     def on_draw(self):
         # Clear pixels
         self.clear()
@@ -446,8 +442,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
         arcade.draw_text(str(self.whos_turn.name) + "'s turn!", (self.width - SIDEBAR_WIDTH) + 110, 755,
                          color=arcade.color.BLACK, font_size=10)
         arcade.draw_text("Press G for Instructions", DIE_X - 150, DIE_Y - 100, arcade.color.BLACK, 15)
+
         # for when it's the user's turn
-        if self.whos_turn == self.user:  # it's the user player's turn
+        if self.whos_turn == self.user:
             if not self.has_die_rolled:
                 # indicate the user to roll the die
                 arcade.draw_text("Roll The Die!", DIE_X - 37, DIE_Y - 50, arcade.color.BLACK, 10)
@@ -457,6 +454,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 arcade.draw_text(text, DIE_X - 45, DIE_Y - 50, arcade.color.BLACK, 10)
                 self.check_player_in_room()
 
+                # if the user is in the room and they haven't guessed but their moves are over, then indication for
+                # them to check the boxes and guess
                 if self.player_in_room and (not self.user_guessed) and self.has_player_moved:
                     arcade.draw_text("Check the boxes, then click ENTER", DIE_X - 115, DIE_Y + 50, arcade.color.BLACK,
                                      10)
@@ -465,12 +464,14 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                 elif not self.player_in_room and self.has_player_moved:
                     # indicate the user to press enter to switch turns
                     arcade.draw_text("ENTER to Continue!", DIE_X - 65, DIE_Y + 50, arcade.color.BLACK, 10)
-        else:
+
+        else:  # when its the npc's turn
             if self.has_die_rolled:
                 # now after the die has been rolled, it will display the value
                 text = f"{self.whos_turn.name} rolled a {self.die.die_value}!"
                 arcade.draw_text(text, DIE_X - 50, DIE_Y - 50, arcade.color.BLACK, 10)
 
+                # if the ai is in the room
                 if self.player_in_room and not self.ai_guessed and not self.has_player_moved:
                     # indicate the user to press A to show cards
                     arcade.draw_text("A to Show Cards!", DIE_X - 55, DIE_Y + 50, arcade.color.BLACK, 10)
@@ -501,7 +502,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         # if its the player's turn and the player can't move (so theyve made their moves) and they're in a room and
         # they haven't guessed, then they can guess
-
         if self.whos_turn != self.user:
             if not self.can_player_move and not self.ai_guessed:
                 if key == arcade.key.A:
@@ -535,13 +535,15 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                             self.room_cards.append(card)
                         else:
                             self.character_cards.append(card)
-                    self.test_non_player_accusation(player_card, room_card, weapon_card)
+                    self.non_player_guess(player_card, room_card, weapon_card)
                     self.ai_guessed = True
 
+        # key to check inventory
         if key == arcade.key.I:
             inv = InventoryMenu(self, self.player_hand)
             self.window.show_view(inv)
 
+        # validates player movement if its their turn, and prevents them from entering rooms.
         user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
         if self.whos_turn == self.user:
             if self.can_player_move:
@@ -628,7 +630,7 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         if button.guess:
                             if button.card.selected:
                                 accusation.append(button.card.name)
-                    self.test_player_accusation(accusation[0], accusation[1], accusation[2])
+                    self.player_guess(accusation[0], accusation[1], accusation[2])
 
                     # if (self.guess_box.guess_clicked):
                     self.user.center_y = self.old_coords[0]
@@ -651,6 +653,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             self.right_pressed = False
             self.update_player_movement()
 
+    # this function updates player movement by changing x and y vals based on which key was pressed,
+    # and updates the position of the user in guess box.
     def update_player_movement(self):
         self.whos_turn.change_x = 0
         self.whos_turn.change_y = 0
@@ -678,6 +682,8 @@ class ClueGameView(arcade.View):  # (arcade.Window)
 
         self.guess_box.update_user_position(self.user.center_x, self.user.center_y)
 
+    # function checks the player's coordinates at the time of the function call to verify
+    # whether the player is in a room or not. Used after a player is done moving to see whether they can guess or not.
     def check_player_in_room(self):
         current_player_coords = [self.whos_turn.center_y // (WIDTH + MARGIN),
                                  self.whos_turn.center_x // (HEIGHT + MARGIN)]
@@ -692,11 +698,14 @@ class ClueGameView(arcade.View):  # (arcade.Window)
     def run(self):
 
         """
-        pseudocode / design:
+        design:
+
+        many of the variables present below are booleans which are referenced in many other functions,
+        such as on_draw(), on_key_press(), and functions for player movement. This is because this function run()
+        runs continuously, so for the results and events we want, we have many checks which prevent the game from
+        moving forward unless the events are handled.
 
         first, it'll be the player's turn.
-        What should happen in the player's turn?
-
         Player's turn:
 
             1. An indication that it is their turn.
@@ -705,14 +714,11 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             4. Either they enter a room, or it's the next player's turn
                 For when player enters a room:
 
-                1. The accuse function will then become available, and will be indicated that it is available
-                2. The player would then check the boxes for what they want to accuse (this will have to be validated)
-                and will submit the accusation.
-                3. If any AI player has any of the cards, then the card to be shown would be randomly chosen and added
-                to the inventory of the player.
+                1. The guess function will then become available, and will be indicated that it is available
+                2. The player would then check the boxes for what they want to accuse
+                and will submit the guess.
+                3. If any AI player has any of the cards, then the card to be shown would be randomly chosen.
                 4. Turn Ends.
-
-                For when player is already in a room when their turn starts, the can roll the die or just accuse.
 
         It's the next player's turn. (AI)
 
@@ -722,33 +728,13 @@ class ClueGameView(arcade.View):  # (arcade.Window)
             3. Either they enter a room, or it's the next player's turn
                 For when AI player enters a room:
 
-                1. They will automatically accuse based on what they know (which could just be an array of the cards
-                they don't have, randomly chosen)
+                1. They will automatically accuse based on what they know.
                 2. If the player has any of the cards, then they have to go into inventory and click on the card they
-                want to show, to the inventory of the AI.
+                want to show.
                 3. Turn Ends.
-
-                For when AI is already in a room when their turn starts...
-
         """
 
         if self.whos_turn == self.user:  # it's the user player's turn
-            """ 
-            Following code present in on_draw, based on some variables such as whos_turn and has_die_rolled:
-
-            Under "Turn Based Drawings"
-
-            - an indication of who's turn it is at the top of the sidebar
-
-
-            - for when it's the user's turn and the die has not been rolled,
-            text will be drawn that says "Roll The Die!"
-            - otherwise if the die has been rolled, then the value will be shown in text.
-            - the validation of whether the die has been rolled is present in on_mouse_click(),
-            where the bool will be true once the area of the die is clicked. Which can only happen
-            during the user's turn.
-            - these drawings will go away once its not the players turn anymore
-            """
             # once the die has been rolled, the limit for the amount of moves will be set to
             # the die value
             if self.has_die_rolled:
@@ -787,10 +773,9 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                         '''
                         Handling room logic. Either inside user turn, or in a different area
                         if player in room, then they MUST guess
-                            After they guess, pass the card values to player_accusation() as params
+                            After they guess, pass the card values to player_guess() as params
                             Then, change turns
                         '''
-                        # self.check_player_in_room()
 
                         # if self.player_in_room:
                         if self.player_in_room and self.has_player_moved:
@@ -805,13 +790,6 @@ class ClueGameView(arcade.View):  # (arcade.Window)
                             self.move_limit = 0
                             self.valid_move = True
                             self.press = 0
-
-                        '''else:
-                            self.has_player_moved = True
-                            self.move_limit = 0
-                            self.valid_move = True
-                            self.press = 0'''
-
 
         # otherwise it's the ai's turn, so the list of ai players will be iterated through
         # to handle their turns
