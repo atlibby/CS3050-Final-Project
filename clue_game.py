@@ -19,6 +19,7 @@ from game_screens.player_show_card import CardShowViewPlayer, PlayerWatchExchang
 from game_screens.win_screen import WinScreen
 from game_screens.lose_screen import LoseScreen
 from game_screens.instructions import Instructions
+from game_screens.lose_screen_npc import LoseScreenNPC
 
 # constants
 
@@ -265,10 +266,15 @@ class ClueGameView(arcade.View):
 
     # function for when npc guesses and user or npc shows their card
     def non_player_guess(self, player_card, weapon_card, room_card):
+        ai_coords = [self.whos_turn.center_y // (WIDTH + MARGIN), self.whos_turn.center_x // (HEIGHT + MARGIN)]
         turn_order = []
         npc_guess = [player_card, weapon_card, room_card]
         npc_accusing = self.whos_turn  # self.players[3]
         npc_accusing_index = self.players.index(npc_accusing)
+
+        if ai_coords in room_dimensions.guessing_room and set(npc_guess) == set(self.case_file):
+            lose = LoseScreenNPC(self.whos_turn)
+            self.window.show_view(lose)
 
         # creating a queue of players to show their cards in turn
         # the player making a guess is not in this list
@@ -344,13 +350,18 @@ class ClueGameView(arcade.View):
 
     # Method  that randomly selects three cards for the case file
     def check_guess_for_win(self):
+        user_coords = [self.user.center_y // (WIDTH + MARGIN), self.user.center_x // (HEIGHT + MARGIN)]
         guess = []
         for card in self.deck:
             if card.selected:
                 guess.append(card)
-        if set(guess) == set(self.case_file):
+        if len(set(guess)) == 3 and set(guess) == set(self.case_file) and user_coords in room_dimensions.guessing_room:
             win = WinScreen()
             self.window.show_view(win)
+
+        elif len(set(guess)) == 3 and set(guess) != set(self.case_file) and user_coords in room_dimensions.guessing_room:
+            lose = LoseScreen()
+            self.window.show_view(lose)
 
     # Method for drawing sidebar
     def draw_sidebar(self):
