@@ -272,7 +272,7 @@ class ClueGameView(arcade.View):
         npc_accusing = self.whos_turn  # self.players[3]
         npc_accusing_index = self.players.index(npc_accusing)
 
-        if ai_coords in room_dimensions.guessing_room and set(npc_guess) == set(self.case_file):
+        if ai_coords in room_dimensions.guessing_room and len(set(npc_guess)) == 3 and set(npc_guess) == set(self.case_file):
             lose = LoseScreenNPC(self.whos_turn)
             self.window.show_view(lose)
 
